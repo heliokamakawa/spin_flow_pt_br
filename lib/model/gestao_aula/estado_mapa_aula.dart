@@ -39,6 +39,11 @@ class EstadoMapaAula {
     final p = posicaoEm(fila, coluna);
     return p?.bikeId != null && bikeIdsEmManutencao.contains(p!.bikeId);
   }
+
+  int get totalBikes =>
+      sala.bikesDisponiveis(posicoes, bikeIdsEmManutencao);
+
+  bool get lotada => checkinsAtivos.length >= totalBikes;
 }
 
 class ResumoTurmaHoje {
@@ -88,18 +93,5 @@ class MapaCheckinAluno {
     this.filaId,
   });
 
-  bool get lotada {
-    final sala = mapa.sala;
-    final bikesNaSala = mapa.posicoes.where((p) {
-      if (p.fila >= sala.numeroFilas || p.coluna >= sala.numeroColunas)
-        return false;
-      if (p.fila == sala.filaProfessora - 1 &&
-          p.coluna == sala.colunaProfessora - 1)
-        return false;
-      if (p.bikeId != null && mapa.bikeIdsEmManutencao.contains(p.bikeId))
-        return false;
-      return true;
-    }).length;
-    return mapa.checkinsAtivos.length >= bikesNaSala;
-  }
+  bool get lotada => mapa.lotada;
 }

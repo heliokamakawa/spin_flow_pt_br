@@ -5,11 +5,9 @@ import 'package:spin_flow/model/dao/i_dao_manutencao.dart';
 import 'package:spin_flow/model/dao/i_dao_posicao_bike.dart';
 import 'package:spin_flow/model/dao/i_dao_sala.dart';
 import 'package:spin_flow/model/dao/i_dao_turma.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_sala.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_turma.dart';
 import 'package:spin_flow/model/gestao_aula/estado_mapa_aula.dart';
 import 'package:spin_flow/model/gestao_aula/modelo_checkin.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_posicao_bike.dart';
 import 'package:spin_flow/model/modelo/modelo_aluno.dart';
 
 class ServicoCheckinAluno {
@@ -45,7 +43,7 @@ class ServicoCheckinAluno {
   // ── Lista de turmas do dia ─────────────────────────────────────────────────
 
   Future<List<ResumoTurmaCheckin>> listarTurmasHoje(int alunoId) async {
-    final hoje = _diaSemanaHoje();
+    final hoje = DiaSemana.hoje();
     final salas = await _daoSala.buscarTodos();
     final salasPorId = {for (final s in salas) s.id: s};
     final todasPosicoes = await _daoPosicaoBike.buscarTodos();
@@ -54,7 +52,7 @@ class ServicoCheckinAluno {
 
     final turmas = await _daoTurma.buscarTodos();
     final turmasHoje =
-        turmas.where((t) => t.ativo && t.diasSemana.contains(hoje)).toList()
+        turmas.where((t) => t.ativo && t.ocorreEm(hoje)).toList()
           ..sort((a, b) => a.horarioInicio.compareTo(b.horarioInicio));
 
     final agora = DateTime.now();
@@ -65,7 +63,7 @@ class ServicoCheckinAluno {
       final sala = salasPorId[turma.salaId];
       if (sala == null) continue;
 
-      final totalBikes = _contarBikes(sala, todasPosicoes, bikesManutencao);
+      final totalBikes = sala.bikesDisponiveis(todasPosicoes, bikesManutencao);
       final checkins = await _daoCheckin.buscarAtivosPorTurmaData(
         turma.id!,
         dataHoje,
@@ -84,7 +82,7 @@ class ServicoCheckinAluno {
           nomeSala: sala.nome,
           totalBikes: totalBikes,
           vagasDisponiveis: vagas,
-          janelAberta: _janelAberta(turma, agora),
+          janelAberta: turma.janelAberta(agora),
           alunoJaTemCheckin: alunoJaTem,
           posicaoNaFila: posicaoFila,
         ),
@@ -131,7 +129,7 @@ class ServicoCheckinAluno {
     return MapaCheckinAluno(
       mapa: mapa,
       alunoId: alunoId,
-      janelAberta: _janelAberta(turma, agora),
+      janelAberta: turma.janelAberta(agora),
       idCheckinDoAluno: meuCheckin?.id,
       posicaoNaFila: posicaoFila,
       filaId: filaId,
@@ -148,7 +146,7 @@ class ServicoCheckinAluno {
     required int coluna,
   }) async {
     final agora = DateTime.now();
-    if (!_janelAberta(turma, agora)) {
+    if (!turma.janelAberta(agora)) {
       return 'Reserva disponível 30 min antes da aula.';
     }
     final aluno = await _daoAluno.buscarPorId(alunoId);
@@ -200,50 +198,4 @@ class ServicoCheckinAluno {
 
   Future<void> sairDaFila(int filaId) => _daoFila.sairDaFila(filaId);
 
-  // ── Helpers privados ──────────────────────────────────────────────────────
-
-  int _contarBikes(
-    ModeloSala sala,
-    List<ModeloPosicaoBike> posicoes,
-    Set<int> emManutencao,
-  ) {
-    return posicoes.where((p) {
-      if (p.fila >= sala.numeroFilas || p.coluna >= sala.numeroColunas)
-        return false;
-      if (p.fila == sala.filaProfessora - 1 &&
-          p.coluna == sala.colunaProfessora - 1)
-        return false;
-      if (p.bikeId != null && emManutencao.contains(p.bikeId)) return false;
-      return true;
-    }).length;
-  }
-
-  bool _janelAberta(ModeloTurma turma, DateTime agora) {
-    final partes = turma.horarioInicio.split(':');
-    if (partes.length < 2) return false;
-    final h = int.tryParse(partes[0]) ?? 0;
-    final m = int.tryParse(partes[1]) ?? 0;
-    final inicio = DateTime(agora.year, agora.month, agora.day, h, m);
-    final abertura = inicio.subtract(const Duration(minutes: 30));
-    return !agora.isBefore(abertura);
-  }
-
-  DiaSemana _diaSemanaHoje() {
-    switch (DateTime.now().weekday) {
-      case DateTime.monday:
-        return DiaSemana.segunda;
-      case DateTime.tuesday:
-        return DiaSemana.terca;
-      case DateTime.wednesday:
-        return DiaSemana.quarta;
-      case DateTime.thursday:
-        return DiaSemana.quinta;
-      case DateTime.friday:
-        return DiaSemana.sexta;
-      case DateTime.saturday:
-        return DiaSemana.sabado;
-      default:
-        return DiaSemana.domingo;
-    }
-  }
 }

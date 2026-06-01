@@ -18,6 +18,25 @@ enum DiaSemana {
       orElse: () => DiaSemana.segunda,
     );
   }
+
+  static DiaSemana hoje() {
+    switch (DateTime.now().weekday) {
+      case DateTime.monday:
+        return DiaSemana.segunda;
+      case DateTime.tuesday:
+        return DiaSemana.terca;
+      case DateTime.wednesday:
+        return DiaSemana.quarta;
+      case DateTime.thursday:
+        return DiaSemana.quinta;
+      case DateTime.friday:
+        return DiaSemana.sexta;
+      case DateTime.saturday:
+        return DiaSemana.sabado;
+      default:
+        return DiaSemana.domingo;
+    }
+  }
 }
 
 class ModeloTurma {
@@ -38,6 +57,17 @@ class ModeloTurma {
     required this.salaId,
     this.ativo = true,
   });
+
+  bool ocorreEm(DiaSemana dia) => diasSemana.contains(dia);
+
+  bool janelAberta(DateTime agora) {
+    final partes = horarioInicio.split(':');
+    if (partes.length < 2) return false;
+    final h = int.tryParse(partes[0]) ?? 0;
+    final m = int.tryParse(partes[1]) ?? 0;
+    final inicio = DateTime(agora.year, agora.month, agora.day, h, m);
+    return !agora.isBefore(inicio.subtract(const Duration(minutes: 30)));
+  }
 
   String? validar() {
     if (nome.trim().isEmpty) return 'Identificação é obrigatória.';
