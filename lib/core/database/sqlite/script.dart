@@ -335,49 +335,78 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesAluno = [
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Carlos Almeida', 'aluno@gmail.com', '1990-05-15', 'masculino', '(11) 99999-1111', '', '', '', '', 'Aluno ativo para simulacao de uso real', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Joao Santos', 'joao.santos@email.com', '1985-08-22', 'masculino', '(11) 99999-2222', 'https://example.com/joao.jpg', 'https://instagram.com/joao.santos', 'https://facebook.com/joao.santos', 'https://tiktok.com/@joao.santos', 'Aluno iniciante', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Maria Costa', 'maria.costa@email.com', '1992-12-10', 'feminino', '(11) 99999-3333', 'https://example.com/maria.jpg', 'https://instagram.com/maria.costa', 'https://facebook.com/maria.costa', 'https://tiktok.com/@maria.costa', 'Aluna avancada', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Carlos Pereira', 'carlos.pereira@email.com', '1988-03-20', 'masculino', '(11) 99999-4444', '', '', '', '', 'Aluno intermediario', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Fernanda Lima', 'fernanda.lima@email.com', '1995-07-08', 'feminino', '(11) 99999-5555', '', '', '', '', 'Alta frequencia', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Lucas Oliveira', 'lucas.oliveira@email.com', '1993-11-30', 'masculino', '(11) 99999-6666', '', '', '', '', 'Preferencia turma manha', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Patricia Souza', 'patricia.souza@email.com', '1987-01-25', 'feminino', '(11) 99999-7777', '', '', '', '', 'Aluna desde 2024', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Roberto Gomes', 'roberto.gomes@email.com', '1991-09-14', 'masculino', '(11) 99999-8888', '', '', '', '', 'Treina 3x por semana', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Juliana Martins', 'juliana.martins@email.com', '1994-06-03', 'feminino', '(11) 99999-9999', '', '', '', '', 'Aluna nova', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Bruno Almeida', 'bruno.almeida@email.com', '1989-04-18', 'masculino', '(11) 98888-1111', '', '', '', '', 'Aluno inativo de exemplo', 0)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Carlos Almeida', 'aluno@gmail.com', '1990-05-15', 'masculino', '(11) 99999-1101', '', '', '', '', 'Uso intenso: aluno de alta frequencia, treina spinning de 4 a 5 vezes por semana e costuma reservar primeira fileira', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Fernanda Lima', 'fernanda.lima@email.com', '1995-07-08', 'feminino', '(11) 99999-1102', '', '', '', '', 'Uso intenso: alta frequencia nas turmas da noite e preferencia por aulas de endurance', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Roberto Gomes', 'roberto.gomes@email.com', '1991-09-14', 'masculino', '(11) 99999-1103', '', '', '', '', 'Uso intenso: participa de treinos de sprint e acompanha indicadores de evolucao', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Juliana Martins', 'juliana.martins@email.com', '1994-06-03', 'feminino', '(11) 99999-1104', '', '', '', '', 'Uso intenso: aluna recorrente nas aulas da manha e costuma avaliar repertorios', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Patricia Souza', 'patricia.souza@email.com', '1987-01-25', 'feminino', '(11) 99999-1105', '', '', '', '', 'Uso intenso: treina em turmas avancadas e alterna bikes centrais', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Lucas Oliveira', 'lucas.oliveira@email.com', '1993-11-30', 'masculino', '(11) 99999-1106', '', '', '', '', 'Uso intenso: preferencia por aulas de subida e resistencia no fim do dia', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Mariana Costa', 'mariana.costa@email.com', '1992-12-10', 'feminino', '(11) 99999-1107', '', '', '', '', 'Uso intenso: frequenta quatro aulas por semana e prioriza bikes da lateral direita', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Diego Matos', 'diego.matos@email.com', '1989-02-19', 'masculino', '(11) 99999-1108', '', '', '', '', 'Uso intenso: foco em condicionamento cardiovascular e aulas HIIT', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Camila Teixeira', 'camila.teixeira@email.com', '1996-10-21', 'feminino', '(11) 99999-1109', '', '', '', '', 'Uso intenso: aluna assidua em rhythm ride e sprints curtos', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Rafael Monteiro', 'rafael.monteiro@email.com', '1986-04-12', 'masculino', '(11) 99999-1110', '', '', '', '', 'Uso intenso: participa de desafios internos e acompanha historico semanal', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Joao Santos', 'joao.santos@email.com', '1985-08-22', 'masculino', '(11) 99999-1111', '', '', '', '', 'Iniciante: em adaptacao ao spinning, prefere aulas de tecnica e baixa intensidade', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Bruna Andrade', 'bruna.andrade@email.com', '1998-01-18', 'feminino', '(11) 99999-1112', '', '', '', '', 'Iniciante: primeiras semanas de treino, orientada a usar bikes de facil acesso', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Elaine Cardoso', 'elaine.cardoso@email.com', '1997-05-27', 'feminino', '(11) 99999-1113', '', '', '', '', 'Iniciante: retorno gradual aos treinos e acompanhamento de carga moderada', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Igor Pacheco', 'igor.pacheco@email.com', '1990-08-09', 'masculino', '(11) 99999-1114', '', '', '', '', 'Iniciante: foco em aprender cadencia e ajuste correto da bike', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Larissa Melo', 'larissa.melo@email.com', '1999-03-16', 'feminino', '(11) 99999-1115', '', '', '', '', 'Iniciante: prefere aulas de base e acompanhamento proximo da professora', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Maria Costa', 'maria.costa@email.com', '1992-07-11', 'feminino', '(11) 99999-1116', '', '', '', '', 'Mediano: participa duas vezes por semana e alterna entre ritmo e subida', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Carlos Pereira', 'carlos.pereira@email.com', '1988-03-20', 'masculino', '(11) 99999-1117', '', '', '', '', 'Mediano: frequencia regular, bom desempenho em aulas de resistencia', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Ribeiro', 'ana.ribeiro@email.com', '1991-06-24', 'feminino', '(11) 99999-1118', '', '', '', '', 'Mediano: prefere turmas no almoco e ritmos constantes', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Pedro Lima', 'pedro.lima@email.com', '1984-12-02', 'masculino', '(11) 99999-1119', '', '', '', '', 'Mediano: participa de treinos funcionais e spinning em dias alternados', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Sabrina Duarte', 'sabrina.duarte@email.com', '1993-09-05', 'feminino', '(11) 99999-1120', '', '', '', '', 'Mediano: boa adaptacao a sprint, ainda evoluindo em aulas longas', 1)",
   ];
 
   static const List<String> _insercoesUsuario = [
     "INSERT INTO usuario (nome, email, cpf, senha, perfil, ativo) VALUES ('Ana Beatriz', 'professora@gmail.com', '11122233344', '123', 'professora', 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, perfil, ativo) VALUES ('Marina Torres', 'marina.torres@pulsestudio.com.br', '22233344455', '123', 'professora', 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, perfil, ativo) VALUES ('Paula Nogueira', 'paula.nogueira@pulsestudio.com.br', '33344455566', '123', 'professora', 1)",
     "INSERT INTO usuario (nome, email, cpf, senha, perfil, ativo) VALUES ('Carlos Almeida', 'aluno@gmail.com', '55566677788', '123', 'aluno', 1)",
   ];
 
   static const List<String> _insercoesSala = [
-    "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('Sala Principal', 4, 5, 3, 1)",
-    "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('Sala VIP', 4, 4, 3, 1)",
+    // posicao_professora = 3 → fila=(3-1)÷6+1=1 / coluna=(3-1)%6+1=3 → 0-based (0,2) = centro da 1ª fila
+    "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('Studio Sprint', 3, 6, 3, 1)",
+    "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('Studio Endurance', 3, 6, 3, 1)",
   ];
 
   static const List<String> _insercoesBike = [
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 01', 'BK-0001', 1, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 02', 'BK-0002', 2, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 03', 'BK-0003', 3, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 04', 'BK-0004', 4, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 05', 'BK-0005', 5, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 06', 'BK-0006', 1, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 07', 'BK-0007', 2, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 08', 'BK-0008', 3, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 09', 'BK-0009', 4, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 10', 'BK-0010', 5, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 11', 'BK-0011', 1, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 12', 'BK-0012', 2, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 13', 'BK-0013', 3, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 14', 'BK-0014', 4, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 15', 'BK-0015', 5, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 16', 'BK-0016', 1, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 17', 'BK-0017', 2, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 18', 'BK-0018', 3, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 19', 'BK-0019', 4, '2026-01-05T10:00:00', 1)",
-    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 20', 'BK-0020', 5, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 01', 'PSI-BK-0001', 1, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 02', 'PSI-BK-0002', 2, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 03', 'PSI-BK-0003', 3, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 04', 'PSI-BK-0004', 4, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 05', 'PSI-BK-0005', 5, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 06', 'PSI-BK-0006', 1, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 07', 'PSI-BK-0007', 2, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 08', 'PSI-BK-0008', 3, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 09', 'PSI-BK-0009', 4, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 10', 'PSI-BK-0010', 5, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 11', 'PSI-BK-0011', 1, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 12', 'PSI-BK-0012', 2, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 13', 'PSI-BK-0013', 3, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 14', 'PSI-BK-0014', 4, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 15', 'PSI-BK-0015', 5, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 16', 'PSI-BK-0016', 1, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 17', 'PSI-BK-0017', 2, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 18', 'PSI-BK-0018', 3, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 19', 'PSI-BK-0019', 4, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 20', 'PSI-BK-0020', 5, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 21', 'PSI-BK-0021', 1, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 22', 'PSI-BK-0022', 2, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 23', 'PSI-BK-0023', 3, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 24', 'PSI-BK-0024', 4, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 25', 'PSI-BK-0025', 5, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 26', 'PSI-BK-0026', 1, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 27', 'PSI-BK-0027', 2, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 28', 'PSI-BK-0028', 3, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 29', 'PSI-BK-0029', 4, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 30', 'PSI-BK-0030', 5, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 31', 'PSI-BK-0031', 1, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 32', 'PSI-BK-0032', 2, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 33', 'PSI-BK-0033', 3, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 34', 'PSI-BK-0034', 4, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 35', 'PSI-BK-0035', 5, '2026-01-05T10:00:00', 1)",
+    "INSERT INTO bike (nome, numero_serie, fabricante_id, data_cadastro, ativa) VALUES ('Bike 36', 'PSI-BK-0036', 1, '2026-01-05T10:00:00', 1)",
   ];
 
   static const List<String> _insercoesVideoAula = [
@@ -422,15 +451,13 @@ class ScriptSQLite {
     "INSERT OR IGNORE INTO mix_musica (mix_id, musica_id, posicao) VALUES (1, 10, 10)",
   ];
 
-  static const List<String> comandosNormalizarSeedsContextoReal = [
-    "UPDATE sala SET posicao_professora = 3 WHERE nome IN ('Sala Principal', 'Studio Alfa', 'Studio Beta', 'Studio Gamma', 'Sala VIP')",
-    "UPDATE turma_mix SET data_inicio = '2026-01-01T00:00:00', data_fim = '2026-12-31T23:59:59' WHERE turma_id IN (SELECT id FROM turma WHERE nome IN ('Spinning Performance', 'Spinning Intensivo'))",
-    "UPDATE checkin SET coluna = 3 WHERE turma_id IN (SELECT id FROM turma WHERE nome = 'Spinning Intensivo') AND aluno_id IN (SELECT id FROM aluno WHERE LOWER(email) = 'juliana.martins@email.com')",
-  ];
+  static const List<String> comandosNormalizarSeedsContextoReal = [];
 
   static const List<String> _insercoesMix = [
-    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Performance', '[1,2,3,4,5,6,7,8,9,10]', 'Sequencia completa de aula com resistencia, sprint e desaceleracao', 1)",
-    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Power Sunset', '[2,3,4,5,6,7,8,9,10,1]', 'Mix foco em performance no fim do dia', 1)",
+    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Power Ride', '[1,2,3,4,5,6,7,8,9,10]', 'Sequencia completa para aula de power ride com aquecimento, forca, sprint e desaceleracao', 1)",
+    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Sprint HIIT', '[2,4,7,8,5,6,3,1,9,10]', 'Mix de spinning com tiros intensos, recuperacao curta e fechamento controlado', 1)",
+    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Climb Endurance', '[1,3,5,6,7,8,2,4,9,10]', 'Mix de subida progressiva e resistencia para aula longa de endurance', 1)",
+    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Rhythm Recovery', '[1,6,2,3,9,5,7,8,10,4]', 'Mix de ritmo moderado para tecnica, cadencia e recuperacao ativa', 1)",
   ];
 
   static const List<String> _insercoesMusicaCategoria = [
@@ -477,71 +504,118 @@ class ScriptSQLite {
     "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (1, 9, 9)",
     "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (1, 10, 10)",
     "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 2, 1)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 3, 2)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 4, 3)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 5, 4)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 6, 5)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 7, 6)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 8, 7)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 9, 8)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 10, 9)",
-    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 1, 10)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 4, 2)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 7, 3)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 8, 4)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 5, 5)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 6, 6)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 3, 7)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 1, 8)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 9, 9)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (2, 10, 10)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 1, 1)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 3, 2)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 5, 3)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 6, 4)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 7, 5)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 8, 6)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 2, 7)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 4, 8)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 9, 9)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (3, 10, 10)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 1, 1)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 6, 2)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 2, 3)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 3, 4)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 9, 5)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 5, 6)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 7, 7)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 8, 8)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 10, 9)",
+    "INSERT INTO mix_musica (mix_id, musica_id, posicao) VALUES (4, 4, 10)",
   ];
 
   static const List<String> _insercoesTurma = [
-    "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Power Ride 07h', 'Treino intenso de manha', '[\"Seg\",\"Qua\",\"Sex\"]', '07:00', 50, 1, 1)",
-    "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Endurance 18h30', 'Treino de fim de tarde', '[\"Ter\",\"Qui\"]', '18:30', 50, 2, 1)",
+    "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Power Ride 07h', 'Aula de spinning intensa para alunos de uso frequente, com blocos de forca e sprint', '[\"Seg\",\"Qua\",\"Sex\"]', '07:00', 50, 1, 1)",
+    "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Sprint HIIT 12h', 'Aula curta de spinning com tiros de alta intensidade e recuperacao controlada', '[\"Ter\",\"Qui\"]', '12:00', 45, 1, 1)",
+    "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Climb Endurance 18h30', 'Treino de subida e resistencia progressiva para fim de tarde', '[\"Seg\",\"Qua\",\"Sex\"]', '18:30', 55, 2, 1)",
+    "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Rhythm Recovery 20h', 'Aula de ritmo moderado, tecnica de pedalada e recuperacao ativa', '[\"Ter\",\"Qui\"]', '20:00', 45, 2, 1)",
   ];
 
   static const List<String> _insercoesTurmaDiaSemana = [
     "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Power Ride 07h' LIMIT 1), 'Seg')",
     "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Power Ride 07h' LIMIT 1), 'Qua')",
     "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Power Ride 07h' LIMIT 1), 'Sex')",
-    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Endurance 18h30' LIMIT 1), 'Ter')",
-    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Endurance 18h30' LIMIT 1), 'Qui')",
+    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Sprint HIIT 12h' LIMIT 1), 'Ter')",
+    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Sprint HIIT 12h' LIMIT 1), 'Qui')",
+    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Climb Endurance 18h30' LIMIT 1), 'Seg')",
+    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Climb Endurance 18h30' LIMIT 1), 'Qua')",
+    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Climb Endurance 18h30' LIMIT 1), 'Sex')",
+    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Rhythm Recovery 20h' LIMIT 1), 'Ter')",
+    "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = 'Rhythm Recovery 20h' LIMIT 1), 'Qui')",
   ];
 
   static const List<String> _insercoesGrupoAlunos = [
-    "INSERT INTO grupo_alunos (nome, descricao, aluno_ids, ativo) VALUES ('Grupo Frequencia Alta', 'Alunos com alta presenca semanal', '[1,2,3]', 1)",
+    "INSERT INTO grupo_alunos (nome, descricao, aluno_ids, ativo) VALUES ('Uso Intenso', 'Alunos com alta frequencia semanal nas aulas de spinning', '[1,2,3,4,5,6,7,8,9,10]', 1)",
+    "INSERT INTO grupo_alunos (nome, descricao, aluno_ids, ativo) VALUES ('Iniciantes Spinning', 'Alunos em fase inicial, com foco em tecnica, ajuste de bike e controle de carga', '[11,12,13,14,15]', 1)",
+    "INSERT INTO grupo_alunos (nome, descricao, aluno_ids, ativo) VALUES ('Medianos em Evolucao', 'Alunos com frequencia regular e evolucao em ritmo, forca e resistencia', '[16,17,18,19,20]', 1)",
   ];
 
   static const List<String> _insercoesGrupoAluno = [
-    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Grupo Frequencia Alta' LIMIT 1), 1)",
-    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Grupo Frequencia Alta' LIMIT 1), 2)",
-    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Grupo Frequencia Alta' LIMIT 1), 3)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 1)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 2)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 3)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 4)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 5)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 6)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 7)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 8)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 9)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Uso Intenso' LIMIT 1), 10)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Iniciantes Spinning' LIMIT 1), 11)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Iniciantes Spinning' LIMIT 1), 12)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Iniciantes Spinning' LIMIT 1), 13)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Iniciantes Spinning' LIMIT 1), 14)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Iniciantes Spinning' LIMIT 1), 15)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Medianos em Evolucao' LIMIT 1), 16)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Medianos em Evolucao' LIMIT 1), 17)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Medianos em Evolucao' LIMIT 1), 18)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Medianos em Evolucao' LIMIT 1), 19)",
+    "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Medianos em Evolucao' LIMIT 1), 20)",
   ];
 
   static const List<String> _insercoesTurmaMix = [
     "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES (1, 1, '2026-01-01T00:00:00', '2026-12-31T23:59:59', 1)",
     "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES (2, 2, '2026-01-01T00:00:00', '2026-12-31T23:59:59', 1)",
+    "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES (3, 3, '2026-01-01T00:00:00', '2026-12-31T23:59:59', 1)",
+    "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES (4, 4, '2026-01-01T00:00:00', '2026-12-31T23:59:59', 1)",
   ];
 
-  // Grid 4x5 completo — bike_id = fila*5 + coluna + 1
-  // Sala Principal (4x5): professora em (0,2), centro da primeira fila.
-  //   19 bikes disponíveis para alunos
-  // Sala VIP (4x4): professora em (0,0).
-  //   15 bikes disponíveis para alunos (colunas 0-3 das filas 0-3)
+  // Grid operacional 3x6 compartilhado pelas salas do seed.
+  // Studio Sprint e Studio Endurance possuem 3 filas e 6 colunas.
+  // A coluna 2 da primeira fila representa a professora no mapa da sala,
+  // restando 17 posicoes reservaveis para alunos em cada sala.
+  // A tabela posicao_bike atual nao possui sala_id; por isso as posicoes
+  // descrevem o mapa fisico usado por salas com a mesma configuracao.
   static const List<String> _insercoesPosicaoBike = [
     "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (0, 0, 1)",
     "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (0, 1, 2)",
     "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (0, 2, 3)",
     "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (0, 3, 4)",
     "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (0, 4, 5)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 0, 6)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 1, 7)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 2, 8)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 3, 9)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 4, 10)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 0, 11)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 1, 12)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 2, 13)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 3, 14)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 4, 15)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (3, 0, 16)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (3, 1, 17)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (3, 2, 18)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (3, 3, 19)",
-    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (3, 4, 20)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (0, 5, 6)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 0, 7)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 1, 8)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 2, 9)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 3, 10)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 4, 11)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (1, 5, 12)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 0, 13)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 1, 14)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 2, 15)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 3, 16)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 4, 17)",
+    "INSERT INTO posicao_bike (fila, coluna, bike_id) VALUES (2, 5, 18)",
   ];
 
   static const List<String> _insercoesManutencao = [
@@ -553,42 +627,98 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesCheckin = [
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-03T07:00:00', 1, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-05T07:00:00', 1, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-10T07:00:00', 1, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 2, '2026-03-11T18:30:00', 0, 0, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-17T07:00:00', 1, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-24T07:00:00', 1, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-31T07:00:00', 1, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-04-01T07:00:00', 1, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 1, '2026-03-03T07:00:00', 1, 3, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 1, '2026-03-10T07:00:00', 1, 3, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 1, '2026-04-01T07:00:00', 1, 3, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 2, '2026-03-04T18:30:00', 0, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 2, '2026-03-11T18:30:00', 0, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 1, '2026-03-05T07:00:00', 0, 0, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 1, '2026-03-10T07:00:00', 0, 0, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 2, '2026-03-11T18:30:00', 0, 3, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 1, '2026-03-03T07:00:00', 0, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 1, '2026-03-05T07:00:00', 0, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 1, '2026-03-10T07:00:00', 0, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 1, '2026-03-17T07:00:00', 0, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 2, '2026-03-18T18:30:00', 0, 0, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, 1, '2026-03-05T07:00:00', 0, 3, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, 1, '2026-03-17T07:00:00', 0, 3, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, 2, '2026-03-04T18:30:00', 0, 0, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, 2, '2026-03-18T18:30:00', 0, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, 1, '2026-03-10T07:00:00', 0, 4, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, 1, '2026-03-24T07:00:00', 0, 4, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 2, '2026-03-18T18:30:00', 0, 0, 0)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 1, '2026-03-17T07:00:00', 1, 4, 0)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-04-14T07:00:00', 1, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 1, '2026-04-14T07:00:00', 0, 1, 1)",
-    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 2, '2026-04-15T18:30:00', 0, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-02T07:00:00', 1, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 3, '2026-03-04T18:30:00', 1, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-06T07:00:00', 1, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 3, '2026-03-09T07:00:00', 1, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 1, '2026-03-11T18:30:00', 1, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 3, '2026-03-13T07:00:00', 2, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 1, '2026-03-02T07:00:00', 1, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 3, '2026-03-04T18:30:00', 1, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 1, '2026-03-06T07:00:00', 1, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 3, '2026-03-09T07:00:00', 1, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 1, '2026-03-11T18:30:00', 2, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, 3, '2026-03-13T07:00:00', 2, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 1, '2026-03-02T07:00:00', 1, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 3, '2026-03-04T18:30:00', 1, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 1, '2026-03-06T07:00:00', 1, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 3, '2026-03-09T07:00:00', 2, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 1, '2026-03-11T18:30:00', 2, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, 3, '2026-03-13T07:00:00', 2, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 1, '2026-03-02T07:00:00', 1, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 3, '2026-03-04T18:30:00', 1, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 1, '2026-03-06T07:00:00', 2, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 3, '2026-03-09T07:00:00', 2, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 1, '2026-03-11T18:30:00', 2, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, 3, '2026-03-13T07:00:00', 2, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 1, '2026-03-02T07:00:00', 1, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 3, '2026-03-04T18:30:00', 2, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 1, '2026-03-06T07:00:00', 2, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 3, '2026-03-09T07:00:00', 2, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 1, '2026-03-11T18:30:00', 2, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, 3, '2026-03-13T07:00:00', 2, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, 1, '2026-03-02T07:00:00', 2, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, 3, '2026-03-04T18:30:00', 2, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, 1, '2026-03-06T07:00:00', 2, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, 3, '2026-03-09T07:00:00', 2, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, 1, '2026-03-11T18:30:00', 2, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, 3, '2026-03-13T07:00:00', 2, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, 1, '2026-03-02T07:00:00', 2, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, 3, '2026-03-04T18:30:00', 2, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, 1, '2026-03-06T07:00:00', 2, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, 3, '2026-03-09T07:00:00', 2, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, 1, '2026-03-11T18:30:00', 2, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, 3, '2026-03-13T07:00:00', 0, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, 1, '2026-03-02T07:00:00', 2, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, 3, '2026-03-04T18:30:00', 2, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, 1, '2026-03-06T07:00:00', 2, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, 3, '2026-03-09T07:00:00', 2, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, 1, '2026-03-11T18:30:00', 0, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, 3, '2026-03-13T07:00:00', 0, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (9, 1, '2026-03-02T07:00:00', 2, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (9, 3, '2026-03-04T18:30:00', 2, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (9, 1, '2026-03-06T07:00:00', 2, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (9, 3, '2026-03-09T07:00:00', 0, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (9, 1, '2026-03-11T18:30:00', 0, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (9, 3, '2026-03-13T07:00:00', 0, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (10, 1, '2026-03-02T07:00:00', 2, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (10, 3, '2026-03-04T18:30:00', 2, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (10, 1, '2026-03-06T07:00:00', 0, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (10, 3, '2026-03-09T07:00:00', 0, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (10, 1, '2026-03-11T18:30:00', 0, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (10, 3, '2026-03-13T07:00:00', 0, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (11, 4, '2026-03-03T20:00:00', 2, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (11, 4, '2026-03-10T20:00:00', 0, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (12, 4, '2026-03-03T20:00:00', 0, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (12, 4, '2026-03-10T20:00:00', 0, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (13, 4, '2026-03-03T20:00:00', 0, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (13, 4, '2026-03-10T20:00:00', 0, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (14, 4, '2026-03-03T20:00:00', 0, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (14, 4, '2026-03-10T20:00:00', 0, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (15, 4, '2026-03-03T20:00:00', 0, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (15, 4, '2026-03-10T20:00:00', 0, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (16, 2, '2026-03-03T12:00:00', 0, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (16, 2, '2026-03-10T12:00:00', 1, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (16, 3, '2026-03-17T18:30:00', 1, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (17, 2, '2026-03-03T12:00:00', 1, 0, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (17, 2, '2026-03-10T12:00:00', 1, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (17, 3, '2026-03-17T18:30:00', 1, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (18, 2, '2026-03-03T12:00:00', 1, 1, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (18, 2, '2026-03-10T12:00:00', 1, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (18, 3, '2026-03-17T18:30:00', 1, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (19, 2, '2026-03-03T12:00:00', 1, 2, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (19, 2, '2026-03-10T12:00:00', 1, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (19, 3, '2026-03-17T18:30:00', 1, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (20, 2, '2026-03-03T12:00:00', 1, 3, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (20, 2, '2026-03-10T12:00:00', 1, 4, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (20, 3, '2026-03-17T18:30:00', 1, 5, 1)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, 3, '2026-03-18T18:30:00', 1, 0, 0)",
+    "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (12, 4, '2026-03-17T20:00:00', 2, 5, 0)",
   ];
 
   static const List<String> _insercoesFilaEspera = [
-    "INSERT INTO fila_espera_checkin (aluno_id, turma_id, data, criado_em, ativo) VALUES (3, 1, '2026-04-01T07:00:00', '2026-04-01T06:50:00', 1)",
+    "INSERT INTO fila_espera_checkin (aluno_id, turma_id, data, criado_em, ativo) VALUES (11, 1, '2026-03-13T07:00:00', '2026-03-13T06:45:00', 1)",
+    "INSERT INTO fila_espera_checkin (aluno_id, turma_id, data, criado_em, ativo) VALUES (12, 3, '2026-03-13T18:30:00', '2026-03-13T18:10:00', 1)",
   ];
 
   static const List<List<String>> comandosInsercoes = [
@@ -644,53 +774,55 @@ class ScriptSQLite {
     final diaAmanha = _siglaDiaSemana(amanha.weekday);
 
     // Nomes dos recursos dinamicos
-    const nomeSalaJanela = 'Studio Alfa';
-    const nomeSalaVagas = 'Studio Beta';
-    const nomeSalaLotada = 'Studio Gamma';
-    const nomeTurmaFechada = 'Spinning Essencial';
-    const nomeTurmaVagas = 'Spinning Performance';
-    const nomeTurmaLotada = 'Spinning Intensivo';
+    const nomeTurmaFechada = 'Cadencia Base Hoje';
+    const nomeTurmaVagas = 'Power Ride Hoje';
+    const nomeTurmaLotada = 'Sprint Lotado Hoje';
 
     return [
-      // ── Salas ─────────────────────────────────────────────────────────────
-      // Sala fechada: grade 4x5, professora no centro da primeira fila.
-      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaJanela', 4, 5, 3, 1)",
-      // Sala com vagas: grade 3x5, professora no centro da primeira fila (0,2).
-      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaVagas', 3, 5, 3, 1)",
-      // Sala lotada: 1x4, professora em (0,2), sobram 3 bikes para alunos.
-      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaLotada', 1, 4, 3, 1)",
+      // Turmas dinamicas sobre as duas salas oficiais do seed.
+      "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('$nomeTurmaFechada', 'Aula de spinning para tecnica de pedalada e controle de cadencia', '[\"$diaHoje\"]', '$horario1', 50, (SELECT id FROM sala WHERE nome = 'Studio Sprint' LIMIT 1), 1)",
+      "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('$nomeTurmaVagas', 'Aula de spinning com foco em ritmo, forca e resistencia', '[\"$diaHoje\"]', '$horario2', 50, (SELECT id FROM sala WHERE nome = 'Studio Sprint' LIMIT 1), 1)",
+      "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('$nomeTurmaLotada', 'Aula de spinning intensa para alunos com maior condicionamento', '[\"$diaHoje\",\"$diaAmanha\"]', '$horarioLotada', 45, (SELECT id FROM sala WHERE nome = 'Studio Endurance' LIMIT 1), 1)",
 
-      // ── Turmas ────────────────────────────────────────────────────────────
-      "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('$nomeTurmaFechada', 'Aula de spinning para treino base e tecnica de pedalada', '[\"$diaHoje\"]', '$horario1', 50, (SELECT id FROM sala WHERE nome = '$nomeSalaJanela' ORDER BY id DESC LIMIT 1), 1)",
-      "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('$nomeTurmaVagas', 'Aula de spinning com foco em ritmo, forca e resistencia', '[\"$diaHoje\"]', '$horario2', 50, (SELECT id FROM sala WHERE nome = '$nomeSalaVagas' ORDER BY id DESC LIMIT 1), 1)",
-      "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('$nomeTurmaLotada', 'Aula de spinning intensa para alunos com maior condicionamento', '[\"$diaHoje\",\"$diaAmanha\"]', '$horarioLotada', 45, (SELECT id FROM sala WHERE nome = '$nomeSalaLotada' ORDER BY id DESC LIMIT 1), 1)",
-
-      // ── turma_dia_semana ──────────────────────────────────────────────────
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaFechada' ORDER BY id DESC LIMIT 1), '$diaHoje')",
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$diaHoje')",
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$diaHoje')",
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$diaAmanha')",
 
-      // ── turma_mix ─────────────────────────────────────────────────────────
+      "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaFechada' ORDER BY id DESC LIMIT 1), 4, '$hojeIso', '$amanhaIso', 1)",
       "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), 1, '$ontemIso', '$amanhaIso', 1)",
       "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), 2, '$hojeIso', '$amanhaIso', 1)",
 
-      // ── Check-ins: Spin com Vagas (prof 0-based em (0,2)) — 5 reservas ──
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'aluno@gmail.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$ontemIso', 1, 0, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'joao.santos@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 0, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'maria.costa@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 1, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'carlos.pereira@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 0, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'fernanda.lima@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 2, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'roberto.gomes@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 1, 1)",
+      // Power Ride Hoje: sala com vagas.
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$ontemIso', 1, 0, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 0, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 1, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 0, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 2, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, (SELECT id FROM turma WHERE nome = '$nomeTurmaVagas' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 1, 1)",
 
-      // ── Check-ins: Spin Lotada (sala 1x4, prof em (0,2) 0-based) — 3/3 bikes ──
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'lucas.oliveira@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 0, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'patricia.souza@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 1, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'juliana.martins@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 3, 1)",
+      // Sprint Lotado Hoje: 17 posicoes reservaveis preenchidas; coluna 2 da fila 0 representa a professora.
+      // aluno@gmail.com (id=1) nao tem check-in aqui → vera status LOTADA e podera entrar na fila.
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (20, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 0, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 1, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 3, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 4, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 5, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 0, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 1, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 2, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (9, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 3, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (10, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 4, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (11, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 5, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (12, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 0, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (13, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 1, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (14, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 2, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (15, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 3, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (16, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 4, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (17, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 5, 1)",
 
-      // ── Fila de espera: Spin Lotada ────────────────────────────────────────
-      "INSERT INTO fila_espera_checkin (aluno_id, turma_id, data, criado_em, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'aluno@gmail.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', '$criadoFila', 1)",
-      "INSERT INTO fila_espera_checkin (aluno_id, turma_id, data, criado_em, ativo) VALUES ((SELECT id FROM aluno WHERE LOWER(email) = 'maria.costa@email.com' LIMIT 1), (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', '${agora.subtract(const Duration(minutes: 3)).toIso8601String()}', 1)",
+      "INSERT INTO fila_espera_checkin (aluno_id, turma_id, data, criado_em, ativo) VALUES (18, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', '$criadoFila', 1)",
+      "INSERT INTO fila_espera_checkin (aluno_id, turma_id, data, criado_em, ativo) VALUES (19, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', '${agora.subtract(const Duration(minutes: 3)).toIso8601String()}', 1)",
     ];
   }
 

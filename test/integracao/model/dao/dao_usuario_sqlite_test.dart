@@ -1,9 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spin_flow/excluir/banco/sqlite/conexao.dart';
+import 'package:spin_flow/core/database/sqlite/conexao.dart';
 import 'package:spin_flow/model/dao/sqlite/dao_usuario_sqlite.dart';
 
 void main() {
   group('DAOUsuarioSQLite', () {
+    setUp(() async {
+      final dao = DAOUsuarioSQLite();
+      final aluno = await dao.buscarPorEmail('aluno@gmail.com');
+      if (aluno != null) {
+        await dao.atualizarSenha(aluno.id, '123');
+      }
+    });
+
     tearDownAll(ConexaoSQLite.fecharConexao);
 
     test('autentica professora cadastrada no seed SQLite', () async {
@@ -73,6 +81,8 @@ void main() {
       );
       expect(autenticado, isNotNull);
       expect(autenticado!.ehAluno, isTrue);
+
+      await dao.atualizarSenha(usuario.id, '123');
     });
   });
 }
