@@ -1,6 +1,7 @@
 import 'package:spin_flow/controller/resultado_operacao.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_turma.dart';
 import 'package:spin_flow/model/gestao_aula/estado_mapa_aula.dart';
+import 'package:spin_flow/model/gestao_aula/situacao_checkin_aluno.dart';
 import 'package:spin_flow/model/modelo/modelo_aluno.dart';
 import 'package:spin_flow/model/servico/servico_checkin_aluno.dart';
 
@@ -13,7 +14,7 @@ class ControladorCheckinAluno {
   Future<ModeloAluno?> buscarAlunoPorEmail(String email) =>
       _servico.buscarAlunoPorEmail(email);
 
-  Future<List<ResumoTurmaCheckin>> listarTurmasHoje(int alunoId) =>
+  Future<List<SituacaoCheckinAluno>> listarTurmasHoje(int alunoId) =>
       _servico.listarTurmasHoje(alunoId);
 
   Future<MapaCheckinAluno> carregarMapa(int turmaId, int alunoId) =>

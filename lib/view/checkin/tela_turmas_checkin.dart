@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/checkin/controlador_checkin_aluno.dart';
 import 'package:spin_flow/core/autenticacao/sessao_usuario.dart';
 import 'package:spin_flow/core/tema/tema_app.dart';
-import 'package:spin_flow/model/gestao_aula/estado_mapa_aula.dart';
+import 'package:spin_flow/model/gestao_aula/situacao_checkin_aluno.dart';
 import 'package:spin_flow/model/modelo/modelo_aluno.dart';
 import 'package:spin_flow/view/checkin/tela_mapa_checkin_aluno.dart';
 
@@ -18,7 +18,7 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
   final _controlador = GetIt.I<ControladorCheckinAluno>();
 
   ModeloAluno? _aluno;
-  List<ResumoTurmaCheckin> _resumos = [];
+  List<SituacaoCheckinAluno> _situacoes = [];
   bool _carregando = true;
   String? _erro;
 
@@ -61,7 +61,7 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
       final lista = await _controlador.listarTurmasHoje(aluno!.id!);
       if (!mounted) return;
       setState(() {
-        _resumos = lista;
+        _situacoes = lista;
         _carregando = false;
       });
     } catch (e) {
@@ -71,6 +71,38 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
         _carregando = false;
       });
     }
+  }
+
+  void _aoTocarCard(SituacaoCheckinAluno s) {
+    if (s.status == StatusCheckinAluno.conflito) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Você já tem check-in em ${s.nomeTurmaConflito ?? "outra turma"} neste horário.',
+          ),
+        ),
+      );
+      return;
+    }
+    if (s.status == StatusCheckinAluno.janelaFechada) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Reserva disponível 30 min antes do início.'),
+        ),
+      );
+      return;
+    }
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (_) => TelaMapeamentoCheckinAluno(
+              turmaId: s.turma.id!,
+              nomeTurma: s.turma.nome,
+              alunoId: _aluno!.id!,
+            ),
+          ),
+        )
+        .then((_) => _carregar());
   }
 
   @override
@@ -94,9 +126,8 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
       );
     }
 
-    if (_resumos.isEmpty) {
+    if (_situacoes.isEmpty) {
       final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -122,22 +153,10 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
       onRefresh: _carregar,
       child: ListView.builder(
         padding: const EdgeInsets.all(12),
-        itemCount: _resumos.length,
+        itemCount: _situacoes.length,
         itemBuilder: (_, i) => _CardCheckin(
-          resumo: _resumos[i],
-          onTap: () async {
-            final aluno = _aluno!;
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => TelaMapeamentoCheckinAluno(
-                  turmaId: _resumos[i].turma.id!,
-                  nomeTurma: _resumos[i].turma.nome,
-                  alunoId: aluno.id!,
-                ),
-              ),
-            );
-            await _carregar();
-          },
+          situacao: _situacoes[i],
+          onTap: () => _aoTocarCard(_situacoes[i]),
         ),
       ),
     );
@@ -147,16 +166,15 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
 // ── Card ────────────────────────────────────────────────────────────────────
 
 class _CardCheckin extends StatelessWidget {
-  final ResumoTurmaCheckin resumo;
+  final SituacaoCheckinAluno situacao;
   final VoidCallback onTap;
 
-  const _CardCheckin({required this.resumo, required this.onTap});
+  const _CardCheckin({required this.situacao, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final tema = Theme.of(context);
-    final cores = tema.extension<CoresSemanticasApp>()!;
-    final turma = resumo.turma;
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+    final turma = situacao.turma;
     final badge = _badge(cores);
 
     return Card(
@@ -185,11 +203,11 @@ class _CardCheckin extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                '${turma.horarioInicio} · ${turma.duracaoMinutos} min · ${resumo.nomeSala}',
+                '${turma.horarioInicio} · ${turma.duracaoMinutos} min · ${situacao.nomeSala}',
                 style: TextStyle(fontSize: 13, color: cores.textoSuave),
               ),
               const SizedBox(height: 4),
-              _statusExtra(tema),
+              _textoStatus(cores),
             ],
           ),
         ),
@@ -198,46 +216,44 @@ class _CardCheckin extends StatelessWidget {
   }
 
   (String, Color) _badge(CoresSemanticasApp cores) {
-    if (resumo.alunoJaTemCheckin) return ('Reservado', cores.info);
-    if (resumo.alunoNaFila) {
-      return ('Fila #${resumo.posicaoNaFila}', cores.alerta);
-    }
-    if (!resumo.janelAberta) return ('Aguardando', cores.textoSuave);
-    if (resumo.lotada) return ('Lotada', cores.erro);
-    return ('${resumo.vagasDisponiveis} vagas', cores.sucesso);
+    return switch (situacao.status) {
+      StatusCheckinAluno.confirmado => ('Reservado', cores.info),
+      StatusCheckinAluno.emFila => ('Fila #${situacao.posicaoNaFila}', cores.alerta),
+      StatusCheckinAluno.conflito => ('Conflito', cores.erro),
+      StatusCheckinAluno.janelaFechada => ('Aguardando', cores.textoSuave),
+      StatusCheckinAluno.lotada => ('Lotada', cores.erro),
+      StatusCheckinAluno.disponivel =>
+        ('${situacao.vagasDisponiveis} vagas', cores.sucesso),
+    };
   }
 
-  Widget _statusExtra(ThemeData tema) {
-    final cores = tema.extension<CoresSemanticasApp>()!;
-
-    if (resumo.alunoJaTemCheckin) {
-      return Text(
-        'Sua reserva esta confirmada.',
+  Widget _textoStatus(CoresSemanticasApp cores) {
+    return switch (situacao.status) {
+      StatusCheckinAluno.confirmado => Text(
+        'Sua reserva está confirmada.',
         style: TextStyle(color: cores.info, fontSize: 12),
-      );
-    }
-    if (resumo.alunoNaFila) {
-      return Text(
-        'Você está na fila de espera (posição ${resumo.posicaoNaFila}).',
+      ),
+      StatusCheckinAluno.emFila => Text(
+        'Você está na fila de espera (posição ${situacao.posicaoNaFila}).',
         style: TextStyle(color: cores.alerta, fontSize: 12),
-      );
-    }
-    if (!resumo.janelAberta) {
-      return Text(
+      ),
+      StatusCheckinAluno.conflito => Text(
+        'Você já tem check-in em ${situacao.nomeTurmaConflito ?? "outra turma"} neste horário.',
+        style: TextStyle(color: cores.erro, fontSize: 12),
+      ),
+      StatusCheckinAluno.janelaFechada => Text(
         'Reserva disponível 30 min antes do início.',
         style: TextStyle(color: cores.textoSuave, fontSize: 12),
-      );
-    }
-    if (resumo.lotada) {
-      return Text(
+      ),
+      StatusCheckinAluno.lotada => Text(
         'Turma sem vagas. Toque para entrar na fila.',
         style: TextStyle(color: cores.erro, fontSize: 12),
-      );
-    }
-    return Text(
-      '${resumo.vagasDisponiveis} de ${resumo.totalBikes} bikes disponíveis.',
-      style: TextStyle(color: cores.sucesso, fontSize: 12),
-    );
+      ),
+      StatusCheckinAluno.disponivel => Text(
+        '${situacao.vagasDisponiveis} de ${situacao.totalBikes} bikes disponíveis.',
+        style: TextStyle(color: cores.sucesso, fontSize: 12),
+      ),
+    };
   }
 }
 

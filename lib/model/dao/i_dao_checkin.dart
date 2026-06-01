@@ -13,5 +13,9 @@ abstract class IDAOCheckin {
     int fila,
     int coluna,
   );
+  Future<List<ModeloCheckin>> buscarAtivosPorAlunoDia(
+    int alunoId,
+    DateTime data,
+  );
   Future<void> cancelar(int id);
 }

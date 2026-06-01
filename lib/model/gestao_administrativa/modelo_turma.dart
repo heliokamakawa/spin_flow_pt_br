@@ -60,13 +60,26 @@ class ModeloTurma {
 
   bool ocorreEm(DiaSemana dia) => diasSemana.contains(dia);
 
-  bool janelAberta(DateTime agora) {
+  DateTime inicioEmData(DateTime data) {
     final partes = horarioInicio.split(':');
-    if (partes.length < 2) return false;
     final h = int.tryParse(partes[0]) ?? 0;
-    final m = int.tryParse(partes[1]) ?? 0;
-    final inicio = DateTime(agora.year, agora.month, agora.day, h, m);
-    return !agora.isBefore(inicio.subtract(const Duration(minutes: 30)));
+    final m = partes.length > 1 ? int.tryParse(partes[1]) ?? 0 : 0;
+    return DateTime(data.year, data.month, data.day, h, m);
+  }
+
+  DateTime fimEmData(DateTime data) =>
+      inicioEmData(data).add(Duration(minutes: duracaoMinutos));
+
+  bool janelAberta(DateTime agora) {
+    final data = DateTime(agora.year, agora.month, agora.day);
+    return !agora.isBefore(
+      inicioEmData(data).subtract(const Duration(minutes: 30)),
+    );
+  }
+
+  bool sobrepoeHorario(ModeloTurma outra, DateTime data) {
+    return inicioEmData(data).isBefore(outra.fimEmData(data)) &&
+        outra.inicioEmData(data).isBefore(fimEmData(data));
   }
 
   String? validar() {

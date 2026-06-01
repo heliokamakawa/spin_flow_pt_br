@@ -8,6 +8,7 @@ import 'package:spin_flow/model/dao/i_dao_turma.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_turma.dart';
 import 'package:spin_flow/model/gestao_aula/estado_mapa_aula.dart';
 import 'package:spin_flow/model/gestao_aula/modelo_checkin.dart';
+import 'package:spin_flow/model/gestao_aula/situacao_checkin_aluno.dart';
 import 'package:spin_flow/model/modelo/modelo_aluno.dart';
 
 class ServicoCheckinAluno {
@@ -42,49 +43,85 @@ class ServicoCheckinAluno {
 
   // ── Lista de turmas do dia ─────────────────────────────────────────────────
 
-  Future<List<ResumoTurmaCheckin>> listarTurmasHoje(int alunoId) async {
-    final hoje = DiaSemana.hoje();
+  Future<List<SituacaoCheckinAluno>> listarTurmasHoje(int alunoId) async {
+    final agora = DateTime.now();
+    final dataHoje = DateTime(agora.year, agora.month, agora.day);
+
     final salas = await _daoSala.buscarTodos();
     final salasPorId = {for (final s in salas) s.id: s};
     final todasPosicoes = await _daoPosicaoBike.buscarTodos();
-    final bikesManutencao = await _daoManutencao
-        .buscarBikeIdsEmManutencaoAtiva();
+    final bikesManutencao = await _daoManutencao.buscarBikeIdsEmManutencaoAtiva();
 
     final turmas = await _daoTurma.buscarTodos();
-    final turmasHoje =
-        turmas.where((t) => t.ativo && t.ocorreEm(hoje)).toList()
-          ..sort((a, b) => a.horarioInicio.compareTo(b.horarioInicio));
+    final turmasHoje = turmas
+        .where((t) => t.ativo && t.ocorreEm(DiaSemana.hoje()))
+        .toList()
+      ..sort((a, b) => a.horarioInicio.compareTo(b.horarioInicio));
 
-    final agora = DateTime.now();
-    final dataHoje = DateTime(agora.year, agora.month, agora.day);
-    final resultado = <ResumoTurmaCheckin>[];
+    // check-ins ativos do aluno hoje (todas as turmas)
+    final checkinsAluno = await _daoCheckin.buscarAtivosPorAlunoDia(
+      alunoId,
+      dataHoje,
+    );
+    final turmasPorId = {for (final t in turmas) t.id: t};
+
+    final resultado = <SituacaoCheckinAluno>[];
 
     for (final turma in turmasHoje) {
       final sala = salasPorId[turma.salaId];
       if (sala == null) continue;
 
       final totalBikes = sala.bikesDisponiveis(todasPosicoes, bikesManutencao);
-      final checkins = await _daoCheckin.buscarAtivosPorTurmaData(
+      final checkinsNaTurma = await _daoCheckin.buscarAtivosPorTurmaData(
         turma.id!,
         dataHoje,
       );
-      final vagas = (totalBikes - checkins.length).clamp(0, totalBikes);
-      final alunoJaTem = checkins.any((c) => c.alunoId == alunoId);
-      final posicaoFila = await _daoFila.buscarPosicaoNaFila(
-        alunoId,
-        turma.id!,
-        dataHoje,
-      );
+      final vagas = (totalBikes - checkinsNaTurma.length).clamp(0, totalBikes);
+
+      StatusCheckinAluno status;
+      String? nomeTurmaConflito;
+      int? posicaoNaFila;
+
+      if (checkinsNaTurma.any((c) => c.alunoId == alunoId)) {
+        status = StatusCheckinAluno.confirmado;
+      } else {
+        posicaoNaFila = await _daoFila.buscarPosicaoNaFila(
+          alunoId, turma.id!, dataHoje,
+        );
+        if (posicaoNaFila != null) {
+          status = StatusCheckinAluno.emFila;
+        } else {
+          ModeloCheckin? conflito;
+          for (final c in checkinsAluno) {
+            if (c.turmaId == turma.id) continue;
+            final outra = turmasPorId[c.turmaId];
+            if (outra != null && turma.sobrepoeHorario(outra, dataHoje)) {
+              conflito = c;
+              break;
+            }
+          }
+          if (conflito != null) {
+            status = StatusCheckinAluno.conflito;
+            nomeTurmaConflito = turmasPorId[conflito.turmaId]?.nome;
+          } else if (!turma.janelAberta(agora)) {
+            status = StatusCheckinAluno.janelaFechada;
+          } else if (vagas == 0) {
+            status = StatusCheckinAluno.lotada;
+          } else {
+            status = StatusCheckinAluno.disponivel;
+          }
+        }
+      }
 
       resultado.add(
-        ResumoTurmaCheckin(
+        SituacaoCheckinAluno(
           turma: turma,
           nomeSala: sala.nome,
           totalBikes: totalBikes,
           vagasDisponiveis: vagas,
-          janelAberta: turma.janelAberta(agora),
-          alunoJaTemCheckin: alunoJaTem,
-          posicaoNaFila: posicaoFila,
+          status: status,
+          posicaoNaFila: posicaoNaFila,
+          nomeTurmaConflito: nomeTurmaConflito,
         ),
       );
     }
@@ -153,6 +190,16 @@ class ServicoCheckinAluno {
     if (aluno == null || !aluno.ativo) return 'Aluno inativo.';
     if (await _daoCheckin.existeAtivoPorAluno(alunoId, turma.id!, data)) {
       return 'Você já tem reserva nesta turma.';
+    }
+    final checkinsHoje = await _daoCheckin.buscarAtivosPorAlunoDia(alunoId, data);
+    final todasTurmas = await _daoTurma.buscarTodos();
+    final turmasPorId = {for (final t in todasTurmas) t.id: t};
+    for (final c in checkinsHoje) {
+      if (c.turmaId == turma.id) continue;
+      final outra = turmasPorId[c.turmaId];
+      if (outra != null && turma.sobrepoeHorario(outra, data)) {
+        return 'Você já tem check-in em ${outra.nome} neste horário.';
+      }
     }
     if (await _daoCheckin.existeAtivoPorPosicao(
       turma.id!,

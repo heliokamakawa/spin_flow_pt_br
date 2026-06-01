@@ -83,6 +83,28 @@ class DAOCheckinSQLite implements IDAOCheckin {
   }
 
   @override
+  Future<List<ModeloCheckin>> buscarAtivosPorAlunoDia(
+    int alunoId,
+    DateTime data,
+  ) async {
+    final db = await ConexaoSQLite.database;
+    final chave = _chaveData(data);
+    final maps = await db.rawQuery(
+      '''
+      SELECT c.id, c.aluno_id, c.turma_id, c.data, c.fila, c.coluna, c.ativo,
+             a.nome AS aluno_nome
+      FROM checkin c
+      LEFT JOIN aluno a ON c.aluno_id = a.id
+      WHERE c.aluno_id = ?
+        AND c.ativo = 1
+        AND substr(c.data, 1, 10) = ?
+      ''',
+      [alunoId, chave],
+    );
+    return maps.map(_mapear).toList();
+  }
+
+  @override
   Future<void> cancelar(int id) async {
     final db = await ConexaoSQLite.database;
     await db.update(_tabela, {'ativo': 0}, where: 'id = ?', whereArgs: [id]);
