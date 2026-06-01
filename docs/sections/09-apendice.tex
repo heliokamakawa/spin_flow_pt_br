@@ -1,0 +1,261 @@
+\section*{Apêndice}
+\addcontentsline{toc}{section}{Apêndice}
+
+\subsection*{Apêndice A: Levantamento de Requisitos}
+\addcontentsline{toc}{subsection}{Apêndice A: Levantamento de Requisitos}
+\label{ap:levantamento-requisitos}
+
+O levantamento de requisitos considerado para a elaboração desta especificação foi estruturado de forma a refletir práticas compatíveis com projetos de software orientados à operação. O objetivo desse processo foi consolidar informações sobre o contexto da academia, os problemas centrais do fluxo de \textit{check-in}, as necessidades dos usuários e os limites do recorte funcional adotado no \ProjetoNome.
+
+Para compor essa base de trabalho, considera-se a utilização combinada de técnicas de engenharia de requisitos, com ênfase em:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{Entrevistas semiestruturadas}: utilizadas para levantar dores operacionais, expectativas de uso e percepções sobre os principais problemas ligados à reserva, à ocupação das aulas, à manutenção das bikes e à experiência do aluno.
+    \item \textbf{Sessões colaborativas do tipo \textit{JAD}}: utilizadas para consolidar entendimento entre as partes interessadas sobre o fluxo central do produto, suas prioridades e os limites do escopo.
+    \item \textbf{Análise documental}: utilizada para revisar artefatos do próprio projeto, regras de negócio, diagrama de classes, protótipos de interface e materiais de apoio relevantes para a especificação.
+    \item \textbf{Consolidação de artefatos}: utilizada para transformar as informações coletadas em um conjunto coerente de definições, escopo, regras e requisitos.
+\end{itemize}
+
+No contexto desta especificação, essas técnicas sustentam a identificação do \textit{check-in} como núcleo do produto, da Professora como frente de suporte operacional e do grupo de alunos como estrutura complementar de menor prioridade. Também sustentam a delimitação entre o que faz parte do recorte atual do sistema e o que deve permanecer como possibilidade de evolução futura. Em conjunto, esse processo permitiu consolidar uma especificação alinhada ao problema de negócio, ao domínio modelado e às decisões de escopo formalizadas neste documento.
+
+\newpage
+
+\subsection*{Apêndice B: Modelos de Análise}
+\addcontentsline{toc}{subsection}{Apêndice B: Modelos de Análise}
+
+\subsubsection*{B.1 Diagrama de Classes}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{img/dc.png}
+\caption{Diagrama de classes do projeto \ProjetoNome. Para preservar clareza visual, foram omitidos os fluxos e operacoes tradicionais de CRUD das entidades de cadastro.}
+\end{figure}
+\newpage
+
+\subsubsection*{B.2 Diagramas de Casos de Uso}
+\paragraph{Perfil Professora}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.9\textwidth]{img/dcup.png}
+\caption{Diagrama de casos de uso do perfil Professora no projeto \ProjetoNome.}
+\end{figure}
+
+\newpage
+
+\paragraph{Perfil Aluno}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.9\textwidth]{img/dcug_aluno.png}
+\caption{Diagrama de casos de uso do perfil Aluno no projeto \ProjetoNome.}
+\end{figure}
+\newpage
+
+\subsubsection*{B.3 Tabela de Casos de Uso}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.10\textwidth}>{\raggedright\arraybackslash}p{0.52\textwidth}>{\centering\arraybackslash}p{0.14\textwidth}>{\centering\arraybackslash}p{0.14\textwidth}@{}}
+\toprule
+\textbf{ID} & \textbf{Caso de Uso} & \textbf{Professora} & \textbf{Aluno} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{ID} & \textbf{Caso de Uso} & \textbf{Professora} & \textbf{Aluno} \\
+\midrule
+\endhead
+UC01 & Autenticar no Sistema & Sim & Sim \\
+UC02 & Realizar Checkin & Sim & Sim \\
+UC03 & Verificar Disponibilidade da Bike (\textit{include} de UC02) & --- & --- \\
+UC04 & Visualizar Mapa da Sala (\textit{include} de UC02) & --- & --- \\
+UC05 & Cancelar Checkin (\textit{extend} de UC02) & Sim, qualquer & Sim, proprio \\
+UC06 & Gerenciar Alunos e Grupos & Sim & --- \\
+UC07 & Gerenciar Bikes e Fabricantes & Sim & --- \\
+UC08 & Gerenciar Manutencoes & Sim & --- \\
+UC09 & Cancelar Manutencao (\textit{extend} de UC08) & Sim & --- \\
+UC10 & Gerenciar Salas e Turmas & Sim & --- \\
+UC11 & Verificar Disponibilidade de Horario (\textit{include} de UC10) & --- & --- \\
+UC12 & Associar Mix a Turma (\textit{extend} de UC10) & Sim & --- \\
+UC13 & Gerenciar Mixes e Repertorio & Sim & --- \\
+UC14 & Consultar Agenda Semanal & Sim & Sim \\
+UC15 & Consultar Mix e Repertorio & Sim & Sim \\
+UC16 & Consultar Historico de Presenca & --- & Sim \\
+UC17 & Visualizar Dashboard & Sim & Sim \\
+UC18 & Gerar Relatorios Gerenciais & Sim & --- \\
+\bottomrule
+\end{longtable}
+
+\subsubsection*{B.4 Descricoes dos Casos de Uso}
+\begin{description}[style=nextline,leftmargin=0pt,labelsep=0pt]
+\item[UC01 -- Autenticar no Sistema] O usuario informa suas credenciais para acessar o sistema. O perfil autenticado determina quais funcionalidades estarao disponiveis apos o login. A senha deve possuir no minimo 6 caracteres.
+\item[UC02 -- Realizar Checkin] O aluno ou a professora reserva uma posicao de bike em uma turma para uma data especifica. O sistema valida a disponibilidade da bike e exibe o mapa da sala antes de confirmar a reserva. A data deve corresponder a um dos dias da semana da turma e nao pode ser anterior a data atual.
+\item[UC03 -- Verificar Disponibilidade da Bike (\textit{include})] Invocado sempre que UC02 e executado. Verifica se a posicao esta dentro dos limites da sala, se nao ha checkin ativo na mesma posicao, turma e data, e se a turma ainda possui vaga disponivel.
+\item[UC04 -- Visualizar Mapa da Sala (\textit{include})] Invocado sempre que UC02 e executado. Exibe a grade visual da sala com o estado de cada posicao: livre, reservada, em manutencao ou reservada para a professora. A professora visualiza o nome do aluno em posicoes ocupadas; o aluno ve apenas ocupacao anonima.
+\item[UC05 -- Cancelar Checkin (\textit{extend})] Estende UC02 quando existe um checkin passivel de cancelamento. Libera a posicao, atualiza a disponibilidade da turma e mantem o historico com cancelamento registrado. O aluno cancela apenas o proprio checkin enquanto a data nao passou; a professora pode cancelar qualquer checkin.
+\item[UC06 -- Gerenciar Alunos e Grupos] Realiza o CRUD de `Aluno` e `GrupoAlunos`, incluindo ativacao e inativacao logica. A inativacao de aluno cancela seus checkins futuros. Grupos com todos os alunos inativos devem ser inativados automaticamente.
+\item[UC07 -- Gerenciar Bikes e Fabricantes] Realiza o CRUD de `Bike` e `Fabricante`. Toda bike deve estar associada a um fabricante. A inativacao de bike cancela checkins futuros; a inativacao do fabricante nao inativa automaticamente as bikes associadas.
+\item[UC08 -- Gerenciar Manutencoes] Registra ocorrencias de manutencao para uma bike especifica, com tipo e datas. Ao abrir uma manutencao, a bike fica indisponivel. Ao registrar a realizacao, a bike volta a ficar disponivel. Uma bike so pode ter uma manutencao pendente por vez.
+\item[UC09 -- Cancelar Manutencao (\textit{extend})] Estende UC08 quando existe manutencao passivel de cancelamento. Define o cancelamento, recalcula a disponibilidade da bike e preserva o historico da ocorrencia.
+\item[UC10 -- Gerenciar Salas e Turmas] Realiza o CRUD de `Sala` e `Turma`. A sala define o layout fisico e as posicoes de bikes. A turma associa um horario fixo a uma sala. Ao ativar uma turma, o sistema deve verificar a disponibilidade do horario na sala.
+\item[UC11 -- Verificar Disponibilidade de Horario (\textit{include})] Invocado quando UC10 ativa ou edita uma turma. Verifica se nao ha sobreposicao de dias da semana e horario com outra turma ativa na mesma sala.
+\item[UC12 -- Associar Mix a Turma (\textit{extend})] Estende UC10 de forma opcional. Cria o vinculo `TurmaMix` ativo para a turma. Quando um novo mix e associado, o vinculo anterior deve ser encerrado com `dataFim`. Uma turma pode permanecer ativa sem mix associado.
+\item[UC13 -- Gerenciar Mixes e Repertorio] Realiza o CRUD de `Mix`, `Musica`, `ArtistaBanda`, `CategoriaMusica` e `VideoAula`. Um mix deve ter ao menos uma musica. A mesma musica nao pode se repetir no mesmo mix. Inativar um mix encerra o vinculo ativo com a turma.
+\item[UC14 -- Consultar Agenda Semanal] Exibe as turmas ativas em grade semanal, com sala, mix atual e quantidade de bikes disponiveis em tempo real. Deve permitir filtros por sala ou dia e indicar visualmente turmas com alta ocupacao.
+\item[UC15 -- Consultar Mix e Repertorio] Exibe o mix ativo da turma, a lista de musicas com artista e categorias, links de video-aula e o historico recente de mixes utilizados.
+\item[UC16 -- Consultar Historico de Presenca] Exibe ao aluno seu historico de checkins, com total de aulas concluidas, recortes anual e mensal, sequencia de presenca e posicoes favoritas por sala.
+\item[UC17 -- Visualizar Dashboard] Para a professora, apresenta KPIs operacionais, como alunos ativos, aulas agendadas, mixes em uso e bikes disponiveis. Para o aluno, apresenta metricas individuais de aulas concluidas e aulas agendadas.
+\item[UC18 -- Gerar Relatorios Gerenciais] Disponibiliza relatorios estrategicos e gerenciais relacionados a retencao, saude da frota, ocupacao das turmas, linha do tempo musical e frequencia por turma.
+\end{description}
+
+\subsubsection*{B.5 Legenda dos Relacionamentos}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.28\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Notacao} & \textbf{Tipo} & \textbf{Semantica} \\
+\midrule
+\texttt{<<include>>} & Include & O caso de uso base sempre invoca o caso de uso incluido; trata-se de fluxo obrigatorio. \\
+\texttt{<<extend>>} & Extend & O caso de uso de extensao adiciona comportamento opcional ao caso de uso base, de forma condicional. \\
+Associacao & Associacao & O ator participa diretamente do caso de uso. \\
+\bottomrule
+\end{tabularx}
+
+\newpage
+
+\subsection*{Apêndice C: Prototipações das Interfaces}
+\addcontentsline{toc}{subsection}{Apêndice C: Prototipações das Interfaces}
+
+\subsubsection*{C.1 Dashboard da Professora}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/01-dashboard_prof.png}
+\caption{Prototipo do dashboard da professora.}
+\end{figure}
+\noindent Esta prototipacao apresenta a visao inicial do perfil da professora, com indicadores operacionais e navegacao para as areas principais do sistema. A tela funciona como ponto de entrada para os fluxos de suporte operacional ligados a turmas, bikes, salas e manutencoes.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:manter_salas}], [\ref{rf:manter_bikes}], [\ref{rf:manter_turmas}], [\ref{rf:registrar_manutencoes}] e [\ref{rf:refletir_efeitos_de_manutencao}].
+
+\newpage
+
+\subsubsection*{C.2 Dashboard da Professora -- Area de Cadastros}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/02-dashboard_prof_cadastros.png}
+\caption{Prototipo da area de cadastros acessivel pelo dashboard da professora.}
+\end{figure}
+\noindent Esta tela evidencia a organizacao dos acessos de cadastro e manutencao das entidades operacionais do dominio. Seu papel e centralizar os fluxos de criacao e edicao, reduzindo friccao para a professora na administracao cotidiana do sistema.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:validar_formularios_cadastrais}], [\ref{rf:alteracao_controlada_cadastral}], [\ref{rf:manter_salas}], [\ref{rf:manter_bikes}] e [\ref{rf:manter_turmas}].
+
+\newpage
+
+\subsubsection*{C.3 Dashboard da Professora -- Area de Listas}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/03-dashboard_prof_listas.png}
+\caption{Prototipo da area de listagens acessivel pelo dashboard da professora.}
+\end{figure}
+\noindent Esta prototipacao mostra a navegacao para consultas operacionais e listas administrativas. Ela apoia os fluxos de selecao de registros para edicao, inativacao logica e acompanhamento das entidades mantidas pela professora.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:exclusao_logica_cadastral}], [\ref{rf:alteracao_controlada_cadastral}], [\ref{rf:manter_salas}], [\ref{rf:manter_bikes}] e [\ref{rf:manter_turmas}].
+
+\newpage
+
+\subsubsection*{C.4 Dashboard da Professora -- Area de Aulas}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/04-dashboard_prof_aulas.png}
+\caption{Prototipo da area de aulas acessivel pelo dashboard da professora.}
+\end{figure}
+\noindent Esta tela concentra acessos relacionados ao planejamento e acompanhamento das aulas. A organizacao proposta dialoga com os requisitos de manutencao de turmas e com a visualizacao operacional da ocupacao associada a cada aula.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:manter_turmas}], [\ref{rf:validar_ativacao_de_turma}], [\ref{rf:visualizar_mapa_operacional}] e [\ref{rf:cancelar_checkins_de_alunos}].
+
+\newpage
+
+\subsubsection*{C.5 Dashboard da Professora -- Area de Manutencao}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/05-dashboard_prof_manutencao.png}
+\caption{Prototipo da area de manutencao acessivel pelo dashboard da professora.}
+\end{figure}
+\noindent Esta prototipacao evidencia o agrupamento dos fluxos de manutencao em uma area especifica da interface. A proposta e coerente com o uso frequente da professora para registrar ocorrencias e acompanhar seus efeitos operacionais sobre as bikes e as turmas.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:registrar_manutencoes}] e [\ref{rf:refletir_efeitos_de_manutencao}].
+
+\newpage
+
+\subsubsection*{C.6 Cadastro de Fabricante}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/06-cadastro_fabricante.png}
+\caption{Prototipo do formulario de cadastro de fabricante.}
+\end{figure}
+\noindent Esta tela demonstra um formulario cadastral com agrupamento de informacoes, validacao de campo obrigatorio e controle de ativacao logica. Embora o corpo principal da especificacao nao detalhe um requisito exclusivo para fabricante, a prototipacao atende ao padrao transversal de formularios administrativos do sistema.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:validar_formularios_cadastrais}], [\ref{rf:alteracao_controlada_cadastral}] e [\ref{rf:exclusao_logica_cadastral}].
+
+\newpage
+
+\subsubsection*{C.7 Cadastro de Sala}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/07-cadastro_sala.png}
+\caption{Prototipo do formulario de cadastro de sala.}
+\end{figure}
+\noindent Esta prototipacao materializa o cadastro da entidade sala, incluindo informacoes estruturais necessarias para a definicao da grade fisica do ambiente. A tela apoia diretamente a configuracao do layout que sustenta o mapa operacional das aulas e as reservas por posicao.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:manter_salas}], [\ref{rf:definir_grade_da_sala}], [\ref{rf:validar_formularios_cadastrais}] e [\ref{rf:alteracao_controlada_cadastral}].
+
+\newpage
+
+\subsubsection*{C.8 Cadastro de Bike}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/08-cadastro_bike.png}
+\caption{Prototipo do formulario de cadastro de bike.}
+\end{figure}
+\noindent Esta tela apresenta o cadastro da bike como entidade operacional associada a outras informacoes do dominio. O formulario reforca a necessidade de validacao dos campos e de uso de associacoes controladas para preservar consistencia entre bike, fabricante e uso operacional na sala.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:manter_bikes}], [\ref{rf:associacao_controlada_entre_entidades}], [\ref{rf:validar_formularios_cadastrais}] e [\ref{rf:alteracao_controlada_cadastral}].
+
+\newpage
+
+\subsubsection*{C.9 Exemplo de Campo de Data}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/09-cadastro_bike_campo_data.png}
+\caption{Prototipo destacando o uso de campo de data em formulario cadastral.}
+\end{figure}
+\noindent Esta imagem evidencia o tratamento de campos de data na interface, com foco em padronizacao de entrada e prevencao de erros de preenchimento. O componente demonstra como a interface contribui para o cumprimento das validacoes semanticas exigidas pelos formularios do sistema.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:validar_formularios_cadastrais}] e [\ref{rf:manter_bikes}].
+
+\newpage
+
+\subsubsection*{C.10 Exemplo de Campo de Selecao Unica}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/09-cadastro_bike_campo_selecao_unico.png}
+\caption{Prototipo destacando o uso de campo de selecao unica em formulario cadastral.}
+\end{figure}
+\noindent Esta prototipacao ilustra um campo relacional de escolha unica, adequado para associacoes entre entidades previamente cadastradas. O componente reforca a regra de que relacionamentos do dominio devem ser tratados por selecao controlada e nao por digitacao livre.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:associacao_controlada_entre_entidades}], [\ref{rf:validar_formularios_cadastrais}] e [\ref{rf:manter_bikes}].
+
+\newpage
+
+\subsubsection*{C.11 Cadastro de Mix}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.42\textwidth]{img/widgets/10-cadastro_mix.png}
+\caption{Prototipo do formulario de cadastro de mix.}
+\end{figure}
+\noindent Esta tela demonstra o formulario de definicao de um mix, com nome, periodo de uso, estado ativo e composicao do repertorio. A prototipacao e particularmente relevante para a coerencia entre vigencia, repertorio associado e futura exibicao do mix ao aluno.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:associacao_controlada_entre_entidades}], [\ref{rf:validar_formularios_cadastrais}], [\ref{rf:determinar_mix_ativo}], [\ref{rf:exibir_nome_e_periodo_do_mix}] e [\ref{rf:preservar_consistencia_da_vigencia_do_mix}].
+
+\newpage
+
+\subsubsection*{C.12 Campo de Selecao Multipla no Cadastro de Mix}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.52\textwidth]{img/widgets/10-cadastro_mix_selecao_múltipla.png}
+\caption{Prototipo anotado do componente de selecao multipla utilizado no cadastro de mix.}
+\end{figure}
+\noindent Esta imagem destaca o comportamento esperado do componente de selecao multipla para associacao de musicas ao mix. A anotacao evidencia as acoes de adicionar e remover itens selecionados, bem como a visualizacao das escolhas ja realizadas, caracteristicas diretamente alinhadas ao padrao de associacao controlada entre entidades.
+
+\noindent\textbf{Requisitos relacionados:} [\ref{rf:associacao_controlada_entre_entidades}], [\ref{rf:exibir_musicas_do_mix}], [\ref{rf:exibir_dados_musicais}] e [\ref{rf:apresentar_links_de_video_aula}].

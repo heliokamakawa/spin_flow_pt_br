@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SpinFlow — Abordagem de Prototipação</title>
+  <link rel="stylesheet" href="./00-styles.css" />
+  <style>
+   .pres-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+   .pres-card h3 { font-size: 0.85rem; font-weight: 700; margin: 0 0 10px; text-transform: uppercase; letter-spacing: .04em; color: #444; }
+   .pres-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 10px; }
+   .badge-rejected { background: #ffeaea; color: #e03131; }
+   .badge-adopted  { background: #e6f9f0; color: #19a463; }
+   .badge-ref      { background: #eef3ff; color: #246bfe; }
+   .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+   .pros-cons ul { margin: 0; padding-left: 14px; font-size: 0.78rem; color: #555; }
+   .pros-cons ul li { margin-bottom: 4px; }
+   .col-label { font-size: 0.72rem; font-weight: 700; margin-bottom: 4px; }
+   .col-pro  { color: #19a463; }
+   .col-risk { color: #e03131; }
+   .nng-quote { font-size: 0.8rem; color: #555; border-left: 3px solid #246bfe; padding-left: 10px; margin: 0; }
+   .nng-quote li { margin-bottom: 5px; }
+   .fidelity-steps { display: flex; align-items: stretch; gap: 6px; margin-top: 10px; }
+   .fid-step { flex: 1; border-radius: 8px; padding: 10px 6px; text-align: center; font-size: 0.75rem; background: #f4f4f4; color: #888; }
+   .fid-step strong { display: block; font-size: 0.8rem; margin-bottom: 3px; }
+   .fid-step small { font-size: 0.68rem; }
+   .fid-step.current { background: #ff6b1a; color: #fff; }
+   .fid-step.current strong { color: #fff; }
+   .fid-arrow { align-self: center; color: #bbb; font-size: 1rem; flex: 0; }
+   .section-label { font-size: 0.7rem; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: .06em; margin: 18px 0 8px; }
+  </style>
+ </head>
+ <body>
+  <main class="phone">
+   <header class="top"><span class="top-spacer"></span><strong>SpinFlow</strong><span class="top-spacer"></span></header>
+   <section class="screen scroll">
+
+    <p class="section-label">Decisão de prototipação</p>
+
+    <div class="pres-card">
+     <h3>Plano inicial — Flutter</h3>
+     <span class="pres-badge badge-rejected">Substituído</span>
+     <div class="pros-cons">
+      <div>
+       <p class="col-label col-pro">Vantagens</p>
+       <ul>
+        <li>Reaproveitamento para o produto final</li>
+        <li>Aceleração do desenvolvimento</li>
+        <li>Protótipo evolucionário</li>
+       </ul>
+      </div>
+      <div>
+       <p class="col-label col-risk">Riscos</p>
+       <ul>
+        <li>Aumento do custo de alteração</li>
+        <li>Antecipação de decisões técnicas</li>
+        <li>Foco prematuro na implementação</li>
+        <li>Possível redução da exploração de requisitos e UX</li>
+       </ul>
+      </div>
+     </div>
+    </div>
+
+    <div class="pres-card">
+     <h3>Nielsen Norman Group — Prototyping</h3>
+     <p style="font-size:0.78rem;color:#555;margin:0 0 8px;">Uma das organizações mais respeitadas em design de interfaces.</p>
+     <span class="pres-badge badge-ref">Referência</span>
+     <ul class="nng-quote">
+      <li>Não prescreve uma tecnologia específica</li>
+      <li>Não existe "melhor ferramenta universal"</li>
+      <li>Trabalhar em nível metodológico e de UX</li>
+     </ul>
+    </div>
+
+    <p class="section-label">Abordagem adotada</p>
+
+    <div class="pres-card">
+     <h3>Fidelidade progressiva</h3>
+     <div class="fidelity-steps">
+      <div class="fid-step">
+       <strong>Low-fi</strong>
+       <small>PowerPoint</small><br>
+       <small style="color:#aaa">Fluxo · Estrutura · Requisito</small>
+      </div>
+      <span class="fid-arrow">›</span>
+      <div class="fid-step">
+       <strong>Mid-fi</strong>
+       <small>Figma</small><br>
+       <small style="color:#aaa">Organização · Interação</small>
+      </div>
+      <span class="fid-arrow">›</span>
+      <div class="fid-step current">
+       <strong>High-fi</strong>
+       <small>HTML / CSS / JS</small><br>
+       <small style="opacity:.8">Compreensão fina de requisitos</small>
+      </div>
+     </div>
+    </div>
+
+    <div class="bottom">
+     <a class="button" href="./01-login.html">Iniciar prototipação</a>
+    </div>
+
+   </section>
+  </main>
+ </body>
+</html>

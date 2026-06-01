@@ -1,0 +1,125 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+ <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Sala</title><link rel="stylesheet" href="./00-styles.css" />
+ <style>
+  .field-hint { display: block; font-size: 0.75rem; margin-top: 3px; min-height: 1rem; }
+  .field-hint.ok   { color: #19a463; }
+  .field-hint.warn { color: #e03131; }
+  .field-hint.info { color: #888; }
+ </style>
+ <body>
+  <main class="phone">
+   <header class="top"><a class="icon-btn" href="./27-admin-dashboard.html">&lt;</a><strong>Sala</strong><a class="icon-btn top-exit" href="./01-login.html">Sair</a></header>
+   <section class="screen scroll">
+    <div class="field"><label>Nome *</label><input placeholder="Studio Alfa - Sala 1" /></div>
+    <div class="room-builder" data-room-builder>
+     <h3 class="section-title">Dimensoes da sala</h3>
+     <div class="grid-2">
+      <div class="field"><label>Filas *</label><input data-room-rows type="number" inputmode="numeric" min="1" max="6" step="1" value="4" /></div>
+      <div class="field"><label>Colunas *</label><input data-room-cols type="number" inputmode="numeric" min="1" max="10" step="1" value="5" /></div>
+     </div>
+     <div class="field"><label>Quantidade de bikes *</label><input data-room-bikes type="number" inputmode="numeric" min="1" max="50" step="1" value="19" /><small class="field-hint" data-bikes-hint></small></div>
+     <h3 class="section-title">Bike da professora</h3>
+     <div class="grid-2">
+      <div class="field"><label>Fila *</label><input data-room-prof-row type="number" inputmode="numeric" min="1" step="1" value="1" /></div>
+      <div class="field"><label>Coluna *</label><input data-room-prof-col type="number" inputmode="numeric" min="1" step="1" value="3" /></div>
+     </div>
+     <small class="field-hint" data-prof-hint></small>
+     <div class="room-preview dynamic">
+      <div class="room-preview-head"><strong>Prévia da sala</strong><span data-room-summary>4 filas / 5 colunas</span></div>
+      <div class="bike-grid room-map" data-room-map></div>
+      <small class="room-note" data-room-note>19 bikes cadastradas + professora.</small>
+     </div>
+    </div>
+    <div class="success-box">Ativo</div>
+    <div class="bottom"><a class="button" href="./27-admin-dashboard.html">Salvar</a></div>
+   </section>
+  </main>
+  <script>
+   const room = document.querySelector("[data-room-builder]");
+   const fields = {
+    rows: room.querySelector("[data-room-rows]"),
+    cols: room.querySelector("[data-room-cols]"),
+    bikes: room.querySelector("[data-room-bikes]"),
+    profRow: room.querySelector("[data-room-prof-row]"),
+    profCol: room.querySelector("[data-room-prof-col]")
+   };
+   const map = room.querySelector("[data-room-map]");
+   const summary = room.querySelector("[data-room-summary]");
+   const note = room.querySelector("[data-room-note]");
+   const bikesHint = room.querySelector("[data-bikes-hint]");
+   const profHint = room.querySelector("[data-prof-hint]");
+   const positive = (input) => Math.max(1, Math.floor(Number(input.value) || 1));
+   const clamp = (input) => {
+    const min = Number(input.min) || 1;
+    const max = Number(input.max) || Infinity;
+    const value = Math.floor(Number(input.value) || min);
+    return Math.min(max, Math.max(min, value));
+   };
+   const bikeName = (number) => String(number).padStart(2, "0");
+
+   function renderRoom() {
+    const rows = clamp(fields.rows);
+    const cols = clamp(fields.cols);
+    const bikes = clamp(fields.bikes);
+    const profRow = positive(fields.profRow);
+    const profCol = positive(fields.profCol);
+    const capacity = rows * cols;
+    const profIndex = (profRow - 1) * cols + profCol;
+    const hasProfessor = profRow <= rows && profCol <= cols;
+    const maxBikes = hasProfessor ? capacity - 1 : capacity;
+    const visibleBikes = Math.min(bikes, maxBikes);
+    let bikeCount = 1;
+
+    map.innerHTML = "";
+    map.style.gridTemplateColumns = `repeat(${cols}, minmax(28px, 1fr))`;
+    for (let position = 1; position <= capacity; position += 1) {
+     const cell = document.createElement("span");
+     cell.className = "bike";
+     if (hasProfessor && position === profIndex) {
+      cell.className = "bike selected";
+      cell.textContent = "Prof";
+     } else if (bikeCount <= visibleBikes) {
+      cell.textContent = bikeName(bikeCount);
+      bikeCount += 1;
+     } else {
+      cell.className = "bike empty";
+      cell.textContent = "-";
+     }
+     map.appendChild(cell);
+    }
+
+    summary.textContent = `${rows} filas / ${cols} colunas`;
+    note.textContent = hasProfessor
+     ? `${visibleBikes} bikes na grade + professora na fila ${profRow}, coluna ${profCol}.`
+     : `Posição da professora fora da grade. Ajuste fila e coluna para exibir.`;
+
+    if (bikes > maxBikes) {
+     bikesHint.textContent = `Excede a grade — máximo ${maxBikes} bike${maxBikes !== 1 ? "s" : ""} para ${rows}×${cols}.`;
+     bikesHint.className = "field-hint warn";
+    } else if (bikes === maxBikes) {
+     bikesHint.textContent = "Grade completa.";
+     bikesHint.className = "field-hint ok";
+    } else {
+     const livres = maxBikes - bikes;
+     bikesHint.textContent = `${livres} posição${livres !== 1 ? "ões" : ""} sem bike na grade.`;
+     bikesHint.className = "field-hint info";
+    }
+
+    if (!hasProfessor) {
+     profHint.textContent = `Fora da grade — ajuste para fila ≤1 / ${rows} e coluna ≤1 / ${cols}.`;
+     profHint.className = "field-hint warn";
+    } else {
+     profHint.textContent = "";
+     profHint.className = "field-hint";
+    }
+   }
+
+   Object.values(fields).forEach((field) => field.addEventListener("input", () => {
+    if (field.value !== "") field.value = clamp(field);
+    renderRoom();
+   }));
+   renderRoom();
+  </script>
+ </body>
+</html>

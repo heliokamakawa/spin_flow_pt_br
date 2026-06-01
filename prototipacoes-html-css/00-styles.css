@@ -1,0 +1,1557 @@
+/* ============================================================
+   DESIGN TOKENS
+   Variáveis globais de tema: cores, raios, sombras e espaçamentos.
+   Altere aqui para mudar a identidade visual de todo o protótipo.
+   ============================================================ */
+:root {
+  /* Brand tokens: altere este bloco para trocar tema, formas e sensacao visual. */
+  --brand-primary: #ff6b1a;
+  --brand-primary-strong: #dc4f00;
+  --brand-primary-soft: #fff3e8;
+  --brand-accent: #00b894;
+  --brand-energy: #ffd166;
+
+  --status-success: #19a463;
+  --status-success-soft: #e8f8ef;
+  --status-danger: #e03131;
+  --status-danger-soft: #fff0f0;
+  --status-warning: #f59f00;
+  --status-warning-soft: #fff7db;
+  --status-info: #246bfe;
+  --status-info-soft: #edf4ff;
+
+  --app-bg: #101114;
+  --appbar-bg: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
+  --appbar-text: #ffffff;
+  --appbar-muted: rgba(255, 255, 255, .78);
+  --appbar-border: rgba(255, 255, 255, .18);
+  --appbar-control-bg: rgba(255, 255, 255, .16);
+  --appbar-control-text: #ffffff;
+  --appbar-shadow: none;
+  --page-bg: #eceff3;
+  --screen-bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-muted: #f1f3f5;
+  --text-main: #17191d;
+  --text-soft: #606772;
+  --text-faint: #8a929f;
+  --border: #dfe3e8;
+  --border-strong: #c8ced6;
+
+  --radius-phone: 34px;
+  --radius-xl: 24px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+
+  --shadow-phone: 0 14px 32px rgba(16, 17, 20, .18);
+  --shadow-card: none;
+  --shadow-control: none;
+
+  --space-screen: 28px;
+  --control-height: 52px;
+  --phone-width: 414px;
+  --phone-height: 896px;
+  --font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ============================================================
+   RESET E BASE
+   Normalização mínima de box-model, scroll, cores e fontes.
+   ============================================================ */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  align-items: center;
+  background: #2b2f36;
+  color: var(--text-main);
+  display: flex;
+  font-family: var(--font-ui);
+  height: 100vh;
+  justify-content: center;
+  margin: 0;
+  overflow: hidden;
+  padding: 14px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+/* ============================================================
+   TIPOGRAFIA
+   Tamanhos e espaçamentos dos títulos e parágrafo padrão.
+   ============================================================ */
+h1 {
+  font-size: 32px;
+  letter-spacing: -.02em;
+  line-height: 1.05;
+  margin-bottom: 4px;
+}
+
+h2 {
+  font-size: 26px;
+  letter-spacing: -.02em;
+  line-height: 1.12;
+  margin-bottom: 8px;
+}
+
+h3 {
+  font-size: 18px;
+  letter-spacing: -.01em;
+  margin-bottom: 14px;
+}
+
+p {
+  color: var(--text-soft);
+  line-height: 1.48;
+}
+
+/* ============================================================
+   CONTÊINER PHONE
+   Simula o frame de um smartphone (390×844 px) centralizado
+   na tela do desktop. .screen é a área de conteúdo interna.
+   ============================================================ */
+.phone {
+  background: var(--screen-bg);
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 28px;
+  box-shadow: var(--shadow-phone);
+  display: flex;
+  flex-direction: column;
+  height: min(calc(100svh - 12px), var(--phone-height));
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  width: min(calc(100vw - 12px), var(--phone-width));
+}
+
+.phone::before {
+  background: rgba(255, 255, 255, .38);
+  border-radius: 999px;
+  content: "";
+  height: 5px;
+  left: 50%;
+  position: absolute;
+  top: 10px;
+  transform: translateX(-50%);
+  width: 80px;
+  z-index: 2;
+}
+
+.screen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--space-screen);
+  width: 100%;
+}
+
+.screen.scroll {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge legacy */
+}
+
+.screen.scroll > * {
+  flex-shrink: 0;
+}
+
+.screen.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================================
+   APP BAR (TOPO)
+   Barra superior laranja presente em todas as telas.
+   .icon-btn são os controles laterais; .top-exit é o botão Sair.
+   ============================================================ */
+.top {
+  align-items: center;
+  background: var(--appbar-bg);
+  border-bottom: 1px solid var(--appbar-border);
+  box-shadow: var(--appbar-shadow);
+  color: var(--appbar-text);
+  display: grid;
+  flex: 0 0 auto;
+  gap: 12px;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  min-height: 70px;
+  padding: 12px 20px 8px;
+}
+
+.top strong {
+  color: var(--appbar-text);
+  font-size: 16px;
+  font-weight: 850;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  align-items: center;
+  background: var(--appbar-control-bg);
+  border: 1px solid var(--appbar-border);
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+  color: var(--appbar-control-text);
+  display: inline-flex;
+  font-size: 16px;
+  font-weight: 900;
+  height: 40px;
+  justify-content: center;
+  min-width: 40px;
+  padding: 0 10px;
+  width: auto;
+}
+
+.top > .icon-btn {
+  min-width: 44px;
+  padding: 0;
+  width: 44px;
+}
+
+.top-exit {
+  font-size: 12px;
+  min-width: 44px;
+}
+
+.top-spacer {
+  display: block;
+  height: 40px;
+  width: 44px;
+}
+
+/* ============================================================
+   IDENTIDADE DE LOGIN
+   Bloco de marca e logotipo exibido na tela de login.
+   ============================================================ */
+.brand {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 58px 0 42px;
+  text-align: center;
+}
+
+.login-screen {
+  min-height: 100%;
+  padding-bottom: 34px;
+  padding-top: 54px;
+}
+
+.login-screen .brand {
+  margin: 36px 0 48px;
+}
+
+.login-screen .bottom {
+  padding-bottom: 6px;
+}
+
+.mark {
+  align-items: center;
+  background:
+    linear-gradient(145deg, var(--brand-primary), var(--brand-primary-strong));
+  border-radius: 24px;
+  box-shadow: none;
+  color: #fff;
+  display: flex;
+  font-size: 34px;
+  font-weight: 950;
+  height: 82px;
+  justify-content: center;
+  width: 82px;
+}
+
+/* ============================================================
+   LABELS E ÍCONES DE WIDGET
+   Estilo dos rótulos de formulário e dos ícones coloridos
+   (.widget-icon) usados em cards e menus.
+   ============================================================ */
+label {
+  align-items: center;
+  color: var(--text-main);
+  display: flex;
+  font-size: 13px;
+  font-weight: 850;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.label-icon,
+.widget-icon,
+.nav-icon {
+  align-items: center;
+  background: var(--brand-primary-soft);
+  border-radius: var(--radius-sm);
+  color: var(--brand-primary-strong);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 950;
+  height: 28px;
+  justify-content: center;
+  line-height: 1;
+  width: 28px;
+}
+
+.widget-icon {
+  font-size: 18px;
+  height: 42px;
+  width: 42px;
+}
+
+.widget-icon.dark {
+  background: var(--brand-primary-soft);
+  color: var(--brand-primary-strong);
+}
+
+.widget-icon.neutral {
+  background: var(--surface-muted);
+  color: var(--text-soft);
+}
+
+.widget-icon.danger {
+  background: var(--status-danger-soft);
+  color: var(--status-danger);
+}
+
+.widget-icon.brand {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
+  color: #fff;
+}
+
+.widget-icon.success {
+  background: var(--status-success-soft);
+  color: var(--status-success);
+}
+
+.widget-icon.info {
+  background: var(--status-info-soft);
+  color: var(--status-info);
+}
+
+.widget-icon.warning {
+  background: var(--status-warning-soft);
+  color: var(--status-warning);
+}
+
+/* ============================================================
+   CARD ROW
+   Layout flexível interno dos cards com ícone + texto.
+   ============================================================ */
+.card-row {
+  align-items: flex-start;
+  display: flex;
+  gap: 13px;
+}
+
+.card-row > div:last-child {
+  min-width: 0;
+}
+
+/* ============================================================
+   CONTROLES DE FORMULÁRIO
+   Inputs, selects e textareas com visual unificado.
+   .field agrupa label + controle. .select-with-action adiciona
+   botão inline. .flow-step é o indicador de etapa sequencial.
+   ============================================================ */
+input,
+select,
+textarea {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  min-height: var(--control-height);
+  outline: none;
+  padding: 13px 14px;
+  transition: border-color .18s ease, box-shadow .18s ease;
+  width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 4px rgba(255, 107, 26, .14);
+}
+
+select[multiple] {
+  min-height: 128px;
+}
+
+textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.select-with-action {
+  align-items: stretch;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 52px;
+}
+
+.add-option-btn,
+.new-record-btn {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--brand-primary-strong);
+  display: flex;
+  font-size: 24px;
+  font-weight: 950;
+  justify-content: center;
+  min-height: var(--control-height);
+}
+
+.new-record-btn.small {
+  min-height: 34px;
+  width: 38px;
+}
+
+.new-record-btn.word {
+  font-size: 12px;
+  letter-spacing: 0;
+  min-width: 52px;
+}
+
+.flow-step {
+  background: var(--brand-primary-soft);
+  border: 1px solid #ffd0af;
+  border-radius: var(--radius-sm);
+  color: var(--brand-primary-strong);
+  font-size: 12px;
+  font-weight: 900;
+  margin-bottom: 16px;
+  padding: 9px 10px;
+  text-align: center;
+}
+
+/* ============================================================
+   PAINÉIS DE SELEÇÃO
+   Painéis para busca e seleção de itens (artistas, categorias,
+   músicas). .result-selection-panel exibe os resultados;
+   .selection-result-row é cada item selecionado com botão de remoção.
+   ============================================================ */
+.selection-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+}
+
+.panel-header {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.panel-header strong {
+  font-size: 13px;
+}
+
+.option-list {
+  display: grid;
+  gap: 7px;
+}
+
+.option-list label {
+  align-items: center;
+  background: var(--surface-muted);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  display: flex;
+  font-size: 12px;
+  font-weight: 750;
+  gap: 8px;
+  line-height: 1.3;
+  margin: 0;
+  padding: 9px 10px;
+}
+
+.option-list input[type="checkbox"] {
+  accent-color: var(--brand-primary);
+  flex: 0 0 auto;
+  min-height: auto;
+  width: auto;
+}
+
+.input-action-row {
+  align-items: stretch;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 48px;
+}
+
+.input-action-row button {
+  border-radius: var(--radius-md);
+  font-size: 22px;
+  min-height: var(--control-height);
+  padding: 0;
+}
+
+.panel-add-button {
+  align-items: center;
+  background: var(--brand-primary-soft);
+  border: 1px solid #ffd0af;
+  border-radius: var(--radius-sm);
+  color: var(--brand-primary-strong);
+  display: flex;
+  font-size: 12px;
+  font-weight: 900;
+  justify-content: center;
+  min-height: 38px;
+}
+
+.selected-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.selected-list span {
+  background: var(--status-success-soft);
+  border: 1px solid #bdeccf;
+  border-radius: 999px;
+  color: var(--status-success);
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 10px;
+}
+
+.result-selection-panel {
+  background: var(--surface-muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: 8px;
+  grid-auto-rows: 34px;
+  height: 306px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.selection-result-row {
+  align-items: center;
+  background: var(--status-success-soft);
+  border: 1px solid #bdeccf;
+  border-radius: var(--radius-sm);
+  color: var(--status-success);
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  min-height: 34px;
+  padding: 0 7px 0 10px;
+}
+
+.selection-result-row strong {
+  font-size: 12px;
+  font-weight: 900;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selection-remove {
+  align-items: center;
+  background: var(--status-danger-soft);
+  border: 1px solid #f5b8b8;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+  color: var(--status-danger);
+  display: flex;
+  font-size: 15px;
+  font-weight: 900;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0;
+  width: 100%;
+}
+
+.selection-remove::before {
+  content: "🗑";
+  line-height: 1;
+}
+
+/* ============================================================
+   BOTÕES E AÇÕES
+   Botão primário laranja e variantes (secondary, outline,
+   danger, disabled). .bottom ancora o botão ao rodapé da tela.
+   ============================================================ */
+.button,
+button {
+  align-items: center;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
+  border: 0;
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  color: #fff;
+  display: flex;
+  font-weight: 900;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding: 13px 16px;
+  text-align: center;
+  width: 100%;
+}
+
+.button.secondary {
+  background: var(--surface-muted);
+  box-shadow: none;
+  color: var(--text-main);
+}
+
+.button.dark {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
+  box-shadow: none;
+}
+
+.button.outline {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: none;
+  color: var(--text-main);
+}
+
+.button.danger {
+  background: linear-gradient(135deg, #ff5a5f, var(--status-danger));
+  box-shadow: none;
+}
+
+.link {
+  color: var(--brand-primary-strong);
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 850;
+  margin: 6px 0 22px;
+}
+
+.bottom {
+  margin-top: auto;
+}
+
+.helper {
+  color: var(--text-soft);
+  display: block;
+  font-size: 13px;
+  margin-top: 14px;
+  text-align: center;
+}
+
+/* ============================================================
+   CABEÇALHO DO DASHBOARD
+   Extensão da app bar para telas de dashboard, com fundo
+   degradê e texto de boas-vindas.
+   ============================================================ */
+.dashboard-head {
+  background: var(--appbar-bg);
+  border-bottom: 1px solid var(--appbar-border);
+  box-shadow: var(--appbar-shadow);
+  color: var(--appbar-text);
+  padding: 48px var(--space-screen) 26px;
+}
+
+.dashboard-head h2 {
+  color: var(--appbar-text);
+}
+
+.dashboard-head p {
+  color: var(--appbar-muted);
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   UTILITÁRIOS DE LAYOUT
+   .row: flex com espaçamento entre itens.
+   .grid-2: grade de duas colunas iguais.
+   ============================================================ */
+.row {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.grid-2 {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ============================================================
+   SISTEMA DE ABAS (CSS PURO)
+   Abas controladas por radio buttons ocultos — sem JavaScript.
+   O :checked do radio ativa o painel e destaca a aba correspondente.
+   .teacher-dashboard-tabs é a especialização para o painel da professora.
+   ============================================================ */
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs > input[type="radio"] {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.tab-list {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 18px;
+  padding: 4px;
+}
+
+.tab-list label {
+  align-items: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  font-weight: 900;
+  justify-content: center;
+  margin: 0;
+  min-height: 38px;
+}
+
+.tab-panel {
+  display: none;
+}
+
+#teacher-tab-class:checked ~ .tab-list [for="teacher-tab-class"],
+#teacher-tab-repertoire-e:checked ~ .tab-list [for="teacher-tab-repertoire-e"],
+#teacher-tab-repertoire:checked ~ .tab-list [for="teacher-tab-repertoire"] {
+  background: var(--surface);
+  color: var(--brand-primary-strong);
+}
+
+.teacher-dashboard-tabs {
+  flex: 1;
+  min-height: 0;
+}
+
+.teacher-dashboard-tabs .screen.tab-panel {
+  min-height: 0;
+}
+
+#teacher-tab-class:checked ~ .teacher-class-panel,
+#teacher-tab-repertoire-e:checked ~ .teacher-repertoire-e-panel,
+#teacher-tab-repertoire:checked ~ .teacher-repertoire-panel {
+  display: flex;
+}
+
+.teacher-dashboard .menu-card {
+  align-items: center;
+  display: flex;
+  height: 78px;
+  padding: 14px;
+}
+
+.teacher-dashboard .card-row {
+  align-items: center;
+  width: 100%;
+}
+
+.teacher-dashboard .widget-icon {
+  height: 40px;
+  width: 40px;
+}
+
+.teacher-dashboard .menu-card strong {
+  display: block;
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teacher-dashboard .menu-card small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   CARDS
+   Superfícies elevadas reutilizadas em todo o protótipo:
+   .profile-card (perfil do aluno), .class-card (turma),
+   .menu-card (item de menu), .stat-card / .history-card (dados),
+   .form-card (formulário em card).
+   ============================================================ */
+.profile-card,
+.class-card,
+.menu-card,
+.stat-card,
+.history-card,
+.form-card,
+.metric {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  display: block;
+  margin-bottom: 12px;
+  padding: 17px;
+}
+
+.profile-card {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  min-height: 78px;
+}
+
+.profile-card span:first-child,
+.menu-card .menu-icon {
+  align-items: center;
+  background: var(--brand-primary-soft);
+  border-radius: var(--radius-md);
+  color: var(--brand-primary-strong);
+  display: flex;
+  font-size: 22px;
+  height: 48px;
+  justify-content: center;
+  width: 48px;
+}
+
+.class-card strong,
+.menu-card strong,
+.history-card strong {
+  color: var(--text-main);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.class-card small,
+.menu-card small,
+.history-card small {
+  color: var(--text-soft);
+  display: block;
+  line-height: 1.42;
+}
+
+/* ============================================================
+   BADGES
+   Pílulas de status (verde, vermelho, cinza) usadas em cards
+   de turma e histórico.
+   ============================================================ */
+.badge {
+  border-radius: 999px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  padding: 6px 11px;
+}
+
+.badge.green {
+  background: var(--status-success);
+}
+
+.badge.red {
+  background: var(--status-danger);
+}
+
+.badge.gray {
+  background: #6f7784;
+}
+
+/* ============================================================
+   CAIXAS DE FEEDBACK
+   Mensagens de contexto: erro, informação, sucesso e aviso.
+   Usadas para alertas inline nas telas.
+   ============================================================ */
+.error-box,
+.info-box,
+.success-box,
+.warning-box {
+  border-radius: var(--radius-lg);
+  font-weight: 650;
+  line-height: 1.45;
+  margin-bottom: 18px;
+  padding: 16px;
+}
+
+.error-box {
+  background: var(--status-danger-soft);
+  border: 1px solid #ffc2c2;
+  color: #9b1c1c;
+}
+
+.info-box {
+  background: var(--status-info-soft);
+  border: 1px solid #bdd2ff;
+  color: #1646a0;
+}
+
+.success-box {
+  background: var(--status-success-soft);
+  border: 1px solid #a9e9c5;
+  color: #11613b;
+}
+
+.warning-box {
+  background: var(--status-warning-soft);
+  border: 1px solid #ffe08a;
+  color: #8a5700;
+}
+
+/* ============================================================
+   GRADE DE BIKES E SELETOR
+   .bike-grid organiza as bikes em grade de 5 colunas.
+   Estados: .busy (ocupada), .empty (vazia), .professor, .selected.
+   O seletor CSS-only usa radio buttons + :checked para destacar
+   a bike escolhida e exibir o botão de confirmação correspondente.
+   .bike-confirmation exibe o card de detalhes via :target.
+   ============================================================ */
+.bike-grid {
+  display: grid;
+  gap: 9px;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 14px 0;
+}
+
+.bike-picker input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bike {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  display: flex;
+  font-weight: 950;
+  height: 42px;
+  justify-content: center;
+}
+
+label.bike {
+  cursor: pointer;
+  margin: 0;
+}
+
+.bike.busy {
+  background: #2a2d34;
+  border-color: #2a2d34;
+  color: #fff;
+  cursor: help;
+  position: relative;
+}
+
+.bike-picker .bike.busy[data-student]::after {
+  background: var(--text-main);
+  border-radius: var(--radius-sm);
+  bottom: calc(100% + 8px);
+  color: #fff;
+  content: attr(data-student);
+  font-size: 12px;
+  font-weight: 850;
+  left: 50%;
+  opacity: 0;
+  padding: 6px 8px;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%) translateY(4px);
+  transition: opacity .12s ease, transform .12s ease;
+  white-space: nowrap;
+  z-index: 4;
+}
+
+.bike-picker .bike.busy[data-student]:hover::after,
+.bike-picker .bike.busy[data-student]:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.bike.busy.selectable {
+  cursor: pointer;
+}
+
+.bike.empty {
+  background: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text-faint);
+}
+
+.bike.professor {
+  background: var(--status-info-soft);
+  border-color: #bdd2ff;
+  color: var(--status-info);
+}
+
+.bike.selected,
+#bike-03:checked ~ .bike-grid [for="bike-03"],
+#bike-04:checked ~ .bike-grid [for="bike-04"],
+#bike-06:checked ~ .bike-grid [for="bike-06"],
+#bike-08:checked ~ .bike-grid [for="bike-08"],
+#bike-09:checked ~ .bike-grid [for="bike-09"],
+#bike-10:checked ~ .bike-grid [for="bike-10"],
+#bike-11:checked ~ .bike-grid [for="bike-11"],
+#bike-13:checked ~ .bike-grid [for="bike-13"],
+#bike-14:checked ~ .bike-grid [for="bike-14"] {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
+  border-color: var(--brand-primary);
+  box-shadow: none;
+  color: #fff;
+}
+
+.confirm-actions .button {
+  display: none;
+}
+
+#bike-03:checked ~ .confirm-actions .confirm-03,
+#bike-04:checked ~ .confirm-actions .confirm-04,
+#bike-06:checked ~ .confirm-actions .confirm-06,
+#bike-08:checked ~ .confirm-actions .confirm-08,
+#bike-09:checked ~ .confirm-actions .confirm-09,
+#bike-10:checked ~ .confirm-actions .confirm-10,
+#bike-11:checked ~ .confirm-actions .confirm-11,
+#bike-13:checked ~ .confirm-actions .confirm-13,
+#bike-14:checked ~ .confirm-actions .confirm-14 {
+  display: flex;
+}
+
+.bike-confirmation {
+  display: none;
+}
+
+.bike-confirmation.default {
+  display: block;
+}
+
+.bike-confirmation:target {
+  display: block;
+}
+
+body:has(.bike-confirmation:target) .bike-confirmation.default {
+  display: none;
+}
+
+.teacher-map .bike {
+  transition: background .16s ease, border-color .16s ease, color .16s ease;
+}
+
+/* ============================================================
+   CARD DE SELEÇÃO (MAPA DA PROFESSORA)
+   Exibe o aluno e a bike selecionados no mapa da turma.
+   .button.disabled desativa visualmente o botão de cancelamento.
+   ============================================================ */
+.selection-card {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+}
+
+.selection-card strong {
+  display: block;
+  font-size: 14px;
+}
+
+.selection-card small {
+  color: var(--text-soft);
+  display: block;
+  font-size: 12px;
+  font-weight: 750;
+  margin-top: 2px;
+}
+
+.button.disabled {
+  background: var(--surface-muted);
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+/* ============================================================
+   CONSTRUTOR DE SALA
+   Permite escolher a grade da sala (3×5, 4×5, 5×5) via radio
+   buttons CSS-only. .room-options mostra as opções; .room-preview
+   renderiza o mapa visual. .room-professor indica a posição do professor.
+   ============================================================ */
+.room-builder {
+  position: relative;
+}
+
+.room-builder input[type="radio"] {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.room-options {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 12px;
+}
+
+.room-option {
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  min-height: 68px;
+  padding: 10px;
+}
+
+.room-option strong {
+  font-size: 15px;
+}
+
+.room-option small {
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+#room-3x5:checked ~ .room-options [for="room-3x5"],
+#room-4x5:checked ~ .room-options [for="room-4x5"],
+#room-5x5:checked ~ .room-options [for="room-5x5"] {
+  background: var(--brand-primary-soft);
+  border-color: var(--brand-primary);
+  color: var(--brand-primary-strong);
+}
+
+.room-professor {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+}
+
+.room-professor strong {
+  display: block;
+  font-size: 13px;
+}
+
+.room-professor small {
+  color: var(--text-soft);
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.room-preview {
+  display: none;
+  margin-bottom: 14px;
+}
+
+.room-preview.dynamic {
+  display: block;
+}
+
+#room-3x5:checked ~ .room-preview-3x5,
+#room-4x5:checked ~ .room-preview-4x5,
+#room-5x5:checked ~ .room-preview-5x5 {
+  display: block;
+}
+
+.room-preview-head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.room-preview-head strong {
+  font-size: 14px;
+}
+
+.room-preview-head span {
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.room-map {
+  gap: 7px;
+  margin: 8px 0 0;
+}
+
+.room-map .bike {
+  font-size: 12px;
+  height: 34px;
+}
+
+.room-note {
+  color: var(--text-soft);
+  display: block;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+  margin-top: 8px;
+}
+
+/* ============================================================
+   DETALHES E RESUMO DA AULA
+   Grade de chips de informação (horário, vagas, etc.)
+   e texto resumido da turma.
+   ============================================================ */
+.details {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 14px 0;
+  padding: 0;
+}
+
+.details li {
+  background: rgba(255, 255, 255, .64);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: #3b414a;
+  font-size: 13px;
+  padding: 10px;
+}
+
+.lesson-summary {
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  margin: 16px 0 8px;
+}
+
+/* ============================================================
+   LISTA DE MIX E GATILHO
+   .mix-list exibe a sequência de músicas do mix ativo.
+   .mix-trigger é o card clicável que abre ou expande o mix.
+   ============================================================ */
+.mix-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  display: grid;
+  gap: 0;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.mix-trigger {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-main);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 14px 16px;
+}
+
+.mix-trigger strong {
+  display: block;
+  font-size: 14px;
+}
+
+.mix-trigger small {
+  color: var(--text-soft);
+  display: block;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+/* ============================================================
+   MODAL (CSS PURO VIA :TARGET)
+   Overlay de confirmação ativado por âncora (#id).
+   O :target no .modal o exibe; clicar no link de fechamento
+   ou fora do painel remove o :target e fecha o modal.
+   ============================================================ */
+.modal {
+  align-items: flex-end;
+  background: rgba(16, 17, 20, .58);
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  left: 0;
+  padding: 18px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 20;
+}
+
+.modal:target {
+  display: flex;
+}
+
+.modal-panel {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  max-height: min(76vh, 640px);
+  max-width: 390px;
+  overflow: auto;
+  padding: 20px;
+  width: 100%;
+}
+
+.modal-head {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.modal-head h3 {
+  margin-bottom: 4px;
+}
+
+.modal-close {
+  align-items: center;
+  background: var(--surface-muted);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  display: inline-flex;
+  font-weight: 900;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+
+/* Itens internos do mix-list (continuação após o bloco de modal) */
+.mix-list span {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  gap: 2px;
+  grid-template-columns: 24px 1fr auto;
+  padding: 9px 11px;
+}
+
+.mix-list span:last-child {
+  border-bottom: 0;
+}
+
+.mix-list b {
+  color: var(--brand-primary-strong);
+  font-size: 12px;
+}
+
+.mix-list strong {
+  font-size: 13px;
+}
+
+.mix-list small {
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+/* ============================================================
+   TEXTO AUXILIAR DA GRADE DE BIKES
+   Instrução exibida abaixo da grade no mapa da professora.
+   ============================================================ */
+.bike-hint {
+  color: var(--text-soft);
+  font-size: 12px;
+  margin: -4px 0 0;
+}
+
+/* ============================================================
+   NAVEGAÇÃO INFERIOR
+   Barra de abas no rodapé do app (aluno e professora).
+   .teacher-nav tem 3 abas sincronizadas com o sistema de radio buttons.
+   ============================================================ */
+.nav-bottom {
+  background: rgba(255, 255, 255, .94);
+  border-top: 1px solid var(--border);
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  min-height: 74px;
+}
+
+.nav-bottom a,
+.nav-bottom label {
+  align-items: center;
+  color: var(--text-faint);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  justify-content: center;
+  margin: 0;
+}
+
+.nav-bottom a.active,
+#teacher-tab-class:checked ~ .teacher-nav [for="teacher-tab-class"],
+#teacher-tab-repertoire-e:checked ~ .teacher-nav [for="teacher-tab-repertoire-e"],
+#teacher-tab-repertoire:checked ~ .teacher-nav [for="teacher-tab-repertoire"] {
+  color: var(--brand-primary-strong);
+  font-weight: 900;
+}
+
+.teacher-nav {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ============================================================
+   TELAS DE ESTADO
+   Telas de confirmação e erro com ícone centralizado.
+   .state-icon exibe o símbolo de sucesso, erro ou aviso.
+   ============================================================ */
+.center-state {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.state-icon {
+  align-items: center;
+  border-radius: 30px;
+  display: flex;
+  font-size: 38px;
+  font-weight: 950;
+  height: 90px;
+  justify-content: center;
+  margin-bottom: 22px;
+  width: 90px;
+}
+
+.state-icon.success {
+  background: var(--status-success-soft);
+  color: var(--status-success);
+}
+
+.state-icon.error {
+  background: var(--status-danger-soft);
+  color: var(--status-danger);
+}
+
+.state-icon.warn {
+  background: var(--status-warning-soft);
+  color: var(--status-warning);
+}
+
+/* ============================================================
+   CARD DE MÉTRICA
+   Exibe um número grande com rótulo abaixo, usado em
+   dashboards de frequência e ocupação.
+   ============================================================ */
+.metric {
+  margin-bottom: 0;
+}
+
+.metric strong {
+  color: var(--text-main);
+  display: block;
+  font-size: 32px;
+  letter-spacing: -.03em;
+}
+
+.metric span {
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+/* ============================================================
+   LAYOUT ADMINISTRATIVO
+   .admin-list: lista vertical de links do painel admin.
+   .admin-actions: grade 2×N de ações rápidas.
+   .table-row: linha de tabela com valor e ação lateral.
+   ============================================================ */
+.admin-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 18px;
+}
+
+.table-row {
+  background: rgba(255, 255, 255, .62);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  margin-bottom: 10px;
+  padding: 13px;
+}
+
+/* ============================================================
+   RESPONSIVIDADE — TELA PEQUENA (≤ 430 px)
+   Mantém a mesma medida-base do protótipo e só ajusta o fundo
+   externo para visualização em janelas estreitas.
+   ============================================================ */
+@media (max-width: 430px) {
+  body {
+    background: var(--screen-bg);
+    height: 100svh;
+    padding: 0;
+  }
+}

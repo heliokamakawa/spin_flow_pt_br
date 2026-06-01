@@ -1,0 +1,66 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+ <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Mapa da turma</title><link rel="stylesheet" href="./00-styles.css" /></head>
+ <body>
+  <main class="phone">
+   <header class="top"><a class="icon-btn" href="./22-teacher-occupancy.html">&lt;</a><strong>Mapa da turma</strong><a class="icon-btn top-exit" href="./01-login.html">Sair</a></header>
+   <section class="screen">
+    <h3>Spinning Avançado - 18:00</h3>
+    <p class="bike-hint">Selecione uma bike ocupada para consultar o check-in e confirmar o cancelamento.</p>
+    <div class="bike-grid teacher-map" data-teacher-map>
+     <a class="bike busy selectable" href="#cancel-selection" data-bike="01" data-student="Mariana Costa">01</a><a class="bike busy selectable" href="#cancel-selection" data-bike="02" data-student="Lucas Pereira">02</a><span class="bike professor">Prof</span><span class="bike empty">03</span><span class="bike empty">04</span>
+     <a class="bike busy selectable" href="#cancel-selection" data-bike="05" data-student="Bianca Alves">05</a><span class="bike empty">06</span><a class="bike busy selectable" href="#cancel-selection" data-bike="07" data-student="Rafael Lima">07</a><span class="bike empty">08</span><span class="bike empty">09</span>
+     <span class="bike empty">10</span><span class="bike empty">11</span><a class="bike busy selectable" href="#cancel-selection" data-bike="12" data-student="Camila Rocha">12</a><span class="bike empty">13</span><span class="bike empty">14</span>
+    </div>
+    <div class="selection-card" id="cancel-selection">
+     <div>
+      <strong data-selected-title>Nenhuma bike selecionada</strong>
+      <small data-selected-details>Selecione uma bike ocupada para ver o aluno.</small>
+     </div>
+    </div>
+    <div class="bottom"><a class="button danger disabled" href="#" aria-disabled="true" data-cancel-action>Cancelar check-in selecionado</a></div>
+   </section>
+  </main>
+  <div id="cancel-modal" class="modal">
+   <div class="modal-panel">
+    <div class="modal-head">
+     <div>
+      <h3>Confirmar cancelamento</h3>
+      <p data-modal-details>Selecione uma bike ocupada para cancelar o check-in.</p>
+     </div>
+     <a class="modal-close" href="#">x</a>
+    </div>
+    <div class="warning-box" data-modal-student>Nenhum aluno selecionado.</div>
+    <div class="grid-2">
+     <a class="button outline" href="#">Não, manter</a>
+     <a class="button danger" href="./23-teacher-cancel-success.html" data-confirm-cancel>Sim, cancelar</a>
+    </div>
+   </div>
+  </div>
+  <script>
+   const teacherMap = document.querySelector("[data-teacher-map]");
+   const selectedTitle = document.querySelector("[data-selected-title]");
+   const selectedDetails = document.querySelector("[data-selected-details]");
+   const cancelAction = document.querySelector("[data-cancel-action]");
+   const modalDetails = document.querySelector("[data-modal-details]");
+   const modalStudent = document.querySelector("[data-modal-student]");
+   const confirmCancel = document.querySelector("[data-confirm-cancel]");
+
+   teacherMap.querySelectorAll(".bike.selectable").forEach((bike) => {
+    bike.addEventListener("click", () => {
+     teacherMap.querySelectorAll(".bike.selectable").forEach((item) => item.classList.remove("selected"));
+     bike.classList.add("selected");
+     selectedTitle.textContent = bike.dataset.student;
+     selectedDetails.textContent = `Bike ${bike.dataset.bike} - Check-in ativo`;
+     cancelAction.textContent = `Cancelar check-in de ${bike.dataset.student}`;
+     cancelAction.classList.remove("disabled");
+     cancelAction.removeAttribute("aria-disabled");
+     cancelAction.href = "#cancel-modal";
+     modalDetails.textContent = `Bike ${bike.dataset.bike} - Spinning Avançado, 18:00`;
+     modalStudent.innerHTML = `<strong>${bike.dataset.student}</strong><br />Check-in ativo na bike ${bike.dataset.bike}.`;
+     confirmCancel.href = `./23-teacher-cancel-success.html?student=${encodeURIComponent(bike.dataset.student)}&bike=${encodeURIComponent(bike.dataset.bike)}`;
+    });
+   });
+  </script>
+ </body>
+</html>

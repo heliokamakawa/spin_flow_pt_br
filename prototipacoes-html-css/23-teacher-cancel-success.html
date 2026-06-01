@@ -1,0 +1,26 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+ <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Check-in cancelado</title><link rel="stylesheet" href="./00-styles.css" /></head>
+ <body>
+  <main class="phone">
+   <header class="top"><a class="icon-btn" href="./23-teacher-map.html">&lt;</a><strong>Check-in cancelado</strong><a class="icon-btn top-exit" href="./01-login.html">Sair</a></header>
+   <section class="screen">
+    <div class="center-state">
+     <div class="state-icon success">✓</div>
+     <h2>Check-in cancelado com sucesso</h2>
+     <div class="success-box" data-cancel-success>O check-in selecionado foi cancelado.</div>
+    </div>
+    <div class="bottom"><a class="button" href="./21-teacher-dashboard.html">Voltar ao painel</a></div>
+   </section>
+  </main>
+  <script>
+   const params = new URLSearchParams(window.location.search);
+   const student = params.get("student") || "Aluno selecionado";
+   const bike = params.get("bike") || "--";
+   const message = document.querySelector("[data-cancel-success]");
+   const name = document.createElement("strong");
+   name.textContent = student;
+   message.replaceChildren(name, document.createElement("br"), `Bike ${bike} liberada para a aula das 18:00.`);
+  </script>
+ </body>
+</html>

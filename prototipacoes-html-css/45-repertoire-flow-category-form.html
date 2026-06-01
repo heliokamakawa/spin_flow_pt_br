@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Categorias da música</title><link rel="stylesheet" href="./00-styles.css" /></head>
+ <body>
+  <main class="phone">
+   <header class="top"><a class="icon-btn" href="./21-teacher-dashboard.html">&lt;</a><strong>Categorias da música</strong><a class="icon-btn top-exit" href="./01-login.html">Sair</a></header>
+   <section class="screen">
+<div class="field">
+     <label>Música cadastrada *</label>
+     <input id="category-song-search" list="category-song-options" placeholder="Digite para buscar uma música" />
+     <datalist id="category-song-options">
+      <option value="Blinding Lights - The Weeknd"></option>
+      <option value="Titanium - David Guetta feat. Sia"></option>
+      <option value="Wake Me Up - Avicii"></option>
+      <option value="Levitating - Dua Lipa"></option>
+      <option value="Can't Hold Us - Macklemore & Ryan Lewis"></option>
+      <option value="Lose Yourself - Eminem"></option>
+      <option value="Don't You Worry Child - Swedish House Mafia"></option>
+      <option value="Stronger - Kanye West"></option>
+      <option value="Thunderstruck - AC/DC"></option>
+      <option value="Uptown Funk - Bruno Mars"></option>
+      <option value="Eye of the Tiger - Survivor"></option>
+      <option value="Starboy - The Weeknd"></option>
+      <option value="Physical - Dua Lipa"></option>
+      <option value="Summer - Calvin Harris"></option>
+      <option value="Believer - Imagine Dragons"></option>
+     </datalist>
+    </div>
+    <div class="field">
+     <label>Categorias musicais</label>
+     <div class="selection-panel">
+      <div class="panel-header"><strong>Selecionar ou criar categoria</strong></div>
+      <div class="input-action-row">
+       <input id="category-input" list="category-options" placeholder="Digite uma categoria" />
+       <button id="category-add" type="button">+</button>
+      </div>
+      <datalist id="category-options">
+       <option value="Aquecimento"></option>
+       <option value="Sprint"></option>
+       <option value="Subida pesada"></option>
+       <option value="Resistência"></option>
+       <option value="Recuperação ativa"></option>
+      </datalist>
+      <div id="category-selected" class="result-selection-panel"></div>
+     </div>
+    </div>
+    <div class="bottom"><a class="button" href="./21-teacher-dashboard.html">Salvar</a></div>
+   </section>
+  </main>
+  <script>
+   var categoryInput = document.getElementById("category-input");
+   var categorySelected = document.getElementById("category-selected");
+   function appendCategory(value) {
+    var row = document.createElement("div");
+    row.className = "selection-result-row";
+    row.dataset.value = value.toLowerCase();
+    var label = document.createElement("strong");
+    label.textContent = value;
+    var remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "selection-remove";
+    remove.setAttribute("aria-label", "Excluir categoria");
+    remove.title = "Excluir";
+    row.appendChild(label);
+    row.appendChild(remove);
+    categorySelected.appendChild(row);
+   }
+   document.getElementById("category-add").addEventListener("click", function() {
+    var value = categoryInput.value.trim();
+    if (!value) return;
+    var exists = Array.prototype.some.call(categorySelected.children, function(item) {
+     return item.dataset.value === value.toLowerCase();
+    });
+    if (!exists) {
+     appendCategory(value);
+    }
+    categoryInput.value = "";
+   });
+   categorySelected.addEventListener("click", function(event) {
+    if (!event.target.classList.contains("selection-remove")) return;
+    event.target.closest(".selection-result-row").remove();
+   });
+  </script>
+ </body>
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Videoaulas da música</title><link rel="stylesheet" href="./00-styles.css" /></head>
+ <body>
+  <main class="phone">
+   <header class="top"><a class="icon-btn" href="./21-teacher-dashboard.html">&lt;</a><strong>Videoaulas da música</strong><a class="icon-btn top-exit" href="./01-login.html">Sair</a></header>
+   <section class="screen">
+<div class="field">
+     <label>Música cadastrada *</label>
+     <input id="video-song-search" list="video-song-options" placeholder="Digite para buscar uma música" />
+     <datalist id="video-song-options">
+      <option value="Blinding Lights - The Weeknd"></option>
+      <option value="Titanium - David Guetta feat. Sia"></option>
+      <option value="Wake Me Up - Avicii"></option>
+      <option value="Levitating - Dua Lipa"></option>
+      <option value="Can't Hold Us - Macklemore & Ryan Lewis"></option>
+      <option value="Lose Yourself - Eminem"></option>
+      <option value="Don't You Worry Child - Swedish House Mafia"></option>
+      <option value="Stronger - Kanye West"></option>
+      <option value="Thunderstruck - AC/DC"></option>
+      <option value="Uptown Funk - Bruno Mars"></option>
+      <option value="Eye of the Tiger - Survivor"></option>
+      <option value="Starboy - The Weeknd"></option>
+      <option value="Physical - Dua Lipa"></option>
+      <option value="Summer - Calvin Harris"></option>
+      <option value="Believer - Imagine Dragons"></option>
+     </datalist>
+    </div>
+    <div class="field">
+     <label>Videoaulas</label>
+     <div class="selection-panel">
+      <div class="panel-header"><strong>Selecionar ou criar link de videoaula</strong></div>
+      <div class="input-action-row">
+       <input id="video-input" list="video-options" placeholder="Digite ou cole uma URL de videoaula" />
+       <button id="video-add" type="button">+</button>
+      </div>
+      <datalist id="video-options">
+       <option value="https://youtu.be/spin-sprint-30s"></option>
+       <option value="https://youtu.be/spin-subida-em-pe"></option>
+       <option value="https://youtu.be/spin-ajuste-cadencia"></option>
+       <option value="https://youtu.be/hiit-bike-45-15"></option>
+       <option value="https://vimeo.com/spin/aquecimento-progressivo"></option>
+       <option value="https://vimeo.com/spin/recuperacao-ativa"></option>
+       <option value="https://videoaulas.example.com/resistencia-ritmada"></option>
+       <option value="https://videoaulas.example.com/transicao-sprint-subida"></option>
+      </datalist>
+      <div id="video-selected" class="result-selection-panel"></div>
+     </div>
+    </div>
+    <div class="bottom"><a class="button" href="./21-teacher-dashboard.html">Salvar</a></div>
+   </section>
+  </main>
+  <script>
+   var videoInput = document.getElementById("video-input");
+   var videoSelected = document.getElementById("video-selected");
+   function appendVideo(value) {
+    var row = document.createElement("div");
+    row.className = "selection-result-row";
+    row.dataset.value = value.toLowerCase();
+    var label = document.createElement("strong");
+    label.textContent = value;
+    var remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "selection-remove";
+    remove.setAttribute("aria-label", "Excluir videoaula");
+    remove.title = "Excluir";
+    row.appendChild(label);
+    row.appendChild(remove);
+    videoSelected.appendChild(row);
+   }
+   document.getElementById("video-add").addEventListener("click", function() {
+    var value = videoInput.value.trim();
+    if (!value) return;
+    var exists = Array.prototype.some.call(videoSelected.children, function(item) {
+     return item.dataset.value === value.toLowerCase();
+    });
+    if (!exists) {
+     appendVideo(value);
+    }
+    videoInput.value = "";
+   });
+   videoSelected.addEventListener("click", function(event) {
+    if (!event.target.classList.contains("selection-remove")) return;
+    event.target.closest(".selection-result-row").remove();
+   });
+  </script>
+ </body>
+</html>

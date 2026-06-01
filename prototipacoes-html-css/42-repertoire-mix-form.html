@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mix</title>
+  <link rel="stylesheet" href="./00-styles.css" />
+  <style>
+   .compact { gap: 0; padding-bottom: 12px; padding-top: 14px; }
+   .compact .field { margin-bottom: 7px; }
+   .compact label { margin-bottom: 4px; }
+   .compact input, .compact select, .compact button { min-height: 38px; }
+   .compact input, .compact select { padding: 8px 12px; }
+   .compact textarea { height: 42px; min-height: 42px; padding: 8px 12px; resize: none; }
+   .compact .section-title { font-size: 16px; margin: 5px 0 7px; }
+   .song-row { align-items: center; display: flex; gap: 8px; margin-bottom: 8px; }
+   .song-row select { flex: 1; }
+   .song-row button { flex: 0 0 auto; padding: 0 12px; width: auto; }
+   .mix-area { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+   .mix-area .mix-list { flex: 1; margin-bottom: 8px; overflow: hidden; }
+   .mix-list span { grid-template-columns: 24px minmax(0, 1fr) 54px; min-height: 33px; padding: 5px 9px; }
+   .mix-list strong { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+   .mix-list a { color: var(--status-danger); font-size: 10px; font-weight: 900; text-align: right; }
+   .mix-list .slot-empty strong { color: var(--text-faint); font-weight: 700; }
+   .mix-limit { color: var(--text-soft); font-size: 11px; font-weight: 800; margin: -2px 0 6px; }
+   .compact .bottom { margin-top: 0; }
+  </style>
+ </head>
+ <body>
+  <main class="phone">
+   <header class="top">
+    <a class="icon-btn" href="./21-teacher-dashboard.html">&lt;</a>
+    <strong>Mix</strong>
+    <a class="icon-btn top-exit" href="./01-login.html">Sair</a>
+   </header>
+   <section class="screen compact">
+    <div class="field">
+     <label for="mix-nome">Nome *</label>
+     <input id="mix-nome" placeholder="Ex.: Mix Performance - Subida e Sprint" />
+    </div>
+    <div class="field">
+     <label for="mix-desc">Descrição</label>
+     <textarea id="mix-desc" placeholder="Objetivo e estilo da aula"></textarea>
+    </div>
+    <h3 class="section-title">Músicas do mix</h3>
+    <div class="song-row">
+     <select id="song-select">
+      <option value="">Escolha uma música</option>
+      <option>Eye of the Tiger - Survivor</option>
+      <option>Stronger - Kanye West</option>
+      <option>Blinding Lights - The Weeknd</option>
+      <option>Thunderstruck - AC/DC</option>
+      <option>Uptown Funk - Bruno Mars</option>
+      <option>Don't Stop Me Now - Queen</option>
+      <option>Shake It Off - Taylor Swift</option>
+      <option>Mr. Brightside - The Killers</option>
+      <option>Can't Stop the Feeling - Justin Timberlake</option>
+      <option>Shape of You - Ed Sheeran</option>
+      <option>Dance Monkey - Tones and I</option>
+      <option>Levitating - Dua Lipa</option>
+      <option>Bad Guy - Billie Eilish</option>
+      <option>Happy - Pharrell Williams</option>
+      <option>Bohemian Rhapsody - Queen</option>
+      <option>Starboy - The Weeknd</option>
+      <option>We Will Rock You - Queen</option>
+      <option>Lose Yourself - Eminem</option>
+     </select>
+     <button type="button" id="btn-add" class="button">Adicionar</button>
+    </div>
+    <div class="mix-area">
+     <div class="mix-limit">10 espaços fixos para músicas</div>
+     <div id="mix-list" class="mix-list"></div>
+    </div>
+    <div class="bottom">
+     <a class="button" href="./21-teacher-dashboard.html">Salvar mix</a>
+    </div>
+   </section>
+  </main>
+  <script>
+   var totalSlots = 10;
+   var lista = ["Eye of the Tiger - Survivor", "Stronger - Kanye West", "Blinding Lights - The Weeknd"];
+   var sel = document.getElementById("song-select");
+   var listEl = document.getElementById("mix-list");
+
+   function render() {
+    listEl.innerHTML = "";
+    for (var i = 0; i < totalSlots; i++) {
+     var row = document.createElement("span");
+     var b = document.createElement("b");
+     b.textContent = i + 1;
+     var strong = document.createElement("strong");
+     strong.textContent = lista[i] || "Espaço disponível";
+     var rm = document.createElement("a");
+     rm.href = "#";
+     rm.textContent = lista[i] ? "remover" : "";
+     rm.dataset.i = i;
+     rm.addEventListener("click", function(e) {
+      e.preventDefault();
+      if (!lista[+this.dataset.i]) return;
+      lista.splice(+this.dataset.i, 1);
+      render();
+     });
+     if (!lista[i]) row.className = "slot-empty";
+     row.appendChild(b);
+     row.appendChild(strong);
+     row.appendChild(rm);
+     listEl.appendChild(row);
+    }
+   }
+
+   document.getElementById("btn-add").addEventListener("click", function() {
+    var val = sel.value;
+    if (!val) return;
+    if (lista.length >= totalSlots) { sel.value = ""; return; }
+    if (lista.indexOf(val) !== -1) { sel.value = ""; return; }
+    lista.push(val);
+    sel.value = "";
+    render();
+   });
+
+   render();
+  </script>
+ </body>
+</html>

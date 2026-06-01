@@ -1,0 +1,181 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:spin_flow/core/tema/tema_app.dart';
+import 'package:spin_flow/excluir/configuracoes/rotas.dart';
+import 'package:spin_flow/excluir/widget/form_aluno.dart';
+import 'package:spin_flow/excluir/widget/form_mix.dart';
+import 'package:spin_flow/excluir/widget/form_artista_banda.dart';
+import 'package:spin_flow/excluir/widget/form_bike.dart';
+import 'package:spin_flow/excluir/widget/form_categoria_musica.dart';
+import 'package:spin_flow/excluir/widget/form_fabricante.dart';
+import 'package:spin_flow/excluir/widget/form_musica.dart';
+import 'package:spin_flow/excluir/widget/form_tipo_manutencao.dart';
+import 'package:spin_flow/view/gestao_administrativa/form_manutencao.dart'
+    as nova_manutencao;
+import 'package:spin_flow/view/gestao_administrativa/form_grupo_alunos.dart'
+    as novo_grupo_alunos;
+import 'package:spin_flow/view/gestao_administrativa/form_sala.dart';
+import 'package:spin_flow/view/gestao_administrativa/form_turma.dart'
+    as nova_turma;
+import 'package:spin_flow/view/gestao_administrativa/lista_manutencoes.dart'
+    as nova_manutencao;
+import 'package:spin_flow/view/gestao_administrativa/lista_grupos_alunos.dart'
+    as novo_grupo_alunos;
+import 'package:spin_flow/view/gestao_administrativa/lista_salas.dart' as nova;
+import 'package:spin_flow/view/gestao_administrativa/lista_turmas.dart'
+    as nova_turma;
+import 'package:spin_flow/excluir/widget/form_checkin.dart';
+import 'package:spin_flow/excluir/widget/form_turma_mix.dart';
+import 'package:spin_flow/excluir/widget/tela_dashboard_aluno.dart';
+import 'package:spin_flow/view/gestao_professora/tela_dashboard_professora.dart';
+import 'package:spin_flow/view/tela_login.dart';
+import 'package:spin_flow/excluir/widget/tela_splash.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_fabricantes.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_categorias_musica.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_tipos_manutencao.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_artistas_bandas.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_alunos.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_musicas.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_bikes.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_mixes.dart';
+import 'package:spin_flow/excluir/widget/form_video_aula.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_video_aula.dart';
+import 'package:spin_flow/excluir/widget/aluno/tela_agenda_aluno.dart';
+import 'package:spin_flow/excluir/widget/aluno/tela_checkin_aluno.dart';
+import 'package:spin_flow/excluir/widget/aluno/tela_historico_aluno.dart';
+import 'package:spin_flow/excluir/widget/aluno/tela_mix_turma_aluno.dart';
+import 'package:spin_flow/excluir/widget/aluno/tela_mapa_checkin.dart';
+import 'package:spin_flow/excluir/widget/professora/tela_mapa_operacional_professora.dart';
+import 'package:spin_flow/excluir/widget/professora/tela_posicionamento_bikes.dart';
+import 'package:spin_flow/excluir/widget/professora/tela_relatorios_professora.dart';
+import 'package:spin_flow/excluir/widget/listas/lista_checkins.dart';
+import 'package:spin_flow/excluir/widget/aluno/tela_indicadores_detalhados_aluno.dart';
+import 'package:spin_flow/excluir/widget/tela_recuperar_senha.dart';
+import 'package:spin_flow/excluir/widget/tela_sessao_expirada.dart';
+import 'package:spin_flow/excluir/configuracoes/sessao_usuario.dart';
+
+class SpinFlowApp extends StatelessWidget {
+  const SpinFlowApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'SpinFlow',
+      debugShowCheckedModeBanner: false,
+      theme: TemaApp.claro,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('pt', 'BR')],
+      locale: const Locale('pt', 'BR'),
+      initialRoute: Rotas.login,
+      navigatorObservers: [_SessaoObserver()],
+      routes: {
+        Rotas.splash: (context) => const TelaSplash(),
+        Rotas.login: (context) => const TelaLogin(),
+        Rotas.dashboardAluno: (context) => const TelaDashboardAluno(),
+        Rotas.dashboardProfessora: (context) => const TelaDashboardProfessora(),
+        Rotas.cadastroCategoriaMusica: (context) => const FormCategoriaMusica(),
+        Rotas.cadastroTipoManutencao: (context) =>
+            const FormTipoManutencaoTela(),
+        Rotas.cadastroFabricante: (context) => const FormFabricante(),
+        Rotas.cadastroBike: (context) => const FormBike(),
+        Rotas.cadastroArtistaBanda: (context) => const FormArtistaBanda(),
+        Rotas.cadastroMusica: (context) => const FormMusica(),
+        Rotas.cadastroMix: (context) => const FormMix(),
+        Rotas.cadastroSala: (context) => const FormSala(),
+        Rotas.cadastroTurma: (context) => const nova_turma.FormTurma(),
+        Rotas.cadastroAluno: (context) => const FormAluno(),
+        Rotas.cadastroGrupoAlunos: (context) =>
+            const novo_grupo_alunos.FormGrupoAlunos(),
+        Rotas.cadastroVideoAula: (context) => const FormVideoAula(),
+        Rotas.cadastroManutencao: (context) =>
+            const nova_manutencao.FormManutencao(),
+        Rotas.manutencao: (context) => const nova_manutencao.FormManutencao(),
+        Rotas.cadastroCheckin: (context) => const FormCheckin(),
+        Rotas.cadastroTurmaMix: (context) => const FormTurmaMix(),
+        Rotas.agendaAluno: (context) => const TelaAgendaAluno(),
+        Rotas.checkinAluno: (context) => const TelaCheckinAluno(),
+        Rotas.mapaCheckin: (context) => const TelaMapaCheckin(),
+        Rotas.historicoAluno: (context) => const TelaHistoricoAluno(),
+        Rotas.mixTurmaAluno: (context) => const TelaMixTurmaAluno(),
+        Rotas.mapaOperacionalProfessora: (context) =>
+            const TelaMapaOperacionalProfessora(),
+        Rotas.posicionamentoBikes: (context) => const TelaPosicionamentoBikes(),
+        Rotas.marcacaoBike: (context) => const TelaAgendaAluno(),
+        Rotas.evolucaoPessoal: (context) => const TelaHistoricoAluno(),
+        Rotas.desafios: (context) => const TelaDashboardAluno(),
+        Rotas.aulasParticulares: (context) => const TelaDashboardAluno(),
+        Rotas.missoes: (context) => const TelaDashboardAluno(),
+        Rotas.destaques: (context) => const TelaDashboardAluno(),
+        Rotas.recomendacoes: (context) => const TelaDashboardAluno(),
+        Rotas.perfil: (context) => const TelaDashboardAluno(),
+        Rotas.home: (context) => const TelaDashboardAluno(),
+
+        // Rotas das listas
+        Rotas.listaFabricantes: (context) => const ListaFabricantes(),
+        Rotas.listaCategoriasMusica: (context) => const ListaCategoriasMusica(),
+        Rotas.listaTiposManutencao: (context) => const ListaTiposManutencao(),
+        Rotas.listaArtistasBandas: (context) => const ListaArtistasBandas(),
+        Rotas.listaAlunos: (context) => const ListaAlunos(),
+        Rotas.listaMusicas: (context) => const ListaMusicas(),
+        Rotas.listaTurmas: (context) => const nova_turma.ListaTurmas(),
+        Rotas.listaBikes: (context) => const ListaBikes(),
+        Rotas.listaMixes: (context) => const ListaMixes(),
+        Rotas.listaGruposAlunos: (context) =>
+            const novo_grupo_alunos.ListaGruposAlunos(),
+        Rotas.listaSalas: (context) => const nova.ListaSalas(),
+        Rotas.listaVideoAula: (context) => const ListaVideoAula(),
+        Rotas.listaManutencoes: (context) =>
+            const nova_manutencao.ListaManutencoes(),
+        Rotas.listaCheckins: (context) => const ListaCheckins(),
+        Rotas.relatoriosProfessora: (context) =>
+            const TelaRelatoriosProfessora(),
+        Rotas.indicadoresDetalhadosAluno: (context) =>
+            const TelaIndicadoresDetalhadosAluno(),
+        Rotas.recuperarSenha: (context) => const TelaRecuperarSenha(),
+        Rotas.sessaoExpirada: (context) => const TelaSessaoExpirada(),
+      },
+    );
+  }
+}
+
+/// Observer que verifica a expiração da sessão em cada navegação.
+/// Rotas públicas (login, splash, recuperar senha, sessão expirada) são ignoradas.
+class _SessaoObserver extends NavigatorObserver {
+  static const _rotasPublicas = {
+    Rotas.login,
+    Rotas.splash,
+    Rotas.recuperarSenha,
+    Rotas.sessaoExpirada,
+  };
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    _verificar(route);
+  }
+
+  @override
+  void didReplace({Route? newRoute, Route? oldRoute}) {
+    if (newRoute != null) _verificar(newRoute);
+  }
+
+  void _verificar(Route route) {
+    final nome = route.settings.name;
+    if (nome != null && _rotasPublicas.contains(nome)) return;
+
+    if (SessaoUsuario.ativa && SessaoUsuario.expirada) {
+      // Agenda o redirect para depois do frame atual
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final nav = navigator;
+        if (nav == null) return;
+        SessaoUsuario.encerrar();
+        nav.pushNamedAndRemoveUntil(Rotas.sessaoExpirada, (r) => false);
+      });
+    } else {
+      SessaoUsuario.registrarAtividade();
+    }
+  }
+}

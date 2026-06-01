@@ -1,0 +1,171 @@
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
+import 'package:spin_flow/core/tema/cores_app.dart';
+import 'package:spin_flow/controller/gestao_administrativa/controlador_manutencao.dart';
+import 'package:spin_flow/model/gestao_administrativa/modelo_manutencao.dart';
+import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/gestao_administrativa/form_manutencao.dart';
+
+class ListaManutencoes extends StatefulWidget {
+  const ListaManutencoes({super.key});
+
+  @override
+  State<ListaManutencoes> createState() => _ListaManutencoesState();
+}
+
+class _ListaManutencoesState extends State<ListaManutencoes> {
+  final _controlador = GetIt.I<ControladorManutencao>();
+  late Future<List<ModeloManutencao>> _futuro;
+
+  static final _fmt = DateFormat('dd/MM/yyyy', 'pt_BR');
+
+  @override
+  void initState() {
+    super.initState();
+    _carregar();
+  }
+
+  void _carregar() {
+    setState(() {
+      _futuro = _controlador.listar();
+    });
+  }
+
+  Future<void> _abrirForm([ModeloManutencao? manutencao]) async {
+    final atualizado = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => FormManutencao(manutencao: manutencao)),
+    );
+    if (atualizado == true) _carregar();
+  }
+
+  Future<void> _excluir(ModeloManutencao manutencao) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Cancelar manutenção'),
+        content: const Text('Deseja cancelar esta manutenção?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Não'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Sim', style: TextStyle(color: CoresApp.erro)),
+          ),
+        ],
+      ),
+    );
+    if (confirmar == true) {
+      await _controlador.excluir(manutencao.id!);
+      _carregar();
+    }
+  }
+
+  Color _corEstado(EstadoOperacional estado) => switch (estado) {
+    EstadoOperacional.pendente => CoresApp.alerta,
+    EstadoOperacional.emAndamento => CoresApp.info,
+    EstadoOperacional.realizado => CoresApp.sucesso,
+    EstadoOperacional.cancelado => CoresApp.textoFraco,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final tema = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Manutenções'),
+        backgroundColor: tema.primaryColor,
+        foregroundColor: Colors.white,
+        actions: [const AcaoSairAppBar()],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _abrirForm(),
+        backgroundColor: tema.primaryColor,
+        foregroundColor: Colors.white,
+        child: const Icon(Icons.add),
+      ),
+      body: FutureBuilder<List<ModeloManutencao>>(
+        future: _futuro,
+        builder: (_, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final manutencoes = snapshot.data ?? [];
+          if (manutencoes.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.build_outlined,
+                    size: 64,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Nenhuma manutenção registrada',
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () => _abrirForm(),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Nova manutenção'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(12),
+            itemCount: manutencoes.length,
+            itemBuilder: (_, i) {
+              final manutencao = manutencoes[i];
+              final cor = _corEstado(manutencao.estadoOperacional);
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: cor,
+                    child: const Icon(Icons.build, color: Colors.white),
+                  ),
+                  title: Text(
+                    'Bike #${manutencao.bikeId} - Tipo #${manutencao.tipoManutencaoId}',
+                  ),
+                  subtitle: Text(
+                    '${_fmt.format(manutencao.dataSolicitacao)} - '
+                    '${manutencao.estadoOperacional.rotulo}\n'
+                    '${manutencao.descricao}',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  isThreeLine: true,
+                  onTap: () => _abrirForm(manutencao),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: CoresApp.alerta),
+                        onPressed: () => _abrirForm(manutencao),
+                        tooltip: 'Editar',
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: CoresApp.erro),
+                        onPressed: () => _excluir(manutencao),
+                        tooltip: 'Cancelar',
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}

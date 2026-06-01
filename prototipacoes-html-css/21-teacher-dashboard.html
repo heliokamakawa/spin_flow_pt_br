@@ -1,0 +1,49 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+ <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Painel professora</title><link rel="stylesheet" href="./00-styles.css" /></head>
+ <body>
+  <main class="phone">
+   <header class="top"><span class="top-spacer"></span><strong>Gestão de aula</strong><a class="icon-btn top-exit" href="./01-login.html">Sair</a></header>
+   <div class="tabs teacher-dashboard-tabs">
+     <input id="teacher-tab-class" name="teacher-tabs" type="radio" checked />
+     <input id="teacher-tab-repertoire-e" name="teacher-tabs" type="radio" />
+     <input id="teacher-tab-repertoire" name="teacher-tabs" type="radio" />
+    <section class="screen scroll teacher-dashboard tab-panel teacher-class-panel">
+      <h2>Olá, Ana Paula!</h2>
+      <p>Painel da professora</p>
+      <h3>Operação da aula</h3>
+      <a class="menu-card" href="./22-teacher-occupancy.html"><div class="card-row"><div><strong>Ocupação do dia</strong><small>Lista de turmas ativas com ocupação</small></div></div></a>
+      <a class="menu-card" href="./23-teacher-map.html"><div class="card-row"><div><strong>Mapa da turma</strong><small>Visualize bikes e check-ins em tempo real</small></div></div></a>
+      <a class="menu-card" href="./24-teacher-frequency.html"><div class="card-row"><div><strong>Frequência dos alunos</strong><small>Relatório por período e turma</small></div></div></a>
+      <a class="menu-card" href="./25-teacher-mixes.html"><div class="card-row"><div><strong>Histórico de mixes</strong><small>Mixes vinculados à turma</small></div></div></a>
+      <a class="menu-card" href="./26-teacher-mix-form.html"><div class="card-row"><div><strong>Mix da turma</strong><small>Definir sequência ativa</small></div></div></a>
+    </section>
+    <section class="screen scroll teacher-dashboard tab-panel teacher-repertoire-e-panel">
+      <h2>Olá, Ana Paula!</h2>
+      <p>Painel da professora</p>
+      <h3>Cadastros de RepertórioE</h3>
+      <a class="menu-card" href="./38-repertoire-artist-form.html"><div class="card-row"><span class="widget-icon">🎤</span><div><strong>Artista ou banda</strong><small>Cadastro de artistas e bandas</small></div></div></a>
+      <a class="menu-card" href="./39-repertoire-category-form.html"><div class="card-row"><span class="widget-icon">🏷</span><div><strong>Categoria musical</strong><small>Classificação do repertório</small></div></div></a>
+      <a class="menu-card" href="./40-repertoire-video-form.html"><div class="card-row"><span class="widget-icon info">▶</span><div><strong>Vídeo de aula</strong><small>Links de vídeo usados nas aulas</small></div></div></a>
+      <a class="menu-card" href="./41-repertoire-song-form.html"><div class="card-row"><span class="widget-icon warning">♪</span><div><strong>Música</strong><small>Cadastro musical com categorias</small></div></div></a>
+      <a class="menu-card" href="./42-repertoire-mix-form.html"><div class="card-row"><span class="widget-icon brand">♫</span><div><strong>Mix</strong><small>Sequência de músicas da aula</small></div></div></a>
+    </section>
+    <section class="screen scroll teacher-dashboard tab-panel teacher-repertoire-panel">
+      <h2>Olá, Ana Paula!</h2>
+      <p>Painel da professora</p>
+      <h3>Novo fluxo de Repertório</h3>
+      <a class="menu-card" href="./43-repertoire-flow-artist-form.html"><div class="card-row"><span class="widget-icon">🎤</span><div><strong>Artista ou banda</strong><small>Cadastro base dos responsáveis pelas músicas</small></div></div></a>
+      <a class="menu-card" href="./44-repertoire-flow-song-form.html"><div class="card-row"><span class="widget-icon warning">♪</span><div><strong>Música</strong><small>Música com seleção única de artista ou banda</small></div></div></a>
+      <a class="menu-card" href="./45-repertoire-flow-category-form.html"><div class="card-row"><span class="widget-icon">🏷</span><div><strong>Categorias da música</strong><small>Busca da música e associação de categorias</small></div></div></a>
+      <a class="menu-card" href="./46-repertoire-flow-video-form.html"><div class="card-row"><span class="widget-icon info">▶</span><div><strong>Videoaulas da música</strong><small>Busca da música e associação de videoaulas</small></div></div></a>
+      <a class="menu-card" href="./42-repertoire-mix-form.html"><div class="card-row"><span class="widget-icon brand">♫</span><div><strong>Mix</strong><small>Sequência de músicas da aula</small></div></div></a>
+    </section>
+    <nav class="nav-bottom teacher-nav">
+     <label for="teacher-tab-class"><span>Aulas</span></label>
+     <label for="teacher-tab-repertoire-e"><span>RepertórioE</span></label>
+     <label for="teacher-tab-repertoire"><span>Repertório</span></label>
+    </nav>
+   </div>
+  </main>
+ </body>
+</html>

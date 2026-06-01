@@ -1,0 +1,65 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+ <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Detalhe da aula</title><link rel="stylesheet" href="./00-styles.css" /></head>
+ <body>
+  <main class="phone">
+   <header class="top"><a class="icon-btn" href="./09-student-dashboard.html">&lt;</a><strong>Check-in</strong><a class="icon-btn top-exit" href="./01-login.html">Sair</a></header>
+   <section class="screen scroll">
+    <h2>Spinning Avançado</h2>
+    <p class="lesson-summary">Professora Ana - Studio Alfa, Sala 1 - Hoje, 18:00 às 18:50</p>
+    <ul class="details">
+     <li><strong>Vagas</strong><br />8 de 20</li>
+     <li><strong>Janela</strong><br />17:30 às 18:00</li>
+     </ul>
+    <h3 class="section-title">Escolha sua bike</h3>
+    <p class="bike-hint">As bikes destacadas estão ocupadas. Selecione uma bike livre para continuar.</p>
+    <div class="bike-picker">
+     <input id="bike-03" name="bike" type="radio" checked />
+     <input id="bike-04" name="bike" type="radio" />
+     <input id="bike-06" name="bike" type="radio" />
+     <input id="bike-08" name="bike" type="radio" />
+     <input id="bike-09" name="bike" type="radio" />
+     <input id="bike-10" name="bike" type="radio" />
+     <input id="bike-11" name="bike" type="radio" />
+     <input id="bike-13" name="bike" type="radio" />
+     <input id="bike-14" name="bike" type="radio" />
+     <div class="bike-grid">
+      <span class="bike busy" data-student="Mariana" tabindex="0" title="Mariana">01</span><span class="bike busy" data-student="Lucas" tabindex="0" title="Lucas">02</span><span class="bike professor">Prof</span><label class="bike" for="bike-03">03</label><label class="bike" for="bike-04">04</label>
+      <span class="bike busy" data-student="Bianca" tabindex="0" title="Bianca">05</span><label class="bike" for="bike-06">06</label><span class="bike busy" data-student="Rafael" tabindex="0" title="Rafael">07</span><label class="bike" for="bike-08">08</label><label class="bike" for="bike-09">09</label>
+      <label class="bike" for="bike-10">10</label><label class="bike" for="bike-11">11</label><span class="bike busy" data-student="Camila" tabindex="0" title="Camila">12</span><label class="bike" for="bike-13">13</label><label class="bike" for="bike-14">14</label>
+     </div>
+     <h3 class="section-title">Mix da aula</h3>
+     <a class="mix-trigger" href="#mix-modal"><span><strong>Mix Performance</strong><small>10 músicas - resistência e sprint</small></span><b>Ver</b></a>
+     <div class="bottom confirm-actions">
+      <a class="button confirm-03" href="./12-checkin-success.html#bike-03">Confirmar bike 03</a>
+      <a class="button confirm-04" href="./12-checkin-success.html#bike-04">Confirmar bike 04</a>
+      <a class="button confirm-06" href="./12-checkin-success.html#bike-06">Confirmar bike 06</a>
+      <a class="button confirm-08" href="./12-checkin-success.html#bike-08">Confirmar bike 08</a>
+      <a class="button confirm-09" href="./12-checkin-success.html#bike-09">Confirmar bike 09</a>
+      <a class="button confirm-10" href="./12-checkin-success.html#bike-10">Confirmar bike 10</a>
+      <a class="button confirm-11" href="./12-checkin-success.html#bike-11">Confirmar bike 11</a>
+      <a class="button confirm-13" href="./12-checkin-success.html#bike-13">Confirmar bike 13</a>
+      <a class="button confirm-14" href="./12-checkin-success.html#bike-14">Confirmar bike 14</a>
+     </div>
+    </div>
+   </section>
+   <div id="mix-modal" class="modal">
+    <div class="modal-panel">
+     <div class="modal-head"><div><h3>Mix Performance</h3><p>Sequência da aula</p></div><a class="modal-close" href="#">x</a></div>
+     <div class="mix-list">
+      <span><b>1</b><strong>Warm Wheels</strong><small>Aquecimento</small></span>
+      <span><b>2</b><strong>Ride the Fire</strong><small>Cadencia</small></span>
+      <span><b>3</b><strong>Climb Higher</strong><small>Subida</small></span>
+      <span><b>4</b><strong>Pulse Sprint</strong><small>Sprint</small></span>
+      <span><b>5</b><strong>Deep Resistance</strong><small>Força</small></span>
+      <span><b>6</b><strong>Beat Control</strong><small>Ritmo</small></span>
+      <span><b>7</b><strong>Out of Saddle</strong><small>Explosao</small></span>
+      <span><b>8</b><strong>Final Push</strong><small>Performance</small></span>
+      <span><b>9</b><strong>Slow Burn</strong><small>Desaceleração</small></span>
+      <span><b>10</b><strong>Cool Down Flow</strong><small>Alongamento</small></span>
+     </div>
+    </div>
+   </div>
+  </main>
+ </body>
+</html>
