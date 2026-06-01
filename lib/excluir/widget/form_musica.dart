@@ -14,6 +14,7 @@ import 'package:spin_flow/excluir/widget/componentes/campos/selecao_unica/campo_
 import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_url.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormMusica extends StatefulWidget {
   const FormMusica({super.key});
@@ -133,7 +134,7 @@ class _FormMusicaState extends State<FormMusica> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de Musica'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

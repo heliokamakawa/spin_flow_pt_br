@@ -10,6 +10,7 @@ import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_data.dar
 import 'package:spin_flow/excluir/widget/componentes/campos/selecao_unica/campo_opcoes.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormTurmaMix extends StatefulWidget {
   const FormTurmaMix({super.key});
@@ -83,7 +84,7 @@ class _FormTurmaMixState extends State<FormTurmaMix> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de TurmaMix'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(onPressed: _salvar, icon: const Icon(Icons.save)),
           const AcaoSairAppBar(),

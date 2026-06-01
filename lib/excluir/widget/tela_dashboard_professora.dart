@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spin_flow/view/config/configuracao_abas.dart';
 import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/excluir/banco/sqlite/dao/dao_aluno.dart';
 import 'package:spin_flow/excluir/banco/sqlite/dao/dao_bike.dart';
@@ -8,7 +9,8 @@ import 'package:spin_flow/excluir/banco/sqlite/dao/dao_mix.dart';
 import 'package:spin_flow/excluir/banco/sqlite/dao/dao_turma.dart';
 
 import '../configuracoes/rotas.dart';
-import '../configuracoes/sessao_usuario.dart';
+import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class TelaDashboardProfessora extends StatefulWidget {
   const TelaDashboardProfessora({super.key});
@@ -22,16 +24,16 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  final List<Tab> _abas = const [
-    Tab(icon: Icon(Icons.dashboard), text: 'Visão Geral'),
-    Tab(icon: Icon(Icons.admin_panel_settings), text: 'Gestão Adm.'),
-    Tab(icon: Icon(Icons.folder_copy), text: 'Cadastros'),
-    Tab(icon: Icon(Icons.list), text: 'Listas'),
-    Tab(icon: Icon(Icons.event), text: 'Aulas'),
-    Tab(icon: Icon(Icons.build), text: 'Manutenção'),
+  final List<Tab> _abas = [
+    ConfiguracaoAbas.texto('Visao geral'),
+    ConfiguracaoAbas.texto('Gestao'),
+    ConfiguracaoAbas.texto('Cadastros'),
+    ConfiguracaoAbas.texto('Listas'),
+    ConfiguracaoAbas.texto('Aulas'),
+    ConfiguracaoAbas.texto('Manutencao'),
   ];
 
-  // MÃ©tricas carregadas do banco
+  // MÃƒÂ©tricas carregadas do banco
   int _alunosAtivos = 0;
   int _turmasAtivas = 0;
   int _mixesAtivos = 0;
@@ -93,16 +95,8 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard da Professora'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              SessaoUsuario.encerrar();
-              Navigator.pushReplacementNamed(context, Rotas.login);
-            },
-          ),
-        ],
+        title: const TituloAppBarSpinFlow(),
+        actions: const [AcaoSairAppBar()],
         bottom: TabBar(
           controller: _tabController,
           tabs: _abas,
@@ -164,7 +158,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
             onTap: () => Navigator.pushNamed(context, Rotas.listaBikes),
           ),
           _InfoCard(
-            titulo: 'Em ManutenÃ§Ã£o',
+            titulo: 'Em ManutenÃƒÂ§ÃƒÂ£o',
             valor: '$_bikesManutencao',
             icone: Icons.build,
             cor: CoresApp.alerta,
@@ -178,7 +172,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
             onTap: () => Navigator.pushNamed(context, Rotas.listaCheckins),
           ),
           _InfoCard(
-            titulo: 'RelatÃ³rios',
+            titulo: 'RelatÃƒÂ³rios',
             valor: 'Gerenciais',
             icone: Icons.bar_chart,
             cor: CoresApp.info,
@@ -220,17 +214,17 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
           child: Text(
-            'Manutenção',
+            'ManutenÃ§Ã£o',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
         _CadastroTile(
-          'Tipos de Manutenção',
+          'Tipos de ManutenÃ§Ã£o',
           Icons.build,
           () => Navigator.pushNamed(context, Rotas.listaTiposManutencao),
         ),
         _CadastroTile(
-          'Manutenções',
+          'ManutenÃ§Ãµes',
           Icons.build_circle,
           () => Navigator.pushNamed(context, Rotas.listaManutencoes),
         ),
@@ -238,7 +232,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
           child: Text(
-            'Música',
+            'MÃºsica',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
@@ -248,7 +242,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
           () => Navigator.pushNamed(context, Rotas.listaArtistasBandas),
         ),
         _CadastroTile(
-          'Categorias de Música',
+          'Categorias de MÃºsica',
           Icons.category,
           () => Navigator.pushNamed(context, Rotas.listaCategoriasMusica),
         ),
@@ -258,7 +252,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
           () => Navigator.pushNamed(context, Rotas.listaVideoAula),
         ),
         _CadastroTile(
-          'Músicas',
+          'MÃºsicas',
           Icons.library_music,
           () => Navigator.pushNamed(context, Rotas.listaMusicas),
         ),
@@ -293,7 +287,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
           () => Navigator.pushNamed(context, Rotas.cadastroSala),
         ),
         _CadastroTile(
-          'Tipo de ManutenÃ§Ã£o',
+          'Tipo de ManutenÃƒÂ§ÃƒÂ£o',
           Icons.build,
           () => Navigator.pushNamed(context, Rotas.cadastroTipoManutencao),
         ),
@@ -321,7 +315,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
           child: Text(
-            'Cadastros com AssociaÃ§Ãµes',
+            'Cadastros com AssociaÃƒÂ§ÃƒÂµes',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
@@ -381,7 +375,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
           () => Navigator.pushNamed(context, Rotas.listaCategoriasMusica),
         ),
         _CadastroTile(
-          'Tipos de ManutenÃ§Ã£o',
+          'Tipos de ManutenÃƒÂ§ÃƒÂ£o',
           Icons.build,
           () => Navigator.pushNamed(context, Rotas.listaTiposManutencao),
         ),
@@ -409,7 +403,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
           child: Text(
-            'Listas com AssociaÃ§Ãµes',
+            'Listas com AssociaÃƒÂ§ÃƒÂµes',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
@@ -439,7 +433,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
           () => Navigator.pushNamed(context, Rotas.listaGruposAlunos),
         ),
         _CadastroTile(
-          'ManutenÃ§Ãµes',
+          'ManutenÃƒÂ§ÃƒÂµes',
           Icons.build_circle,
           () => Navigator.pushNamed(context, Rotas.listaManutencoes),
         ),
@@ -487,7 +481,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
           () => Navigator.pushNamed(context, Rotas.listaCheckins),
         ),
         _CadastroTile(
-          'RelatÃ³rios Gerenciais',
+          'RelatÃƒÂ³rios Gerenciais',
           Icons.bar_chart,
           () => Navigator.pushNamed(context, Rotas.relatoriosProfessora),
         ),
@@ -505,17 +499,17 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
           () => Navigator.pushNamed(context, Rotas.listaBikes),
         ),
         _CadastroTile(
-          'Tipos de ManutenÃ§Ã£o',
+          'Tipos de ManutenÃƒÂ§ÃƒÂ£o',
           Icons.handyman,
           () => Navigator.pushNamed(context, Rotas.listaTiposManutencao),
         ),
         _CadastroTile(
-          'Registrar ManutenÃ§Ã£o',
+          'Registrar ManutenÃƒÂ§ÃƒÂ£o',
           Icons.build,
           () => Navigator.pushNamed(context, Rotas.cadastroManutencao),
         ),
         _CadastroTile(
-          'Consultar ManutenÃ§Ãµes',
+          'Consultar ManutenÃƒÂ§ÃƒÂµes',
           Icons.build_circle,
           () => Navigator.pushNamed(context, Rotas.listaManutencoes),
         ),

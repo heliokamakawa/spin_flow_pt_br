@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/gestao_aula/controlador_artista_banda.dart';
 import 'package:spin_flow/model/gestao_aula/modelo_artista_banda.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormArtistaBanda extends StatefulWidget {
   final ModeloArtistaBanda? artista;
@@ -77,11 +78,7 @@ class _FormArtistaBandaState extends State<FormArtistaBanda> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.artista == null ? 'Novo Artista ou Banda' : 'Editar Artista',
-        ),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: Form(

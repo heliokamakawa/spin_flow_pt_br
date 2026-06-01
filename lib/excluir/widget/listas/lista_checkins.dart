@@ -4,6 +4,7 @@ import 'package:spin_flow/excluir/banco/sqlite/dao/dao_checkin.dart';
 import 'package:spin_flow/excluir/dto/dto_checkin.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class ListaCheckins extends StatefulWidget {
   const ListaCheckins({super.key});
@@ -105,7 +106,7 @@ class _ListaCheckinsState extends State<ListaCheckins> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Check-ins'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando

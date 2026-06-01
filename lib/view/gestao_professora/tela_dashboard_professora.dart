@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spin_flow/view/config/configuracao_abas.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/gestao_administrativa/tela_gestao_administrativa.dart';
@@ -33,14 +34,14 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const TituloAppBarSpinFlow(contexto: 'Professora'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Aulas'),
-            Tab(text: 'Repertório'),
-            Tab(text: 'Administrativo'),
+          tabs: [
+            ConfiguracaoAbas.texto('Aulas'),
+            ConfiguracaoAbas.texto('Repertorio'),
+            ConfiguracaoAbas.texto('Administrativo'),
           ],
         ),
       ),
@@ -49,7 +50,7 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
         children: const [
           TelaOperacaoAula(),
           TelaRepertorio(),
-          TelaGestaoAdministrativa(),
+          TelaGestaoAdministrativa(exibirAppBar: false),
         ],
       ),
     );

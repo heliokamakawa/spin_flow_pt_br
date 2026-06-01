@@ -13,6 +13,7 @@ import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_texto.da
 import 'componentes/campos/selecao_multipla/campo_dias_semana.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormTurma extends StatefulWidget {
   const FormTurma({super.key});
@@ -64,7 +65,7 @@ class _FormTurmaState extends State<FormTurma> {
     }
     if (_erroCarregamento) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Erro ao carregar turma')),
+        appBar: AppBar(title: const TituloAppBarSpinFlow()),
         body: const Center(
           child: Text('Nao foi possivel carregar os dados da turma.'),
         ),
@@ -72,7 +73,7 @@ class _FormTurmaState extends State<FormTurma> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(_id != null ? 'Editar Turma' : 'Cadastro de Turma'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: Form(

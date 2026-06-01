@@ -13,6 +13,7 @@ import 'package:spin_flow/excluir/dto/dto_musica.dart';
 import 'package:spin_flow/excluir/dto/dto_turma.dart';
 import 'package:spin_flow/excluir/dto/dto_turma_mix.dart';
 import 'package:spin_flow/excluir/widget/aluno/tela_checkin_aluno.dart';
+import 'package:spin_flow/view/config/configuracao_abas.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
@@ -202,13 +203,13 @@ class _TelaDashboardAlunoState extends State<TelaDashboardAluno> {
         builder: (context) {
           return Scaffold(
             appBar: AppBar(
-              title: const TituloAppBarSpinFlow(contexto: 'Aluno'),
+              title: const TituloAppBarSpinFlow(),
               centerTitle: true,
               actions: const [AcaoSairAppBar()],
-              bottom: const TabBar(
+              bottom: TabBar(
                 tabs: [
-                  Tab(icon: Icon(Icons.pin_drop), text: 'Check-in'),
-                  Tab(icon: Icon(Icons.dashboard), text: 'Meu Painel'),
+                  ConfiguracaoAbas.texto('Check-in'),
+                  ConfiguracaoAbas.texto('Meu Painel'),
                 ],
               ),
             ),

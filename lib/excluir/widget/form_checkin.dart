@@ -11,6 +11,7 @@ import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_numero.d
 import 'package:spin_flow/excluir/widget/componentes/campos/selecao_unica/campo_opcoes.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormCheckin extends StatefulWidget {
   const FormCheckin({super.key});
@@ -93,7 +94,7 @@ class _FormCheckinState extends State<FormCheckin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de Check-in'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(onPressed: _salvar, icon: const Icon(Icons.save)),
           const AcaoSairAppBar(),

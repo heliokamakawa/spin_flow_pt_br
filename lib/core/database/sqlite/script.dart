@@ -335,7 +335,7 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesAluno = [
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Ribeiro', 'aluno@gmail.com', '1990-05-15', 'feminino', '(11) 99999-1111', 'https://example.com/aluno.jpg', 'https://instagram.com/ana.ribeiro', 'https://facebook.com/ana.ribeiro', 'https://tiktok.com/@ana.ribeiro', 'Aluna ativa para simulacao de uso real', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Carlos Almeida', 'aluno@gmail.com', '1990-05-15', 'masculino', '(11) 99999-1111', '', '', '', '', 'Aluno ativo para simulacao de uso real', 1)",
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Joao Santos', 'joao.santos@email.com', '1985-08-22', 'masculino', '(11) 99999-2222', 'https://example.com/joao.jpg', 'https://instagram.com/joao.santos', 'https://facebook.com/joao.santos', 'https://tiktok.com/@joao.santos', 'Aluno iniciante', 1)",
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Maria Costa', 'maria.costa@email.com', '1992-12-10', 'feminino', '(11) 99999-3333', 'https://example.com/maria.jpg', 'https://instagram.com/maria.costa', 'https://facebook.com/maria.costa', 'https://tiktok.com/@maria.costa', 'Aluna avancada', 1)",
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Carlos Pereira', 'carlos.pereira@email.com', '1988-03-20', 'masculino', '(11) 99999-4444', '', '', '', '', 'Aluno intermediario', 1)",
@@ -353,8 +353,8 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesSala = [
-    "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('Sala Principal', 4, 5, 2, 1)",
-    "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('Sala VIP', 4, 4, 1, 1)",
+    "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('Sala Principal', 4, 5, 3, 1)",
+    "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('Sala VIP', 4, 4, 3, 1)",
   ];
 
   static const List<String> _insercoesBike = [
@@ -423,9 +423,7 @@ class ScriptSQLite {
   ];
 
   static const List<String> comandosNormalizarSeedsContextoReal = [
-    "UPDATE sala SET posicao_professora = 2 WHERE nome IN ('Sala Principal', 'Studio Alfa', 'Studio Gamma')",
-    "UPDATE sala SET posicao_professora = 2 WHERE nome = 'Studio Beta'",
-    "UPDATE sala SET posicao_professora = 1 WHERE nome = 'Sala VIP'",
+    "UPDATE sala SET posicao_professora = 3 WHERE nome IN ('Sala Principal', 'Studio Alfa', 'Studio Beta', 'Studio Gamma', 'Sala VIP')",
     "UPDATE turma_mix SET data_inicio = '2026-01-01T00:00:00', data_fim = '2026-12-31T23:59:59' WHERE turma_id IN (SELECT id FROM turma WHERE nome IN ('Spinning Performance', 'Spinning Intensivo'))",
     "UPDATE checkin SET coluna = 3 WHERE turma_id IN (SELECT id FROM turma WHERE nome = 'Spinning Intensivo') AND aluno_id IN (SELECT id FROM aluno WHERE LOWER(email) = 'juliana.martins@email.com')",
   ];
@@ -656,11 +654,11 @@ class ScriptSQLite {
     return [
       // ── Salas ─────────────────────────────────────────────────────────────
       // Sala fechada: grade 4x5, professora no centro da primeira fila.
-      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaJanela', 4, 5, 2, 1)",
-      // Sala com vagas: grade 3x5, professora no centro da primeira fila.
-      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaVagas', 3, 5, 2, 1)",
+      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaJanela', 4, 5, 3, 1)",
+      // Sala com vagas: grade 3x5, professora no centro da primeira fila (0,2).
+      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaVagas', 3, 5, 3, 1)",
       // Sala lotada: 1x4, professora em (0,2), sobram 3 bikes para alunos.
-      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaLotada', 1, 4, 2, 1)",
+      "INSERT INTO sala (nome, numero_filas, numero_colunas, posicao_professora, ativa) VALUES ('$nomeSalaLotada', 1, 4, 3, 1)",
 
       // ── Turmas ────────────────────────────────────────────────────────────
       "INSERT INTO turma (nome, descricao, dias_semana, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('$nomeTurmaFechada', 'Aula de spinning para treino base e tecnica de pedalada', '[\"$diaHoje\"]', '$horario1', 50, (SELECT id FROM sala WHERE nome = '$nomeSalaJanela' ORDER BY id DESC LIMIT 1), 1)",

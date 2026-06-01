@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/excluir/banco/sqlite/dao/dao_aluno.dart';
 import 'package:spin_flow/excluir/banco/sqlite/dao/dao_bike.dart';
@@ -8,6 +8,7 @@ import 'package:spin_flow/excluir/banco/sqlite/dao/dao_turma.dart';
 import 'package:spin_flow/excluir/dto/dto_checkin.dart';
 import 'package:spin_flow/excluir/dto/dto_turma.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 /// Tela de RelatÃƒÂ³rios Gerenciais (UC18).
 /// Apresenta mÃƒÂ©tricas operacionais agregadas para a professora:
@@ -154,7 +155,7 @@ class _TelaRelatoriosProfessoraState extends State<TelaRelatoriosProfessora> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('RelatÃƒÂ³rios Gerenciais'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando

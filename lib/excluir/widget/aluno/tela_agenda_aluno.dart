@@ -9,6 +9,7 @@ import 'package:spin_flow/excluir/configuracoes/rotas.dart';
 import 'package:spin_flow/excluir/dto/dto_posicao_bike.dart';
 import 'package:spin_flow/excluir/dto/dto_turma.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class TelaAgendaAluno extends StatefulWidget {
   const TelaAgendaAluno({super.key});
@@ -142,7 +143,7 @@ class _TelaAgendaAlunoState extends State<TelaAgendaAluno> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agenda Semanal'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             onPressed: _selecionarData,

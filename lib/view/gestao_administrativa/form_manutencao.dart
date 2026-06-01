@@ -7,6 +7,7 @@ import 'package:spin_flow/model/gestao_administrativa/modelo_bike.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_manutencao.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_tipo_manutencao.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_data.dart';
 
 class FormManutencao extends StatefulWidget {
@@ -101,11 +102,7 @@ class _FormManutencaoState extends State<FormManutencao> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.manutencao == null ? 'Nova Manutenção' : 'Editar Manutenção',
-        ),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando

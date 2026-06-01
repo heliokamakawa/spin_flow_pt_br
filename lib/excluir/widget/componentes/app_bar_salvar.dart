@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class AppBarSalvar extends StatelessWidget implements PreferredSizeWidget {
   final String titulo;
@@ -18,7 +19,7 @@ class AppBarSalvar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       // A seta de voltar aparece automaticamente se houver rota anterior
-      title: Text(titulo),
+      title: const TituloAppBarSpinFlow(),
       actions: [
         IconButton(
           onPressed: aoSalvar,

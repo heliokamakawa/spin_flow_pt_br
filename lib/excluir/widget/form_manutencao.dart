@@ -12,6 +12,7 @@ import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_texto.da
 import 'package:spin_flow/excluir/widget/componentes/campos/selecao_unica/campo_opcoes.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormManutencao extends StatefulWidget {
   const FormManutencao({super.key});
@@ -113,7 +114,7 @@ class _FormManutencaoState extends State<FormManutencao> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de Manutencao'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             onPressed: _salvar,

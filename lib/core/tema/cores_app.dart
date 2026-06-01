@@ -11,6 +11,7 @@ abstract final class CoresApp {
   static const sucesso = Color(0xFF4F7158);
   static const sucessoSuave = Color(0xFFE2E9E2);
   static const erro = Color(0xFFA3544B);
+  static const erroForte = Color(0xFF8E3F38);
   static const erroSuave = Color(0xFFECDDD9);
   static const alerta = Color(0xFFA9793D);
   static const alertaSuave = Color(0xFFEDE3D2);

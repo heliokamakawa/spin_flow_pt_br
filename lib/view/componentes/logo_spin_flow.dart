@@ -8,6 +8,7 @@ class LogoSpinFlow extends StatelessWidget {
   final double tamanhoFonte;
   final Color corTexto;
   final Color corDestaque;
+  final bool mostrarFrequencia;
 
   const LogoSpinFlow({
     super.key,
@@ -16,6 +17,7 @@ class LogoSpinFlow extends StatelessWidget {
     this.tamanhoFonte = 22,
     this.corTexto = Colors.white,
     this.corDestaque = CoresApp.primaria,
+    this.mostrarFrequencia = true,
   });
 
   @override
@@ -25,11 +27,13 @@ class LogoSpinFlow extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CustomPaint(
-            size: Size(larguraIcone, alturaIcone),
-            painter: _EcgPainter(cor: corDestaque),
-          ),
-          const SizedBox(width: 7),
+          if (mostrarFrequencia) ...[
+            CustomPaint(
+              size: Size(larguraIcone, alturaIcone),
+              painter: _EcgPainter(cor: corDestaque),
+            ),
+            const SizedBox(width: 7),
+          ],
           RichText(
             text: TextSpan(
               children: [
@@ -55,31 +59,11 @@ class LogoSpinFlow extends StatelessWidget {
 }
 
 class TituloAppBarSpinFlow extends StatelessWidget {
-  final String? contexto;
-
-  const TituloAppBarSpinFlow({super.key, this.contexto});
+  const TituloAppBarSpinFlow({super.key, String? contexto});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const LogoSpinFlow(),
-        if (contexto != null) ...[
-          const SizedBox(height: 2),
-          Text(
-            contexto!,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ],
-    );
+    return const LogoSpinFlow(mostrarFrequencia: false, tamanhoFonte: 24);
   }
 }
 

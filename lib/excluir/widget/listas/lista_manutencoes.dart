@@ -5,6 +5,7 @@ import 'package:spin_flow/excluir/dto/dto_manutencao.dart';
 import 'package:spin_flow/excluir/configuracoes/rotas.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class ListaManutencoes extends StatefulWidget {
   const ListaManutencoes({super.key});
@@ -98,7 +99,7 @@ class _ListaManutencoesState extends State<ListaManutencoes> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ManutenÃ§Ãµes'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando

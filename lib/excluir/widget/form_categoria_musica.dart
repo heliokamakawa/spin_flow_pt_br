@@ -61,7 +61,7 @@ class _FormCategoriaMusicaState extends State<FormCategoriaMusica> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(_id != null ? 'Editar Categoria' : 'Nova Categoria'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

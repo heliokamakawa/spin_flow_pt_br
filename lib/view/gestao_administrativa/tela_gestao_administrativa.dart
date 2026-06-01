@@ -13,15 +13,19 @@ import 'package:spin_flow/view/gestao_administrativa/lista_turmas.dart';
 import 'package:spin_flow/view/gestao_aula/form_aluno.dart';
 
 class TelaGestaoAdministrativa extends StatelessWidget {
-  const TelaGestaoAdministrativa({super.key});
+  final bool exibirAppBar;
+
+  const TelaGestaoAdministrativa({super.key, this.exibirAppBar = true});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const TituloAppBarSpinFlow(contexto: 'Administrativo'),
-        actions: const [AcaoSairAppBar()],
-      ),
+      appBar: exibirAppBar
+          ? AppBar(
+              title: const TituloAppBarSpinFlow(),
+              actions: const [AcaoSairAppBar()],
+            )
+          : null,
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

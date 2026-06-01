@@ -9,6 +9,7 @@ import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_texto.da
 import 'package:spin_flow/excluir/widget/componentes/campos/selecao_unica/campo_opcoes.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormBike extends StatefulWidget {
   const FormBike({super.key});
@@ -106,7 +107,7 @@ class _FormBikeState extends State<FormBike> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de Bike'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: Padding(

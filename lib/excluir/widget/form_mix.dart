@@ -10,6 +10,7 @@ import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_texto.da
 import 'package:spin_flow/excluir/widget/componentes/campos/selecao_unica/campo_busca_opcoes.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormMix extends StatefulWidget {
   const FormMix({super.key});
@@ -104,7 +105,7 @@ class _FormMixState extends State<FormMix> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de Mix'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: Form(

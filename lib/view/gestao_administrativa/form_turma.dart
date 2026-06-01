@@ -7,6 +7,7 @@ import 'package:spin_flow/core/config/erro.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_sala.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_turma.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_ativo.dart';
 
 class FormTurma extends StatefulWidget {
@@ -108,9 +109,7 @@ class _FormTurmaState extends State<FormTurma> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.turma == null ? 'Nova Turma' : 'Editar Turma'),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando

@@ -68,9 +68,7 @@ class _FormArtistaBandaState extends State<FormArtistaBanda> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _id != null ? 'Editar Artista/Banda' : 'Novo Artista/Banda',
-        ),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

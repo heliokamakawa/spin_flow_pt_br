@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/excluir/dto/dto.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class ListaPadrao<T extends DTO> extends StatefulWidget {
   final String titulo;
@@ -43,7 +44,7 @@ class _ListaPadraoState<T extends DTO> extends State<ListaPadrao<T>> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.titulo),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando

@@ -6,6 +6,7 @@ import 'package:spin_flow/model/gestao_aula/modelo_artista_banda.dart';
 import 'package:spin_flow/model/gestao_aula/modelo_categoria_musica.dart';
 import 'package:spin_flow/model/gestao_aula/modelo_musica.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_busca_multipla.dart';
 import 'package:spin_flow/view/gestao_aula/form_artista_banda.dart';
 
@@ -105,9 +106,7 @@ class _FormMusicaState extends State<FormMusica> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.musica == null ? 'Nova Música' : 'Editar Música'),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando

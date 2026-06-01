@@ -6,6 +6,7 @@ import 'package:spin_flow/model/gestao_aula/estado_mapa_aula.dart';
 import 'package:spin_flow/model/gestao_aula/modelo_checkin.dart';
 import 'package:spin_flow/model/gestao_aula/modelo_posicao_bike.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class TelaMapeamentoCheckinAluno extends StatefulWidget {
   final int turmaId;
@@ -224,8 +225,8 @@ class _TelaMapeamentoCheckinAlunoState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.nomeTurma),
-        actions: [const AcaoSairAppBar()],
+        title: const TituloAppBarSpinFlow(),
+        actions: const [AcaoSairAppBar()],
       ),
       body: _carregando
           ? const Center(child: CircularProgressIndicator())

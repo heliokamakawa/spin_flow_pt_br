@@ -5,6 +5,7 @@ import 'package:spin_flow/excluir/banco/sqlite/dao/dao_checkin.dart';
 import 'package:spin_flow/excluir/configuracoes/sessao_usuario.dart';
 import 'package:spin_flow/excluir/dto/dto_aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class TelaIndicadoresDetalhadosAluno extends StatefulWidget {
   const TelaIndicadoresDetalhadosAluno({super.key});
@@ -122,7 +123,7 @@ class _TelaIndicadoresDetalhadosAlunoState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Indicadores Detalhados'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _aluno == null

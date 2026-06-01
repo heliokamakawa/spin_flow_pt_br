@@ -3,6 +3,7 @@ import 'package:spin_flow/excluir/banco/sqlite/dao/dao_turma_mix.dart';
 import 'package:spin_flow/excluir/dto/dto_turma.dart';
 import 'package:spin_flow/excluir/dto/dto_turma_mix.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class TelaMixTurmaAluno extends StatefulWidget {
   const TelaMixTurmaAluno({super.key});
@@ -62,7 +63,7 @@ class _TelaMixTurmaAlunoState extends State<TelaMixTurmaAluno> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mix da Turma - ${_turma!.nome}'),
+        title: const TituloAppBarSpinFlow(),
         actions: [const AcaoSairAppBar()],
       ),
       body: ListView(

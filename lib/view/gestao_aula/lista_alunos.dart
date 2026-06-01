@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spin_flow/model/servico/servico_aluno.dart';
 import 'package:spin_flow/model/modelo/modelo_aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'form_aluno.dart';
 
 class ListaAlunos extends StatefulWidget {
@@ -43,7 +44,7 @@ class _ListaAlunosState extends State<ListaAlunos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Alunos'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: FutureBuilder<List<ModeloAluno>>(

@@ -4,6 +4,7 @@ import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/controller/gestao_administrativa/controlador_grupo_alunos.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_grupo_alunos.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/gestao_administrativa/form_grupo_alunos.dart';
 
 class ListaGruposAlunos extends StatefulWidget {
@@ -68,9 +69,7 @@ class _ListaGruposAlunosState extends State<ListaGruposAlunos> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Grupos de Alunos'),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: [const AcaoSairAppBar()],
       ),
       floatingActionButton: FloatingActionButton(

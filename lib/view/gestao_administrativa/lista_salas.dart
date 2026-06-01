@@ -4,6 +4,7 @@ import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/controller/gestao_administrativa/controlador_sala.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_sala.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/gestao_administrativa/form_sala.dart';
 
 class ListaSalas extends StatefulWidget {
@@ -68,9 +69,7 @@ class _ListaSalasState extends State<ListaSalas> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Salas'),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: [const AcaoSairAppBar()],
       ),
       floatingActionButton: FloatingActionButton(

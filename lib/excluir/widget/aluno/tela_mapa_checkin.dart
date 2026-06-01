@@ -17,6 +17,7 @@ import 'package:spin_flow/excluir/dto/dto_posicao_bike.dart';
 import 'package:spin_flow/excluir/dto/dto_turma.dart';
 import 'package:spin_flow/excluir/dto/dto_turma_mix.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class TelaMapaCheckin extends StatefulWidget {
   const TelaMapaCheckin({super.key});
@@ -479,7 +480,7 @@ class _TelaMapaCheckinState extends State<TelaMapaCheckin> {
     if (_erroCarregamento != null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Mapa da Aula'),
+          title: const TituloAppBarSpinFlow(),
           actions: const [AcaoSairAppBar()],
         ),
         body: Center(
@@ -509,14 +510,8 @@ class _TelaMapaCheckinState extends State<TelaMapaCheckin> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Check-in'),
-        actions: [
-          IconButton(
-            onPressed: _abrirModalMix,
-            icon: const Icon(Icons.library_music),
-          ),
-          const AcaoSairAppBar(),
-        ],
+        title: const TituloAppBarSpinFlow(),
+        actions: const [AcaoSairAppBar()],
       ),
       bottomNavigationBar:
           mapaInvalido || _meuCheckin != null || livres == 0 || !reservaLiberada

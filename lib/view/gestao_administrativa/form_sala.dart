@@ -6,6 +6,7 @@ import 'package:spin_flow/core/config/erro.dart';
 import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_sala.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_ativo.dart';
 
 class FormSala extends StatefulWidget {
@@ -126,9 +127,7 @@ class _FormSalaState extends State<FormSala> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.sala == null ? 'Nova Sala' : 'Editar Sala'),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: Form(

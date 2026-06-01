@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spin_flow/core/tema/cores_app.dart';
+import 'package:spin_flow/view/config/configuracao_abas.dart';
 
 abstract final class TemaApp {
   static ThemeData get claro {
@@ -44,12 +45,7 @@ abstract final class TemaApp {
         elevation: 0,
         centerTitle: true,
       ),
-      tabBarTheme: const TabBarThemeData(
-        labelColor: CoresApp.primaria,
-        unselectedLabelColor: Colors.white70,
-        indicatorColor: CoresApp.primaria,
-        dividerColor: Colors.transparent,
-      ),
+      tabBarTheme: ConfiguracaoAbas.tema,
       cardTheme: CardThemeData(
         color: CoresApp.superficieElevada,
         elevation: 0,
@@ -126,6 +122,7 @@ class CoresSemanticasApp extends ThemeExtension<CoresSemanticasApp> {
   final Color sucesso;
   final Color sucessoSuave;
   final Color erro;
+  final Color erroForte;
   final Color erroSuave;
   final Color alerta;
   final Color alertaSuave;
@@ -146,6 +143,7 @@ class CoresSemanticasApp extends ThemeExtension<CoresSemanticasApp> {
     this.sucesso = CoresApp.sucesso,
     this.sucessoSuave = CoresApp.sucessoSuave,
     this.erro = CoresApp.erro,
+    this.erroForte = CoresApp.erroForte,
     this.erroSuave = CoresApp.erroSuave,
     this.alerta = CoresApp.alerta,
     this.alertaSuave = CoresApp.alertaSuave,
@@ -168,6 +166,7 @@ class CoresSemanticasApp extends ThemeExtension<CoresSemanticasApp> {
     Color? sucesso,
     Color? sucessoSuave,
     Color? erro,
+    Color? erroForte,
     Color? erroSuave,
     Color? alerta,
     Color? alertaSuave,
@@ -188,6 +187,7 @@ class CoresSemanticasApp extends ThemeExtension<CoresSemanticasApp> {
       sucesso: sucesso ?? this.sucesso,
       sucessoSuave: sucessoSuave ?? this.sucessoSuave,
       erro: erro ?? this.erro,
+      erroForte: erroForte ?? this.erroForte,
       erroSuave: erroSuave ?? this.erroSuave,
       alerta: alerta ?? this.alerta,
       alertaSuave: alertaSuave ?? this.alertaSuave,
@@ -217,6 +217,7 @@ class CoresSemanticasApp extends ThemeExtension<CoresSemanticasApp> {
       sucesso: Color.lerp(sucesso, other.sucesso, t)!,
       sucessoSuave: Color.lerp(sucessoSuave, other.sucessoSuave, t)!,
       erro: Color.lerp(erro, other.erro, t)!,
+      erroForte: Color.lerp(erroForte, other.erroForte, t)!,
       erroSuave: Color.lerp(erroSuave, other.erroSuave, t)!,
       alerta: Color.lerp(alerta, other.alerta, t)!,
       alertaSuave: Color.lerp(alertaSuave, other.alertaSuave, t)!,

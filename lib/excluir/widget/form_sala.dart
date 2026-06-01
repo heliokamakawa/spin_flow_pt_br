@@ -7,6 +7,7 @@ import 'package:spin_flow/excluir/dto/dto_sala.dart';
 import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_texto.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormSala extends StatefulWidget {
   const FormSala({super.key});
@@ -55,7 +56,7 @@ class _FormSalaState extends State<FormSala> {
     }
     if (_erroCarregamento) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Erro ao carregar sala')),
+        appBar: AppBar(title: const TituloAppBarSpinFlow()),
         body: const Center(
           child: Text('Nao foi possivel carregar os dados da sala.'),
         ),
@@ -64,7 +65,7 @@ class _FormSalaState extends State<FormSala> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_id != null ? 'Editar Sala' : 'Nova Sala'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

@@ -60,9 +60,7 @@ class _FormTipoManutencaoTelaState extends State<FormTipoManutencaoTela> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _id != null ? 'Editar Tipo de Manutenção' : 'Novo Tipo de Manutenção',
-        ),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

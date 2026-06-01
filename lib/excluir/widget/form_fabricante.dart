@@ -70,7 +70,7 @@ class _FormFabricanteState extends State<FormFabricante> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(_id != null ? 'Editar Fabricante' : 'Novo Fabricante'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

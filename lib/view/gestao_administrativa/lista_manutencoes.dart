@@ -5,6 +5,7 @@ import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/controller/gestao_administrativa/controlador_manutencao.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_manutencao.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/gestao_administrativa/form_manutencao.dart';
 
 class ListaManutencoes extends StatefulWidget {
@@ -75,9 +76,7 @@ class _ListaManutencoesState extends State<ListaManutencoes> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manutenções'),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: [const AcaoSairAppBar()],
       ),
       floatingActionButton: FloatingActionButton(

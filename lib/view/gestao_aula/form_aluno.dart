@@ -3,6 +3,7 @@ import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/controller/gestao_aula/controlador_aluno.dart';
 import 'package:spin_flow/model/modelo/modelo_aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormAluno extends StatefulWidget {
   final ModeloAluno? aluno;
@@ -90,7 +91,7 @@ class _FormAlunoState extends State<FormAluno> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de Aluno'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: Padding(

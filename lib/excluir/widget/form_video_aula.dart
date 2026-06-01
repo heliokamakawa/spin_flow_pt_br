@@ -3,6 +3,7 @@ import 'package:spin_flow/excluir/banco/sqlite/dao/dao_video_aula.dart';
 import 'package:spin_flow/excluir/dto/dto_video_aula.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormVideoAula extends StatefulWidget {
   final DTOVideoAula? videoAula;
@@ -54,9 +55,7 @@ class _FormVideoAulaState extends State<FormVideoAula> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.videoAula == null ? 'Nova Video-aula' : 'Editar Video-aula',
-        ),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

@@ -13,6 +13,7 @@ import 'package:spin_flow/excluir/dto/dto_posicao_bike.dart';
 import 'package:spin_flow/excluir/dto/dto_turma.dart';
 import 'package:spin_flow/core/tema/tema_app.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class TelaCheckinAluno extends StatefulWidget {
   final bool exibirAppBar;
@@ -137,7 +138,7 @@ class _TelaCheckinAlunoState extends State<TelaCheckinAluno> {
     return Scaffold(
       appBar: widget.exibirAppBar
           ? AppBar(
-              title: const Text('Check-in de Hoje'),
+              title: const TituloAppBarSpinFlow(),
               actions: const [AcaoSairAppBar()],
             )
           : null,
@@ -246,7 +247,7 @@ class _TelaCheckinAlunoState extends State<TelaCheckinAluno> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(
                 context,
-              ).extension<CoresSemanticasApp>()!.erro,
+              ).extension<CoresSemanticasApp>()!.erroForte,
               foregroundColor: Colors.white,
             ),
             child: const Text('Cancelar check-in'),
@@ -479,8 +480,8 @@ class _CardTurmaCheckin extends StatelessWidget {
     final Color corBotao;
     if (temCheckin) {
       rotuloAcao = 'Cancelar check-in';
-      iconeAcao = Icons.cancel;
-      corBotao = cores.erro;
+      iconeAcao = Icons.cancel_rounded;
+      corBotao = cores.erroForte;
     } else if (temConflito) {
       rotuloAcao = 'Horário ocupado';
       iconeAcao = Icons.event_busy;
@@ -600,6 +601,8 @@ class _CardTurmaCheckin extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: botaoAtivo ? corBotao : null,
                 foregroundColor: Colors.white,
+                elevation: botaoAtivo ? 1 : 0,
+                shadowColor: corBotao.withValues(alpha: 0.35),
                 disabledBackgroundColor: Theme.of(
                   context,
                 ).colorScheme.surfaceContainerHighest,

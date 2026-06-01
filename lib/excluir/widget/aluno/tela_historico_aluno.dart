@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spin_flow/view/config/configuracao_abas.dart';
 import 'package:spin_flow/core/tema/cores_app.dart';
 import 'package:spin_flow/excluir/banco/sqlite/dao/dao_aluno.dart';
 import 'package:spin_flow/excluir/banco/sqlite/dao/dao_checkin.dart';
@@ -6,6 +7,7 @@ import 'package:spin_flow/excluir/configuracoes/sessao_usuario.dart';
 import 'package:spin_flow/excluir/dto/dto_aluno.dart';
 import 'package:spin_flow/excluir/dto/dto_checkin.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class TelaHistoricoAluno extends StatefulWidget {
   const TelaHistoricoAluno({super.key});
@@ -65,13 +67,13 @@ class _TelaHistoricoAlunoState extends State<TelaHistoricoAluno>
   List<DTOCheckin> _checkinsFiltrados() {
     final agora = DateTime.now();
     switch (_tabController.index) {
-      case 1: // Este mês
+      case 1: // Este mÃªs
         return _checkins
             .where(
               (c) => c.data.year == agora.year && c.data.month == agora.month,
             )
             .toList();
-      case 2: // Últimos 3 meses
+      case 2: // Ãšltimos 3 meses
         final limite = DateTime(agora.year, agora.month - 3, agora.day);
         return _checkins.where((c) => c.data.isAfter(limite)).toList();
       default: // Todas
@@ -178,14 +180,14 @@ class _TelaHistoricoAlunoState extends State<TelaHistoricoAluno>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meu Historico'),
+        title: const TituloAppBarSpinFlow(),
         actions: [const AcaoSairAppBar()],
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Todas'),
-            Tab(text: 'Este mes'),
-            Tab(text: 'Ultimos 3 meses'),
+          tabs: [
+            ConfiguracaoAbas.texto('Todas'),
+            ConfiguracaoAbas.texto('Este mes'),
+            ConfiguracaoAbas.texto('Ultimos 3 meses'),
           ],
         ),
       ),
@@ -391,7 +393,7 @@ class _TelaDetalheAula extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalhe da Aula'),
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: ListView(

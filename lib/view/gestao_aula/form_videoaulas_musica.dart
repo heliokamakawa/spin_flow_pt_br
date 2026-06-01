@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/gestao_aula/controlador_musica.dart';
 import 'package:spin_flow/model/gestao_aula/modelo_musica.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormVideoaulaMusica extends StatefulWidget {
   const FormVideoaulaMusica({super.key});
@@ -72,9 +73,7 @@ class _FormVideoaulaMusicaState extends State<FormVideoaulaMusica> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Videoaula da Música'),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando

@@ -10,6 +10,7 @@ import 'package:spin_flow/excluir/widget/componentes/campos/comum/campo_url.dart
 import 'package:spin_flow/excluir/configuracoes/rotas.dart';
 
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormAluno extends StatefulWidget {
   const FormAluno({super.key});
@@ -66,7 +67,7 @@ class _FormAlunoState extends State<FormAluno> {
     }
     if (_erroCarregamento) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Erro ao carregar aluno')),
+        appBar: AppBar(title: const TituloAppBarSpinFlow()),
         body: const Center(
           child: Text('Não foi possível carregar os dados do aluno.'),
         ),
@@ -74,7 +75,7 @@ class _FormAlunoState extends State<FormAluno> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(_id != null ? 'Editar Aluno' : 'Novo Aluno'),
+        title: const TituloAppBarSpinFlow(),
         actions: [
           IconButton(
             onPressed: _salvar,

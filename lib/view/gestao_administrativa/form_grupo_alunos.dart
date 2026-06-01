@@ -6,6 +6,7 @@ import 'package:spin_flow/core/config/erro.dart';
 import 'package:spin_flow/model/gestao_administrativa/modelo_grupo_alunos.dart';
 import 'package:spin_flow/model/modelo/modelo_aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_ativo.dart';
 import 'package:spin_flow/view/componentes/campo_busca_multipla.dart';
 
@@ -108,11 +109,7 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
     final tema = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.grupo == null ? 'Novo Grupo de Alunos' : 'Editar Grupo',
-        ),
-        backgroundColor: tema.primaryColor,
-        foregroundColor: Colors.white,
+        title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
       body: _carregando
