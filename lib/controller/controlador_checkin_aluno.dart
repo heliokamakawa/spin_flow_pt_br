@@ -3,6 +3,8 @@ import 'package:spin_flow/domain/dominio/dominio_checkin.dart';
 import 'package:spin_flow/domain/modelo/checkin.dart';
 import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
 import 'package:spin_flow/domain/modelo/aluno.dart';
+import 'package:spin_flow/domain/modelo/mix_checkin.dart';
+import 'package:spin_flow/domain/modelo/painel_aluno.dart';
 import 'package:spin_flow/domain/modelo/turma.dart';
 import 'package:spin_flow/domain/modelo/situacao_checkin_aluno.dart';
 import 'package:spin_flow/infra/database/repositorio/repositorio_checkin_aluno.dart';
@@ -80,4 +82,10 @@ class ControladorCheckinAluno {
         ? ResultadoOperacao.sucesso()
         : ResultadoOperacao.falha(mensagemErro: erro);
   }
+
+  Future<PainelAluno?> buscarPainelAluno(int alunoId) =>
+      _repositorio.buscarPainelAluno(alunoId);
+
+  Future<MixCheckin?> buscarMixComAvaliacoes(int mixId, int alunoId) =>
+      _repositorio.buscarMixComAvaliacoes(mixId, alunoId);
 }

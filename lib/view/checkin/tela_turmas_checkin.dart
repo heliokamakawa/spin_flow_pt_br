@@ -1,6 +1,9 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/controlador_checkin_aluno.dart';
+import 'package:spin_flow/domain/modelo/mix.dart';
+import 'package:spin_flow/domain/modelo/mix_checkin.dart';
+import 'package:spin_flow/domain/modelo/painel_aluno.dart';
 import 'package:spin_flow/infra/autenticacao/sessao_usuario.dart';
 import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:spin_flow/infra/tema/tema_app.dart';
@@ -17,52 +20,102 @@ class TelaTurmasCheckin extends StatefulWidget {
   State<TelaTurmasCheckin> createState() => _TelaTurmasCheckinState();
 }
 
-class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
+class _TelaTurmasCheckinState extends State<TelaTurmasCheckin>
+    with SingleTickerProviderStateMixin {
   final _controlador = GetIt.I<ControladorCheckinAluno>();
+  late final TabController _tabController;
 
   int? _alunoId;
+
+  // ── Aba Check-in ──────────────────────────────────────────────────────────
   List<SituacaoCheckinAluno> _situacoes = [];
-  bool _carregando = true;
-  String? _erro;
+  bool _carregandoCheckin = true;
+  String? _erroCheckin;
+
+  // ── Aba Painel ────────────────────────────────────────────────────────────
+  PainelAluno? _painel;
+  bool _carregandoPainel = true;
+  String? _erroPainel;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_aoMudarAba);
     _inicializar();
+  }
+
+  @override
+  void dispose() {
+    _tabController
+      ..removeListener(_aoMudarAba)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _aoMudarAba() {
+    if (!_tabController.indexIsChanging) return;
+    if (_tabController.index == 1 && _painel == null && _erroPainel == null) {
+      _carregarPainel();
+    }
   }
 
   Future<void> _inicializar() async {
     final alunoId = SessaoUsuario.alunoId;
     if (alunoId == null) {
       setState(() {
-        _erro = 'Sessão expirada.';
-        _carregando = false;
+        _erroCheckin = 'Sessão expirada.';
+        _carregandoCheckin = false;
+        _carregandoPainel = false;
       });
       return;
     }
     _alunoId = alunoId;
-    await _carregar();
+    await Future.wait([_carregarCheckin(), _carregarPainel()]);
   }
 
-  Future<void> _carregar() async {
+  Future<void> _carregarCheckin() async {
     final alunoId = _alunoId;
     if (alunoId == null) return;
     setState(() {
-      _carregando = true;
-      _erro = null;
+      _carregandoCheckin = true;
+      _erroCheckin = null;
     });
     try {
       final lista = await _controlador.listarTurmasHoje(alunoId);
       if (!mounted) return;
       setState(() {
         _situacoes = lista;
-        _carregando = false;
+        _carregandoCheckin = false;
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _erro = 'Erro ao carregar turmas: $e';
-        _carregando = false;
+        _erroCheckin = 'Erro ao carregar turmas: $e';
+        _carregandoCheckin = false;
+      });
+    }
+  }
+
+  Future<void> _carregarPainel() async {
+    final alunoId = _alunoId;
+    if (alunoId == null) return;
+    setState(() {
+      _carregandoPainel = true;
+      _erroPainel = null;
+    });
+    try {
+      final painel = await _controlador.buscarPainelAluno(alunoId);
+      if (!mounted) return;
+      setState(() {
+        _painel = painel;
+        _carregandoPainel = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _erroPainel = 'Erro ao carregar painel: $e';
+        _carregandoPainel = false;
       });
     }
   }
@@ -92,7 +145,7 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
                 alunoId: _alunoId!,
               ),
             ))
-            .then((_) => _carregar());
+            .then((_) => _carregarCheckin());
     }
   }
 
@@ -123,7 +176,7 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
     final resultado = await _controlador.cancelarMinha(id);
     if (!mounted) return;
     if (resultado.sucesso) {
-      await _carregar();
+      await _carregarCheckin();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(resultado.mensagemErro!)),
@@ -137,20 +190,36 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
       appBar: AppBar(
         title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(icon: Icon(Icons.directions_bike), text: 'Check-in'),
+            Tab(icon: Icon(Icons.person), text: 'Meu Painel'),
+          ],
+        ),
       ),
-      body: _buildBody(context),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildAbaCheckin(context),
+          _buildAbaPainel(context),
+        ],
+      ),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    if (_carregando) return const Center(child: CircularProgressIndicator());
+  // ── Aba Check-in ──────────────────────────────────────────────────────────
 
-    if (_erro != null) {
+  Widget _buildAbaCheckin(BuildContext context) {
+    if (_carregandoCheckin) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_erroCheckin != null) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(_erro!, textAlign: TextAlign.center),
+            Text(_erroCheckin!, textAlign: TextAlign.center),
             const SizedBox(height: 12),
             TextButton.icon(
               onPressed: _inicializar,
@@ -161,7 +230,6 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
         ),
       );
     }
-
     if (_situacoes.isEmpty) {
       final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
       return Center(
@@ -170,13 +238,11 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
           children: [
             Icon(Icons.event_busy, size: 48, color: cores.textoFraco),
             const SizedBox(height: 12),
-            Text(
-              'Nenhuma aula hoje.',
-              style: TextStyle(color: cores.textoSuave),
-            ),
+            Text('Nenhuma aula hoje.',
+                style: TextStyle(color: cores.textoSuave)),
             const SizedBox(height: 12),
             TextButton.icon(
-              onPressed: _carregar,
+              onPressed: _carregarCheckin,
               icon: const Icon(Icons.refresh),
               label: const Text('Atualizar'),
             ),
@@ -184,9 +250,8 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
         ),
       );
     }
-
     return RefreshIndicator(
-      onRefresh: _carregar,
+      onRefresh: _carregarCheckin,
       child: ListView.builder(
         padding: const EdgeInsets.all(12),
         itemCount: _situacoes.length,
@@ -198,9 +263,350 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
       ),
     );
   }
+
+  // ── Aba Painel ────────────────────────────────────────────────────────────
+
+  Widget _buildAbaPainel(BuildContext context) {
+    if (_carregandoPainel) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_erroPainel != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_erroPainel!, textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: _carregarPainel,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Tentar novamente'),
+            ),
+          ],
+        ),
+      );
+    }
+    if (_painel == null) {
+      return const Center(child: Text('Nenhum dado disponível.'));
+    }
+    return RefreshIndicator(
+      onRefresh: _carregarPainel,
+      child: _AbaPainelAluno(
+        painel: _painel!,
+        alunoId: _alunoId!,
+        onAvaliar: (musicaId, nota) =>
+            _controlador.avaliarMusica(_alunoId!, musicaId, nota).then((_) => _carregarPainel()),
+        onBuscarMix: (mixId) =>
+            _controlador.buscarMixComAvaliacoes(mixId, _alunoId!),
+      ),
+    );
+  }
 }
 
-// -- Card --------------------------------------------------------------------
+// ── Aba Painel — conteúdo ────────────────────────────────────────────────────
+
+class _AbaPainelAluno extends StatefulWidget {
+  final PainelAluno painel;
+  final int alunoId;
+  final Future<void> Function(int musicaId, int nota) onAvaliar;
+  final Future<MixCheckin?> Function(int mixId) onBuscarMix;
+
+  const _AbaPainelAluno({
+    required this.painel,
+    required this.alunoId,
+    required this.onAvaliar,
+    required this.onBuscarMix,
+  });
+
+  @override
+  State<_AbaPainelAluno> createState() => _AbaPainelAlunoState();
+}
+
+class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
+  bool _carregandoMixBusca = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final painel = widget.painel;
+    final aluno = painel.aluno;
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        // ── Perfil ────────────────────────────────────────────────────────
+        _secao(
+          context,
+          icone: Icons.person_outline,
+          titulo: 'Perfil',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _infoLinha(Icons.badge_outlined, aluno.nome),
+              _infoLinha(Icons.email_outlined, aluno.email),
+              if (aluno.telefone.isNotEmpty)
+                _infoLinha(Icons.phone_outlined, aluno.telefone),
+              if (aluno.dataNascimento != null)
+                _infoLinha(
+                  Icons.cake_outlined,
+                  _formatarDataNascimento(aluno.dataNascimento!),
+                ),
+              if (aluno.instagram.isNotEmpty)
+                _infoLinha(Icons.camera_alt_outlined, '@${aluno.instagram}'),
+              if (aluno.tiktok.isNotEmpty)
+                _infoLinha(Icons.music_note_outlined, aluno.tiktok),
+              if (aluno.facebook.isNotEmpty)
+                _infoLinha(Icons.people_outline, aluno.facebook),
+              if (aluno.observacoes.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  aluno.observacoes,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: cores.textoSuave,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // ── Participação ──────────────────────────────────────────────────
+        _secao(
+          context,
+          icone: Icons.bar_chart,
+          titulo: 'Aulas Realizadas',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _contadorParticipacao('Semana', painel.estatisticas.semana, cores),
+              _divisorVertical(),
+              _contadorParticipacao('Mês', painel.estatisticas.mes, cores),
+              _divisorVertical(),
+              _contadorParticipacao('Ano', painel.estatisticas.ano, cores),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // ── Avaliação de Mix ──────────────────────────────────────────────
+        _secao(
+          context,
+          icone: Icons.music_note,
+          titulo: 'Avaliação de Mix',
+          child: _buildSecaoMix(painel, cores),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSecaoMix(PainelAluno painel, CoresSemanticasApp cores) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Último mix participado
+        if (painel.ultimoMix != null) ...[
+          Text(
+            'Último mix participado',
+            style: TextStyle(fontSize: 12, color: cores.textoSuave),
+          ),
+          const SizedBox(height: 6),
+          _BotaoAbrirMix(
+            mix: painel.ultimoMix!,
+            onAvaliar: widget.onAvaliar,
+          ),
+        ] else
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(
+              'Nenhum mix encontrado nas suas aulas.',
+              style: TextStyle(color: cores.textoFraco, fontSize: 13),
+            ),
+          ),
+
+        const SizedBox(height: 16),
+        const Divider(height: 1),
+        const SizedBox(height: 12),
+
+        // Busca por nome de mix
+        Text(
+          'Buscar outro mix',
+          style: TextStyle(fontSize: 12, color: cores.textoSuave),
+        ),
+        const SizedBox(height: 8),
+        _carregandoMixBusca
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              )
+            : DropdownMenu<Mix>(
+                width: double.infinity,
+                hintText: 'Pesquisar mix...',
+                enableFilter: true,
+                leadingIcon: const Icon(Icons.search, size: 18),
+                inputDecorationTheme: const InputDecorationTheme(
+                  isDense: true,
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                ),
+                dropdownMenuEntries: painel.mixesDisponiveis
+                    .map((m) => DropdownMenuEntry<Mix>(
+                          value: m,
+                          label: m.nome,
+                        ))
+                    .toList(),
+                onSelected: (mix) {
+                  if (mix == null) return;
+                  _abrirMixPorId(mix.id!);
+                },
+              ),
+      ],
+    );
+  }
+
+  Future<void> _abrirMixPorId(int mixId) async {
+    setState(() => _carregandoMixBusca = true);
+    final mix = await widget.onBuscarMix(mixId);
+    if (!mounted) return;
+    setState(() => _carregandoMixBusca = false);
+    if (mix == null) return;
+    PainelMix.abrirModal(context, mix, widget.onAvaliar);
+  }
+
+  Widget _secao(
+    BuildContext context, {
+    required IconData icone,
+    required String titulo,
+    required Widget child,
+  }) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icone, size: 18),
+                const SizedBox(width: 6),
+                Text(
+                  titulo,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _contadorParticipacao(
+    String label,
+    int valor,
+    CoresSemanticasApp cores,
+  ) {
+    return Column(
+      children: [
+        Text(
+          '$valor',
+          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
+        ),
+        Text(label, style: TextStyle(fontSize: 12, color: cores.textoSuave)),
+      ],
+    );
+  }
+
+  Widget _divisorVertical() =>
+      const SizedBox(height: 40, child: VerticalDivider());
+
+  Widget _infoLinha(IconData icone, String texto) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icone, size: 16),
+          const SizedBox(width: 8),
+          Expanded(child: Text(texto, style: const TextStyle(fontSize: 13))),
+        ],
+      ),
+    );
+  }
+
+  String _formatarDataNascimento(DateTime data) {
+    final hoje = DateTime.now();
+    final idade = hoje.year -
+        data.year -
+        ((hoje.month < data.month ||
+                (hoje.month == data.month && hoje.day < data.day))
+            ? 1
+            : 0);
+    final dia = data.day.toString().padLeft(2, '0');
+    final mes = data.month.toString().padLeft(2, '0');
+    return '$dia/$mes/${data.year} ($idade anos)';
+  }
+}
+
+// ── Botão abrir mix ───────────────────────────────────────────────────────────
+
+class _BotaoAbrirMix extends StatelessWidget {
+  final MixCheckin mix;
+  final Future<void> Function(int musicaId, int nota) onAvaliar;
+
+  const _BotaoAbrirMix({required this.mix, required this.onAvaliar});
+
+  @override
+  Widget build(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+    return InkWell(
+      onTap: () => PainelMix.abrirModal(context, mix, onAvaliar),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          border: Border.all(color: CoresApp.borda),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.music_note, size: 18, color: cores.textoSuave),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                mix.nomeMix,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            Icon(Icons.star_outline, size: 16, color: cores.textoFraco),
+            const SizedBox(width: 4),
+            Text(
+              'Avaliar',
+              style: TextStyle(fontSize: 13, color: cores.textoSuave),
+            ),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right, size: 18, color: cores.textoFraco),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Card Check-in ─────────────────────────────────────────────────────────────
 
 class _CardCheckin extends StatefulWidget {
   final SituacaoCheckinAluno situacao;
@@ -236,7 +642,6 @@ class _CardCheckinState extends State<_CardCheckin> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Coluna 1 — nome, horário, professora
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,18 +656,19 @@ class _CardCheckinState extends State<_CardCheckin> {
                       const SizedBox(height: 4),
                       Text(
                         '${turma.horarioInicio} · ${turma.duracaoMinutos} min',
-                        style: TextStyle(fontSize: 13, color: cores.textoSuave),
+                        style:
+                            TextStyle(fontSize: 13, color: cores.textoSuave),
                       ),
                       if (s.nomeProfessora != null)
                         Text(
                           s.nomeProfessora!,
-                          style: TextStyle(fontSize: 12, color: cores.textoFraco),
+                          style: TextStyle(
+                              fontSize: 12, color: cores.textoFraco),
                         ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Coluna 2 — ocupação e fila
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -275,7 +681,8 @@ class _CardCheckinState extends State<_CardCheckin> {
                     ),
                     Text(
                       'bikes',
-                      style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                      style:
+                          TextStyle(fontSize: 11, color: cores.textoFraco),
                     ),
                     if (s.bikesEmManutencao > 0)
                       Padding(
@@ -283,9 +690,7 @@ class _CardCheckinState extends State<_CardCheckin> {
                         child: Text(
                           '${s.bikesEmManutencao} em manut.',
                           style: TextStyle(
-                            fontSize: 11,
-                            color: cores.textoFraco,
-                          ),
+                              fontSize: 11, color: cores.textoFraco),
                         ),
                       ),
                     if ((s.totalNaFila ?? 0) > 0)
@@ -315,8 +720,10 @@ class _CardCheckinState extends State<_CardCheckin> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _corBotao(s.status),
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: _corBotaoDesabilitado(s.status),
-                  disabledForegroundColor: _corTextoBotaoDesabilitado(s.status, cores),
+                  disabledBackgroundColor:
+                      _corBotaoDesabilitado(s.status),
+                  disabledForegroundColor:
+                      _corTextoBotaoDesabilitado(s.status, cores),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -341,13 +748,12 @@ class _CardCheckinState extends State<_CardCheckin> {
   }
 
   Color _corBotao(StatusCheckinAluno status) => switch (status) {
-    StatusCheckinAluno.disponivel  => CoresApp.sucesso,
-    StatusCheckinAluno.lotada      => CoresApp.alerta,
-    StatusCheckinAluno.confirmado  => CoresApp.erro,
-    _                              => CoresApp.superficieSuave,
-  };
+        StatusCheckinAluno.disponivel => CoresApp.sucesso,
+        StatusCheckinAluno.lotada => CoresApp.alerta,
+        StatusCheckinAluno.confirmado => CoresApp.erro,
+        _ => CoresApp.superficieSuave,
+      };
 
-  // Conflito e demais inativos: cinza neutro
   Color _corBotaoDesabilitado(StatusCheckinAluno status) =>
       CoresApp.superficieSuave;
 

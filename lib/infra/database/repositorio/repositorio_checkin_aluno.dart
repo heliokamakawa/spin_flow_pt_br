@@ -1,6 +1,9 @@
 import 'package:get_it/get_it.dart';
+import 'package:spin_flow/domain/modelo/painel_aluno.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_aluno.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_aula_realizada.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_avaliacao_musica.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_mix.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_checkin.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_fila_espera_checkin.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_manutencao.dart';
@@ -20,16 +23,18 @@ import 'package:spin_flow/domain/modelo/turma.dart';
 import 'package:spin_flow/domain/modelo/situacao_checkin_aluno.dart';
 
 class RepositorioCheckinAluno {
-  IDAOTurma             get _daoTurma     => GetIt.I<IDAOTurma>();
-  IDAOSala              get _daoSala      => GetIt.I<IDAOSala>();
-  IDAOAluno             get _daoAluno     => GetIt.I<IDAOAluno>();
-  IDAOCheckin           get _daoCheckin   => GetIt.I<IDAOCheckin>();
-  IDAOPosicaoBike       get _daoPosicao   => GetIt.I<IDAOPosicaoBike>();
-  IDAOManutencao        get _daoManu      => GetIt.I<IDAOManutencao>();
-  IDAOFilaEsperaCheckin get _daoFila      => GetIt.I<IDAOFilaEsperaCheckin>();
-  IDAOUsuario           get _daoUsuario   => GetIt.I<IDAOUsuario>();
-  IDAOTurmaMix          get _daoTurmaMix  => GetIt.I<IDAOTurmaMix>();
-  IDAOAvaliacaoMusica   get _daoAvaliacao => GetIt.I<IDAOAvaliacaoMusica>();
+  IDAOTurma             get _daoTurma        => GetIt.I<IDAOTurma>();
+  IDAOSala              get _daoSala         => GetIt.I<IDAOSala>();
+  IDAOAluno             get _daoAluno        => GetIt.I<IDAOAluno>();
+  IDAOCheckin           get _daoCheckin      => GetIt.I<IDAOCheckin>();
+  IDAOPosicaoBike       get _daoPosicao      => GetIt.I<IDAOPosicaoBike>();
+  IDAOManutencao        get _daoManu         => GetIt.I<IDAOManutencao>();
+  IDAOFilaEsperaCheckin get _daoFila         => GetIt.I<IDAOFilaEsperaCheckin>();
+  IDAOUsuario           get _daoUsuario      => GetIt.I<IDAOUsuario>();
+  IDAOTurmaMix          get _daoTurmaMix     => GetIt.I<IDAOTurmaMix>();
+  IDAOAvaliacaoMusica   get _daoAvaliacao    => GetIt.I<IDAOAvaliacaoMusica>();
+  IDAOAulaRealizada     get _daoAulaRealizada => GetIt.I<IDAOAulaRealizada>();
+  IDAOMix               get _daoMix           => GetIt.I<IDAOMix>();
 
   Future<Aluno?> buscarAlunoPorEmail(String email) =>
       _daoAluno.buscarPorEmail(email);
@@ -297,4 +302,77 @@ class RepositorioCheckinAluno {
 
   Future<void> avaliarMusica(int alunoId, int musicaId, int nota) =>
       _daoAvaliacao.salvar(alunoId, musicaId, nota);
+
+  Future<PainelAluno?> buscarPainelAluno(int alunoId) async {
+    final aluno = await _daoAluno.buscarPorId(alunoId);
+    if (aluno == null) return null;
+
+    final agora = DateTime.now();
+    final hoje = DateTime(agora.year, agora.month, agora.day);
+    final inicioSemana = hoje.subtract(Duration(days: hoje.weekday - 1));
+    final inicioMes = DateTime(agora.year, agora.month, 1);
+    final inicioAno = DateTime(agora.year, 1, 1);
+
+    final semanaFt = _daoAulaRealizada.contarPorAlunoNoPeriodo(alunoId, inicioSemana, hoje);
+    final mesFt    = _daoAulaRealizada.contarPorAlunoNoPeriodo(alunoId, inicioMes, hoje);
+    final anoFt    = _daoAulaRealizada.contarPorAlunoNoPeriodo(alunoId, inicioAno, hoje);
+    final ultimaAulaFt   = _daoAulaRealizada.buscarUltima(alunoId);
+    final mixesDisponiveisFt = _daoMix.buscarTodos();
+
+    final semana           = await semanaFt;
+    final mes              = await mesFt;
+    final ano              = await anoFt;
+    final ultimaAula       = await ultimaAulaFt;
+    final mixesDisponiveis = (await mixesDisponiveisFt).where((m) => m.ativo).toList();
+
+    MixCheckin? ultimoMix;
+    if (ultimaAula != null) {
+      final dataAula = DateTime(ultimaAula.data.year, ultimaAula.data.month, ultimaAula.data.day);
+      final mixSemRatings = await _daoTurmaMix.buscarMixDaTurma(ultimaAula.turmaId, dataAula);
+      if (mixSemRatings != null && mixSemRatings.musicas.isNotEmpty) {
+        final musicaIds = mixSemRatings.musicas.map((m) => m.musicaId).toList();
+        final ratings   = await _daoAvaliacao.buscarAvaliacoesAluno(alunoId, musicaIds);
+        ultimoMix = MixCheckin(
+          mixId: mixSemRatings.mixId,
+          nomeMix: mixSemRatings.nomeMix,
+          musicas: mixSemRatings.musicas
+              .map((m) => MusicaCheckin(
+                    musicaId: m.musicaId,
+                    posicao: m.posicao,
+                    nome: m.nome,
+                    nomeArtista: m.nomeArtista,
+                    avaliacao: ratings[m.musicaId],
+                  ))
+              .toList(),
+        );
+      }
+    }
+
+    return PainelAluno(
+      aluno: aluno,
+      estatisticas: EstatisticasParticipacao(semana: semana, mes: mes, ano: ano),
+      ultimoMix: ultimoMix,
+      mixesDisponiveis: mixesDisponiveis,
+    );
+  }
+
+  Future<MixCheckin?> buscarMixComAvaliacoes(int mixId, int alunoId) async {
+    final mixSemRatings = await _daoTurmaMix.buscarMixPorId(mixId);
+    if (mixSemRatings == null || mixSemRatings.musicas.isEmpty) return null;
+    final musicaIds = mixSemRatings.musicas.map((m) => m.musicaId).toList();
+    final ratings   = await _daoAvaliacao.buscarAvaliacoesAluno(alunoId, musicaIds);
+    return MixCheckin(
+      mixId: mixSemRatings.mixId,
+      nomeMix: mixSemRatings.nomeMix,
+      musicas: mixSemRatings.musicas
+          .map((m) => MusicaCheckin(
+                musicaId: m.musicaId,
+                posicao: m.posicao,
+                nome: m.nome,
+                nomeArtista: m.nomeArtista,
+                avaliacao: ratings[m.musicaId],
+              ))
+          .toList(),
+    );
+  }
 }

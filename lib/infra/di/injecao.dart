@@ -24,8 +24,10 @@ import 'package:spin_flow/infra/database/dao/i_dao_posicao_bike.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_sala.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_tipo_manutencao.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_turma.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_aula_realizada.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_avaliacao_musica.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_turma_mix.dart';
+import 'package:spin_flow/infra/database/sqlite/dao/dao_aula_realizada_sqlite.dart';
 import 'package:spin_flow/infra/database/sqlite/dao/dao_avaliacao_musica_sqlite.dart';
 import 'package:spin_flow/infra/database/sqlite/dao/dao_turma_mix_sqlite.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_usuario.dart';
@@ -96,6 +98,9 @@ void configurarDependencias() {
   getIt.registerLazySingleton<IDAOTurmaMix>(() => DAOTurmaMixSQLite());
   getIt.registerLazySingleton<IDAOAvaliacaoMusica>(
     () => DAOAvaliacaoMusicaSQLite(),
+  );
+  getIt.registerLazySingleton<IDAOAulaRealizada>(
+    () => DAOAulaRealizadaSQLite(),
   );
 
   // ── Repositórios ──────────────────────────────────────────────────────────

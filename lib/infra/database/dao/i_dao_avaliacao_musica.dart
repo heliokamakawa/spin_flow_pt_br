@@ -1,7 +1,7 @@
-abstract class IDAOAvaliacaoMusica {
-  /// Retorna mapa de musicaId → nota para o aluno nas músicas informadas.
-  Future<Map<int, int>> buscarAvaliacoesAluno(int alunoId, List<int> musicaIds);
+import 'package:spin_flow/domain/modelo/avaliacao_musica_detalhe.dart';
 
-  /// Insere ou atualiza a avaliação do aluno para a música.
+abstract class IDAOAvaliacaoMusica {
+  Future<Map<int, int>> buscarAvaliacoesAluno(int alunoId, List<int> musicaIds);
+  Future<List<AvaliacaoMusicaDetalhe>> buscarTodasComDetalhes(int alunoId);
   Future<void> salvar(int alunoId, int musicaId, int nota);
 }

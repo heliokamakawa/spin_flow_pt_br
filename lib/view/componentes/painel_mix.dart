@@ -5,15 +5,17 @@ import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:spin_flow/infra/tema/tema_app.dart';
 
 /// Botão que abre o mix da aula em um modal sobre a tela.
-/// As estrelas de avaliação sempre começam vazias — o histórico de
-/// avaliações não é exibido, só a avaliação da sessão atual é salva.
 class PainelMix extends StatelessWidget {
   final MixCheckin mix;
   final Future<void> Function(int musicaId, int nota) onAvaliar;
 
   const PainelMix({required this.mix, required this.onAvaliar, super.key});
 
-  void _abrirModal(BuildContext context) {
+  static void abrirModal(
+    BuildContext context,
+    MixCheckin mix,
+    Future<void> Function(int musicaId, int nota) onAvaliar,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -24,6 +26,9 @@ class PainelMix extends StatelessWidget {
       builder: (_) => _ModalMix(mix: mix, onAvaliar: onAvaliar),
     );
   }
+
+  void _abrirModal(BuildContext context) =>
+      PainelMix.abrirModal(context, mix, onAvaliar);
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +79,16 @@ class _ModalMix extends StatefulWidget {
 }
 
 class _ModalMixState extends State<_ModalMix> {
-  // Estrelas sempre começam vazias — avaliação da sessão atual
-  final Map<int, int> _avaliacoes = {};
+  late final Map<int, int> _avaliacoes;
+
+  @override
+  void initState() {
+    super.initState();
+    _avaliacoes = {
+      for (final m in widget.mix.musicas)
+        if (m.avaliacao != null) m.musicaId: m.avaliacao!,
+    };
+  }
 
   Future<void> _avaliar(int musicaId, int nota) async {
     await widget.onAvaliar(musicaId, nota);

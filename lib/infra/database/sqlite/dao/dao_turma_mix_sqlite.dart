@@ -55,4 +55,39 @@ class DAOTurmaMixSQLite implements IDAOTurmaMix {
 
     return MixCheckin(mixId: mixId, nomeMix: nomeMix, musicas: musicas);
   }
+
+  @override
+  Future<MixCheckin?> buscarMixPorId(int mixId) async {
+    final db = await ConexaoSQLite.database;
+    final mixRows = await db.rawQuery(
+      'SELECT id, nome FROM mix WHERE id = ? AND ativo = 1 LIMIT 1',
+      [mixId],
+    );
+    if (mixRows.isEmpty) return null;
+    final nomeMix = mixRows.first['nome'] as String;
+
+    final musicaRows = await db.rawQuery(
+      '''
+      SELECT mm.posicao, mu.id AS musica_id, mu.nome AS musica_nome,
+             COALESCE(ab.nome, '') AS artista_nome
+      FROM mix_musica mm
+      JOIN musica mu ON mu.id = mm.musica_id AND mu.ativo = 1
+      LEFT JOIN artista_banda ab ON ab.id = mu.artista_id
+      WHERE mm.mix_id = ?
+      ORDER BY mm.posicao
+      ''',
+      [mixId],
+    );
+
+    final musicas = musicaRows
+        .map((row) => MusicaCheckin(
+              musicaId: row['musica_id'] as int,
+              posicao: row['posicao'] as int,
+              nome: row['musica_nome'] as String,
+              nomeArtista: row['artista_nome'] as String,
+            ))
+        .toList();
+
+    return MixCheckin(mixId: mixId, nomeMix: nomeMix, musicas: musicas);
+  }
 }
