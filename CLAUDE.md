@@ -16,6 +16,43 @@ Usado em aula de Engenharia de Software.
 
 ---
 
+## Onde corrigir cada tipo de problema
+
+Quando o PO indicar um erro ou solicitar uma correção, identificar a camada correta
+antes de qualquer alteração:
+
+| Tipo de problema | Onde corrigir |
+|---|---|
+| Regra de negócio (cálculo, validação, restrição, estado) | `lib/domain/dominio/` ou `lib/domain/modelo/` |
+| Estrutura ou semântica de dados (campos, tipos, relacionamentos) | `lib/domain/modelo/` |
+| Acesso a dados, queries, persistência | `lib/infra/database/` |
+| Comportamento ou layout de tela | `lib/view/` **e** o MD correspondente em `lib/view/requisitos_interface/` |
+
+**Nunca corrigir apenas uma camada quando o problema atravessa mais de uma.**
+Ex.: erro de cálculo que aparece na tela deve ser corrigido no domínio/modelo *e*
+o MD de requisitos deve ser atualizado para refletir a regra correta.
+
+---
+
+## Protocolo para implementação de telas
+
+Toda implementação ou alteração de tela **obrigatoriamente**:
+
+1. **Ler** o arquivo `lib/view/requisitos_interface/<nome_da_tela>.md` antes de qualquer código.
+2. **Obedecer** todas as regras, layouts e comportamentos descritos no MD.
+3. **Atualizar** o MD quando:
+   - O PO indicar um novo comportamento ou regra.
+   - Um erro for corrigido e a regra mudar.
+   - Uma nova funcionalidade for adicionada à tela.
+4. O MD é a **fonte da verdade** da tela — o código deve espelhar o MD, não o contrário.
+
+Se não existir MD para a tela, criar antes de implementar usando o template:
+```
+lib/view/requisitos_interface/<nome_exato_do_arquivo_dart>.md
+```
+
+---
+
 ## ⚠️ Regras de check-in — VALIDADAS E ESTÁVEIS
 
 As regras abaixo foram implementadas e validadas pelo PO. **Não alterar sem instrução explícita.**
