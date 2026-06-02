@@ -9,23 +9,21 @@ import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/painel_mix.dart';
 
-class TelaMapeamentoCheckinAluno extends StatefulWidget {
+class TelaCheckin extends StatefulWidget {
   final int turmaId;
   final int alunoId;
 
-  const TelaMapeamentoCheckinAluno({
+  const TelaCheckin({
     super.key,
     required this.turmaId,
     required this.alunoId,
   });
 
   @override
-  State<TelaMapeamentoCheckinAluno> createState() =>
-      _TelaMapeamentoCheckinAlunoState();
+  State<TelaCheckin> createState() => _TelaCheckinState();
 }
 
-class _TelaMapeamentoCheckinAlunoState
-    extends State<TelaMapeamentoCheckinAluno> {
+class _TelaCheckinState extends State<TelaCheckin> {
   final _controlador = GetIt.I<ControladorCheckinAluno>();
 
   MapaCheckinAluno? _dados;

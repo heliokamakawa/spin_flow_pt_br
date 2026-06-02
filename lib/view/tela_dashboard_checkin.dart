@@ -10,17 +10,17 @@ import 'package:spin_flow/infra/tema/tema_app.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/painel_mix.dart';
-import '../../domain/modelo/situacao_checkin_aluno.dart';
-import 'package:spin_flow/view/checkin/tela_mapa_checkin_aluno.dart';
+import 'package:spin_flow/domain/modelo/situacao_checkin_aluno.dart';
+import 'package:spin_flow/view/tela_checkin.dart';
 
-class TelaTurmasCheckin extends StatefulWidget {
-  const TelaTurmasCheckin({super.key});
+class TelaDashboardCheckin extends StatefulWidget {
+  const TelaDashboardCheckin({super.key});
 
   @override
-  State<TelaTurmasCheckin> createState() => _TelaTurmasCheckinState();
+  State<TelaDashboardCheckin> createState() => _TelaDashboardCheckinState();
 }
 
-class _TelaTurmasCheckinState extends State<TelaTurmasCheckin>
+class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
     with SingleTickerProviderStateMixin {
   final _controlador = GetIt.I<ControladorCheckinAluno>();
   late final TabController _tabController;
@@ -140,7 +140,7 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin>
       default:
         await Navigator.of(context)
             .push(MaterialPageRoute(
-              builder: (_) => TelaMapeamentoCheckinAluno(
+              builder: (_) => TelaCheckin(
                 turmaId: s.turma.id!,
                 alunoId: _alunoId!,
               ),

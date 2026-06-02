@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:spin_flow/infra/autenticacao/sessao_usuario.dart';
 import 'package:spin_flow/infra/navegacao/rotas.dart';
 import 'package:spin_flow/infra/tema/tema_app.dart';
-import 'package:spin_flow/view/checkin/tela_turmas_checkin.dart';
+import 'package:spin_flow/view/tela_dashboard_checkin.dart';
 import 'package:spin_flow/view/gestao_aula/lista_alunos.dart';
 import 'package:spin_flow/view/gestao_professora/tela_dashboard_professora.dart';
 import 'package:spin_flow/view/tela_login.dart';
@@ -30,7 +30,7 @@ class SpinFlowApp extends StatelessWidget {
       navigatorObservers: [_SessaoObserver()],
       routes: {
         Rotas.login: (context) => const TelaLogin(),
-        Rotas.dashboardAluno: (context) => const TelaTurmasCheckin(),
+        Rotas.dashboardAluno: (context) => const TelaDashboardCheckin(),
         Rotas.dashboardProfessora: (context) => const TelaDashboardProfessora(),
         Rotas.recuperarSenha: (context) => const TelaRecuperarSenha(),
         Rotas.sessaoExpirada: (context) => const TelaSessaoExpirada(),

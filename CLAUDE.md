@@ -87,7 +87,7 @@ Ao fazer check-in em uma turma, o sistema remove automaticamente o aluno
 da fila de espera dessa mesma turma (caso exista registro ativo).
 Implementado em `RepositorioCheckinAluno.reservar`.
 
-### Botão da lista de aulas (`tela_turmas_checkin.dart`)
+### Botão da lista de aulas (`tela_dashboard_checkin.dart`)
 | Status        | Label             | Ativo | Cor     |
 |---------------|-------------------|-------|---------|
 | disponivel    | Check-in          | sim   | sucesso |
@@ -103,5 +103,5 @@ Implementado em `RepositorioCheckinAluno.reservar`.
 
 - Diagrama de classes: `docs/dc.md`
 - Requisitos de tela: `lib/view/requisitos_interface/`
-  - `tela_turmas_checkin.md` — lista de aulas do aluno
-  - `tela_mapa_checkin_aluno.md` — mapa de bikes e check-in
+  - `tela_dashboard_checkin.md` — dashboard do aluno (check-in + painel)
+  - `tela_checkin.md` — mapa de bikes e check-in
