@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
-import 'package:spin_flow/controller/gestao_administrativa/controlador_turma.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_turma.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/controller/controlador_turma.dart';
+import 'package:spin_flow/domain/modelo/turma.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
-import 'package:spin_flow/view/gestao_administrativa/form_turma.dart';
+import 'form_turma.dart';
 
 class ListaTurmas extends StatefulWidget {
   const ListaTurmas({super.key});
@@ -16,7 +16,7 @@ class ListaTurmas extends StatefulWidget {
 
 class _ListaTurmasState extends State<ListaTurmas> {
   final _controlador = GetIt.I<ControladorTurma>();
-  late Future<List<ModeloTurma>> _futuro;
+  late Future<List<Turma>> _futuro;
 
   @override
   void initState() {
@@ -30,14 +30,14 @@ class _ListaTurmasState extends State<ListaTurmas> {
     });
   }
 
-  Future<void> _abrirForm([ModeloTurma? turma]) async {
+  Future<void> _abrirForm([Turma? turma]) async {
     final atualizado = await Navigator.of(
       context,
     ).push<bool>(MaterialPageRoute(builder: (_) => FormTurma(turma: turma)));
     if (atualizado == true) _carregar();
   }
 
-  Future<void> _excluir(ModeloTurma turma) async {
+  Future<void> _excluir(Turma turma) async {
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -78,7 +78,7 @@ class _ListaTurmasState extends State<ListaTurmas> {
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
-      body: FutureBuilder<List<ModeloTurma>>(
+      body: FutureBuilder<List<Turma>>(
         future: _futuro,
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

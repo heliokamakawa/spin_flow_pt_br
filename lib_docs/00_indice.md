@@ -1,22 +1,22 @@
 # SpinFlow Docs (lib_docs)
 
-Este diretório concentra documentação técnica do projeto.
+Este diretï¿½rio concentra documentaï¿½ï¿½o tï¿½cnica do projeto.
 
 ## Estrutura
 
 - `01_requisitos/`
-  - `01_mapeamento_requisitos.md`: mapeamento RF -> código (classe/método/atributo)
+  - `01_mapeamento_requisitos.md`: mapeamento RF -> cï¿½digo (classe/mï¿½todo/atributo)
 - `02_diretrizes_dev/`
-  - `01_regras_negocio.md`: regras funcionais e validações do domínio
-  - `02_padroes_codigo.md`: padrões de formulários/listas/componentes e organização de código
-  - `03_cadastros_e_entidades.md`: visão objetiva de entidades, cadastros e dependências
+  - `01_regras_negocio.md`: regras funcionais e validaï¿½ï¿½es do domï¿½nio
+  - `02_padroes_codigo.md`: padrï¿½es de formulï¿½rios/listas/componentes e organizaï¿½ï¿½o de cï¿½digo
+  - `03_cadastros_e_entidades.md`: visï¿½o objetiva de entidades, cadastros e dependï¿½ncias
 - `03_execucao/`
-  - `01_log_execucao.md`: histórico técnico do que foi feito e pendências
+  - `01_log_execucao.md`: histï¿½rico tï¿½cnico do que foi feito e pendï¿½ncias
 - `99_prompts/`
-  - `01_prompt_operacao_ia.md`: prompt único para uso de IA (diretrizes + processo atual)
+  - `01_prompt_operacao_ia.md`: prompt ï¿½nico para uso de IA (diretrizes + processo atual)
 
-## Convenções
+## Convenï¿½ï¿½es
 
 - nomes de arquivos em `snake_case`
-- prefixo numérico para manter ordem lógica de leitura
-- arquivos antigos redundantes devem ser removidos após consolidação
+- prefixo numï¿½rico para manter ordem lï¿½gica de leitura
+- arquivos antigos redundantes devem ser removidos apï¿½s consolidaï¿½ï¿½o

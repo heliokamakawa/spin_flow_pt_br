@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/checkin/controlador_checkin_aluno.dart';
-import 'package:spin_flow/core/autenticacao/sessao_usuario.dart';
-import 'package:spin_flow/core/tema/tema_app.dart';
-import 'package:spin_flow/model/gestao_aula/situacao_checkin_aluno.dart';
-import 'package:spin_flow/model/modelo/modelo_aluno.dart';
+import 'package:spin_flow/controller/controlador_checkin_aluno.dart';
+import 'package:spin_flow/infra/autenticacao/sessao_usuario.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/infra/tema/tema_app.dart';
+import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
+import 'package:spin_flow/view/componentes/painel_mix.dart';
+import '../../domain/modelo/situacao_checkin_aluno.dart';
 import 'package:spin_flow/view/checkin/tela_mapa_checkin_aluno.dart';
 
 class TelaTurmasCheckin extends StatefulWidget {
@@ -17,7 +20,7 @@ class TelaTurmasCheckin extends StatefulWidget {
 class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
   final _controlador = GetIt.I<ControladorCheckinAluno>();
 
-  ModeloAluno? _aluno;
+  int? _alunoId;
   List<SituacaoCheckinAluno> _situacoes = [];
   bool _carregando = true;
   String? _erro;
@@ -29,36 +32,27 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
   }
 
   Future<void> _inicializar() async {
-    final email = SessaoUsuario.email;
-    if (email == null) {
+    final alunoId = SessaoUsuario.alunoId;
+    if (alunoId == null) {
       setState(() {
         _erro = 'Sessão expirada.';
         _carregando = false;
       });
       return;
     }
-    final aluno = await _controlador.buscarAlunoPorEmail(email);
-    if (!mounted) return;
-    if (aluno == null) {
-      setState(() {
-        _erro = 'Aluno não encontrado para este usuário.';
-        _carregando = false;
-      });
-      return;
-    }
-    setState(() => _aluno = aluno);
+    _alunoId = alunoId;
     await _carregar();
   }
 
   Future<void> _carregar() async {
-    final aluno = _aluno;
-    if (aluno?.id == null) return;
+    final alunoId = _alunoId;
+    if (alunoId == null) return;
     setState(() {
       _carregando = true;
       _erro = null;
     });
     try {
-      final lista = await _controlador.listarTurmasHoje(aluno!.id!);
+      final lista = await _controlador.listarTurmasHoje(alunoId);
       if (!mounted) return;
       setState(() {
         _situacoes = lista;
@@ -73,40 +67,82 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
     }
   }
 
-  void _aoTocarCard(SituacaoCheckinAluno s) {
-    if (s.status == StatusCheckinAluno.conflito) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+  Future<void> _aoTocarCard(SituacaoCheckinAluno s) async {
+    switch (s.status) {
+      case StatusCheckinAluno.conflito:
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             'Você já tem check-in em ${s.nomeTurmaConflito ?? "outra turma"} neste horário.',
           ),
-        ),
-      );
-      return;
-    }
-    if (s.status == StatusCheckinAluno.janelaFechada) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        ));
+
+      case StatusCheckinAluno.janelaFechada:
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Reserva disponível 30 min antes do início.'),
-        ),
-      );
-      return;
+        ));
+
+      case StatusCheckinAluno.confirmado:
+        await _cancelarCheckinDaLista(s);
+
+      default:
+        await Navigator.of(context)
+            .push(MaterialPageRoute(
+              builder: (_) => TelaMapeamentoCheckinAluno(
+                turmaId: s.turma.id!,
+                alunoId: _alunoId!,
+              ),
+            ))
+            .then((_) => _carregar());
     }
-    Navigator.of(context)
-        .push(
-          MaterialPageRoute(
-            builder: (_) => TelaMapeamentoCheckinAluno(
-              turmaId: s.turma.id!,
-              nomeTurma: s.turma.nome,
-              alunoId: _aluno!.id!,
-            ),
+  }
+
+  Future<void> _cancelarCheckinDaLista(SituacaoCheckinAluno s) async {
+    final id = s.checkinId;
+    if (id == null) return;
+
+    final confirma = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.turma.nome),
+        content: const Text('Cancelar sua reserva nesta aula?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Não'),
           ),
-        )
-        .then((_) => _carregar());
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: CoresApp.erro),
+            child: const Text('Cancelar'),
+          ),
+        ],
+      ),
+    );
+    if (confirma != true || !mounted) return;
+
+    final resultado = await _controlador.cancelarMinha(id);
+    if (!mounted) return;
+    if (resultado.sucesso) {
+      await _carregar();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(resultado.mensagemErro!)),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const TituloAppBarSpinFlow(),
+        actions: const [AcaoSairAppBar()],
+      ),
+      body: _buildBody(context),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
     if (_carregando) return const Center(child: CircularProgressIndicator());
 
     if (_erro != null) {
@@ -156,6 +192,7 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
         itemCount: _situacoes.length,
         itemBuilder: (_, i) => _CardCheckin(
           situacao: _situacoes[i],
+          alunoId: _alunoId!,
           onTap: () => _aoTocarCard(_situacoes[i]),
         ),
       ),
@@ -163,119 +200,158 @@ class _TelaTurmasCheckinState extends State<TelaTurmasCheckin> {
   }
 }
 
-// ── Card ────────────────────────────────────────────────────────────────────
+// -- Card --------------------------------------------------------------------
 
-class _CardCheckin extends StatelessWidget {
+class _CardCheckin extends StatefulWidget {
   final SituacaoCheckinAluno situacao;
+  final int alunoId;
   final VoidCallback onTap;
 
-  const _CardCheckin({required this.situacao, required this.onTap});
+  const _CardCheckin({
+    required this.situacao,
+    required this.alunoId,
+    required this.onTap,
+  });
+
+  @override
+  State<_CardCheckin> createState() => _CardCheckinState();
+}
+
+class _CardCheckinState extends State<_CardCheckin> {
+  final _controlador = GetIt.I<ControladorCheckinAluno>();
 
   @override
   Widget build(BuildContext context) {
     final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-    final turma = situacao.turma;
-    final badge = _badge(cores);
+    final s = widget.situacao;
+    final turma = s.turma;
+    final mix = s.mix;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      turma.nome,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Coluna 1 — nome, horário, professora
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        turma.nome,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${turma.horarioInicio} · ${turma.duracaoMinutos} min',
+                        style: TextStyle(fontSize: 13, color: cores.textoSuave),
+                      ),
+                      if (s.nomeProfessora != null)
+                        Text(
+                          s.nomeProfessora!,
+                          style: TextStyle(fontSize: 12, color: cores.textoFraco),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Coluna 2 — ocupação e fila
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      s.textoOcupacao,
                       style: const TextStyle(
+                        fontSize: 22,
                         fontWeight: FontWeight.w800,
-                        fontSize: 15,
                       ),
                     ),
-                  ),
-                  _Chip(label: badge.$1, cor: badge.$2),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Text(
-                '${turma.horarioInicio} · ${turma.duracaoMinutos} min · ${situacao.nomeSala}',
-                style: TextStyle(fontSize: 13, color: cores.textoSuave),
-              ),
-              const SizedBox(height: 4),
-              _textoStatus(cores),
-            ],
+                    Text(
+                      'bikes',
+                      style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                    ),
+                    if (s.bikesEmManutencao > 0)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          '${s.bikesEmManutencao} em manut.',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: cores.textoFraco,
+                          ),
+                        ),
+                      ),
+                    if ((s.totalNaFila ?? 0) > 0)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          '${s.totalNaFila} na fila',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: cores.alerta,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+            child: SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: s.botaoAtivo ? widget.onTap : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _corBotao(s.status),
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: _corBotaoDesabilitado(s.status),
+                  disabledForegroundColor: _corTextoBotaoDesabilitado(s.status, cores),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                child: Text(s.labelBotao),
+              ),
+            ),
+          ),
+          if (mix != null)
+            PainelMix(
+              mix: mix,
+              onAvaliar: (musicaId, nota) =>
+                  _controlador.avaliarMusica(widget.alunoId, musicaId, nota),
+            ),
+        ],
       ),
     );
   }
 
-  (String, Color) _badge(CoresSemanticasApp cores) {
-    return switch (situacao.status) {
-      StatusCheckinAluno.confirmado => ('Reservado', cores.info),
-      StatusCheckinAluno.emFila => ('Fila #${situacao.posicaoNaFila}', cores.alerta),
-      StatusCheckinAluno.conflito => ('Conflito', cores.erro),
-      StatusCheckinAluno.janelaFechada => ('Aguardando', cores.textoSuave),
-      StatusCheckinAluno.lotada => ('Lotada', cores.erro),
-      StatusCheckinAluno.disponivel =>
-        ('${situacao.vagasDisponiveis} vagas', cores.sucesso),
-    };
-  }
+  Color _corBotao(StatusCheckinAluno status) => switch (status) {
+    StatusCheckinAluno.disponivel  => CoresApp.sucesso,
+    StatusCheckinAluno.lotada      => CoresApp.alerta,
+    StatusCheckinAluno.confirmado  => CoresApp.erro,
+    _                              => CoresApp.superficieSuave,
+  };
 
-  Widget _textoStatus(CoresSemanticasApp cores) {
-    return switch (situacao.status) {
-      StatusCheckinAluno.confirmado => Text(
-        'Sua reserva está confirmada.',
-        style: TextStyle(color: cores.info, fontSize: 12),
-      ),
-      StatusCheckinAluno.emFila => Text(
-        'Você está na fila de espera (posição ${situacao.posicaoNaFila}).',
-        style: TextStyle(color: cores.alerta, fontSize: 12),
-      ),
-      StatusCheckinAluno.conflito => Text(
-        'Você já tem check-in em ${situacao.nomeTurmaConflito ?? "outra turma"} neste horário.',
-        style: TextStyle(color: cores.erro, fontSize: 12),
-      ),
-      StatusCheckinAluno.janelaFechada => Text(
-        'Reserva disponível 30 min antes do início.',
-        style: TextStyle(color: cores.textoSuave, fontSize: 12),
-      ),
-      StatusCheckinAluno.lotada => Text(
-        'Turma sem vagas. Toque para entrar na fila.',
-        style: TextStyle(color: cores.erro, fontSize: 12),
-      ),
-      StatusCheckinAluno.disponivel => Text(
-        '${situacao.vagasDisponiveis} de ${situacao.totalBikes} bikes disponíveis.',
-        style: TextStyle(color: cores.sucesso, fontSize: 12),
-      ),
-    };
-  }
-}
+  // Conflito e demais inativos: cinza neutro
+  Color _corBotaoDesabilitado(StatusCheckinAluno status) =>
+      CoresApp.superficieSuave;
 
-class _Chip extends StatelessWidget {
-  final String label;
-  final Color cor;
-
-  const _Chip({required this.label, required this.cor});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: cor.withValues(alpha: 0.12),
-        border: Border.all(color: cor.withValues(alpha: 0.5)),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(color: cor, fontSize: 11, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
+  Color _corTextoBotaoDesabilitado(
+          StatusCheckinAluno status, CoresSemanticasApp cores) =>
+      cores.textoFraco;
 }

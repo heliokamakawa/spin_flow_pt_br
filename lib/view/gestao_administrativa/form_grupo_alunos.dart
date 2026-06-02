@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_administrativa/controlador_grupo_alunos.dart';
-import 'package:spin_flow/core/config/erro.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_grupo_alunos.dart';
-import 'package:spin_flow/model/modelo/modelo_aluno.dart';
+import 'package:spin_flow/controller/controlador_grupo_alunos.dart';
+import 'package:spin_flow/infra/config/erro.dart';
+import 'package:spin_flow/domain/dominio/dominio_grupo_alunos.dart';
+import 'package:spin_flow/domain/modelo/grupo_alunos.dart';
+import 'package:spin_flow/domain/modelo/aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_ativo.dart';
 import 'package:spin_flow/view/componentes/campo_busca_multipla.dart';
 
 class FormGrupoAlunos extends StatefulWidget {
-  final ModeloGrupoAlunos? grupo;
+  final GrupoAlunos? grupo;
 
   const FormGrupoAlunos({super.key, this.grupo});
 
@@ -26,8 +27,8 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
   final _nomeController = TextEditingController();
   final _descricaoController = TextEditingController();
 
-  List<ModeloAluno> _alunosDisponiveis = [];
-  List<ModeloAluno> _alunosSelecionados = [];
+  List<Aluno> _alunosDisponiveis = [];
+  List<Aluno> _alunosSelecionados = [];
   bool _carregando = true;
   bool _salvando = false;
   bool _ativo = true;
@@ -39,7 +40,7 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
     if (grupo != null) {
       _nomeController.text = grupo.nome;
       _descricaoController.text = grupo.descricao;
-      _alunosSelecionados = List<ModeloAluno>.from(grupo.alunos);
+      _alunosSelecionados = List<Aluno>.from(grupo.alunos);
       _ativo = grupo.ativo;
     }
     _carregarAlunos();
@@ -54,11 +55,11 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
     });
   }
 
-  List<ModeloAluno> _mesclarAlunos(
-    List<ModeloAluno> disponiveis,
-    List<ModeloAluno> selecionados,
+  List<Aluno> _mesclarAlunos(
+    List<Aluno> disponiveis,
+    List<Aluno> selecionados,
   ) {
-    final porId = <int, ModeloAluno>{};
+    final porId = <int, Aluno>{};
     for (final aluno in [...disponiveis, ...selecionados]) {
       final id = aluno.id;
       if (id != null) porId[id] = aluno;
@@ -79,7 +80,7 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _salvando = true);
 
-    final grupo = ModeloGrupoAlunos(
+    final grupo = GrupoAlunos(
       id: widget.grupo?.id,
       nome: _nomeController.text.trim(),
       descricao: _descricaoController.text.trim(),
@@ -87,7 +88,7 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
       ativo: _ativo,
     );
 
-    final resultado = await _controlador.salvar(grupo);
+    final resultado = await _controlador.salvar(DominioGrupoAlunos(grupo));
     if (!mounted) return;
     setState(() => _salvando = false);
 
@@ -191,7 +192,7 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
   }
 
   Widget _buildSelecaoAlunos() {
-    return FormField<List<ModeloAluno>>(
+    return FormField<List<Aluno>>(
       initialValue: _alunosSelecionados,
       validator: (lista) => (lista == null || lista.isEmpty)
           ? 'Selecione pelo menos um aluno.'
@@ -208,7 +209,7 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
             ),
           ),
           const SizedBox(height: 4),
-          CampoBuscaMultipla<ModeloAluno>(
+          CampoBuscaMultipla<Aluno>(
             opcoes: _alunosDisponiveis,
             selecionados: _alunosSelecionados,
             getNome: (a) => a.nome,

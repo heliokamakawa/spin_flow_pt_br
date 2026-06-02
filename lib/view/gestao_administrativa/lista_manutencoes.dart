@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
-import 'package:spin_flow/controller/gestao_administrativa/controlador_manutencao.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_manutencao.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/controller/controlador_manutencao.dart';
+import 'package:spin_flow/domain/modelo/manutencao.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
-import 'package:spin_flow/view/gestao_administrativa/form_manutencao.dart';
+import 'form_manutencao.dart';
 
 class ListaManutencoes extends StatefulWidget {
   const ListaManutencoes({super.key});
@@ -17,7 +17,7 @@ class ListaManutencoes extends StatefulWidget {
 
 class _ListaManutencoesState extends State<ListaManutencoes> {
   final _controlador = GetIt.I<ControladorManutencao>();
-  late Future<List<ModeloManutencao>> _futuro;
+  late Future<List<Manutencao>> _futuro;
 
   static final _fmt = DateFormat('dd/MM/yyyy', 'pt_BR');
 
@@ -33,14 +33,14 @@ class _ListaManutencoesState extends State<ListaManutencoes> {
     });
   }
 
-  Future<void> _abrirForm([ModeloManutencao? manutencao]) async {
+  Future<void> _abrirForm([Manutencao? manutencao]) async {
     final atualizado = await Navigator.of(context).push<bool>(
       MaterialPageRoute(builder: (_) => FormManutencao(manutencao: manutencao)),
     );
     if (atualizado == true) _carregar();
   }
 
-  Future<void> _excluir(ModeloManutencao manutencao) async {
+  Future<void> _excluir(Manutencao manutencao) async {
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -85,7 +85,7 @@ class _ListaManutencoesState extends State<ListaManutencoes> {
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
-      body: FutureBuilder<List<ModeloManutencao>>(
+      body: FutureBuilder<List<Manutencao>>(
         future: _futuro,
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

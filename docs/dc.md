@@ -21,19 +21,19 @@ classDiagram
         DOMINGO
     }
 
-    class Perfil {
-        <<enumeration>>
-        PROFESSORA
-        ALUNO
-    }
-
     %% Autenticação
     class Usuario {
         +int id
         +String nome
         +String email
         +String cpf
-        +Perfil perfil
+        +int alunoId
+        +int professoraId
+        +bool ativo
+    }
+
+    class Professora {
+        +int id
         +bool ativo
     }
 
@@ -198,6 +198,14 @@ classDiagram
         +reservar(int fila, int coluna)
     }
 
+    class AulaRealizada {
+        +int id
+        +int alunoId
+        +int turmaId
+        +DateTime data
+        +bool ativo
+    }
+
     class FilaEsperaCheckin {
         +int id
         +DateTime data
@@ -208,7 +216,8 @@ classDiagram
     note "CRUD omitido para clareza.\nO delete torna o registro inativo\n(soft delete) por segurança."
 
     %% Associações — Autenticação
-    Usuario "0..1" --> "0..1" Aluno : mesmo email
+    Usuario "1" --> "0..1" Aluno : aluno_id
+    Usuario "1" --> "0..1" Professora : professora_id
 
     %% Associações — Bikes e Manutenção
     Bike "0..*" --> "1..1" Fabricante
@@ -226,6 +235,7 @@ classDiagram
     %% Associações — Alunos
     GrupoAlunos "0..*" --> "1..*" Aluno
     Checkin "0..*" --> "1..1" Aluno
+    AulaRealizada "0..*" --> "1..1" Aluno
     AvaliacaoMusica "0..*" --> "1..1" Aluno
     FilaEsperaCheckin "0..*" --> "1..1" Aluno
     FilaEsperaCheckin "0..*" --> "1..1" Turma
@@ -235,6 +245,7 @@ classDiagram
     PosicaoBike "0..*" --> "1..1" Bike
     Turma "0..*" --> "1..1" Sala
     Checkin "0..*" --> "1..1" Turma
+    AulaRealizada "0..*" --> "1..1" Turma
 
     %% Associações — Cruzamento de clusters
     TurmaMix "0..*" --> "1..1" Turma

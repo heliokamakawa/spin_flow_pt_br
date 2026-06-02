@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
-import 'package:spin_flow/controller/gestao_aula/controlador_aluno.dart';
-import 'package:spin_flow/model/modelo/modelo_aluno.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/controller/controlador_aluno.dart';
+import 'package:spin_flow/domain/dominio/dominio_aluno.dart';
+import 'package:spin_flow/domain/modelo/aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormAluno extends StatefulWidget {
-  final ModeloAluno? aluno;
+  final Aluno? aluno;
   const FormAluno({Key? key, this.aluno}) : super(key: key);
 
   @override
@@ -62,7 +63,7 @@ class _FormAlunoState extends State<FormAluno> {
   }
 
   Future<void> _salvar() async {
-    final aluno = ModeloAluno(
+    final aluno = Aluno(
       id: widget.aluno?.id,
       nome: _nomeController.text,
       email: _emailController.text,
@@ -76,7 +77,7 @@ class _FormAlunoState extends State<FormAluno> {
       observacoes: _observacoesController.text,
       ativo: _ativo,
     );
-    final erro = await _controlador.salvarAluno(aluno);
+    final erro = await _controlador.salvar(DominioAluno(aluno));
     if (!mounted) return;
     if (erro != null) {
       ScaffoldMessenger.of(context).showSnackBar(

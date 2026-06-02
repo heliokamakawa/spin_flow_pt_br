@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_aula/controlador_operacao_aula.dart';
-import 'package:spin_flow/model/gestao_aula/estado_mapa_aula.dart';
-import 'package:spin_flow/view/gestao_aula/tela_mapa_aula.dart';
+import 'package:spin_flow/controller/controlador_operacao_aula.dart';
+import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
+import 'tela_mapa_aula.dart';
 
 class TelaOperacaoAula extends StatefulWidget {
   const TelaOperacaoAula({super.key});

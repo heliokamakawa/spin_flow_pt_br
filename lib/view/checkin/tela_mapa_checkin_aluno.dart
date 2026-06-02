@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/checkin/controlador_checkin_aluno.dart';
-import 'package:spin_flow/core/tema/tema_app.dart';
-import 'package:spin_flow/model/gestao_aula/estado_mapa_aula.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_checkin.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_posicao_bike.dart';
+import 'package:spin_flow/controller/controlador_checkin_aluno.dart';
+import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
+import 'package:spin_flow/domain/modelo/posicao_bike.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/infra/tema/tema_app.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
+import 'package:spin_flow/view/componentes/painel_mix.dart';
 
 class TelaMapeamentoCheckinAluno extends StatefulWidget {
   final int turmaId;
-  final String nomeTurma;
   final int alunoId;
 
   const TelaMapeamentoCheckinAluno({
     super.key,
     required this.turmaId,
-    required this.nomeTurma,
     required this.alunoId,
   });
 
@@ -28,9 +27,14 @@ class TelaMapeamentoCheckinAluno extends StatefulWidget {
 class _TelaMapeamentoCheckinAlunoState
     extends State<TelaMapeamentoCheckinAluno> {
   final _controlador = GetIt.I<ControladorCheckinAluno>();
+
   MapaCheckinAluno? _dados;
   bool _carregando = true;
   bool _agindo = false;
+
+  PosicaoBike? _posicaoEscolhida;
+  String? _tituloPainel;
+  String? _subPainel;
 
   @override
   void initState() {
@@ -39,7 +43,12 @@ class _TelaMapeamentoCheckinAlunoState
   }
 
   Future<void> _carregar() async {
-    setState(() => _carregando = true);
+    setState(() {
+      _carregando = true;
+      _posicaoEscolhida = null;
+      _tituloPainel = null;
+      _subPainel = null;
+    });
     try {
       final dados = await _controlador.carregarMapa(
         widget.turmaId,
@@ -57,32 +66,72 @@ class _TelaMapeamentoCheckinAlunoState
     }
   }
 
-  // ── Ações ──────────────────────────────────────────────────────────────────
+  // -- Ações ------------------------------------------------------------------
 
-  Future<void> _reservar(ModeloPosicaoBike posicao) async {
-    final dados = _dados!;
-    if (!dados.janelAberta) {
-      _snack('Reservas abertas 30 min antes da aula.');
+  void _aoTocarCelula(MapaCheckinAluno dados, int fila, int coluna) {
+    final estado = dados.mapa;
+
+    if (estado.ehProfessora(fila, coluna)) {
+      setState(() {
+        _posicaoEscolhida = null;
+        _tituloPainel = 'Bike da professora';
+        _subPainel = null;
+      });
       return;
     }
-    final confirma = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(posicao.bikeNome),
-        content: const Text('Reservar esta bike?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Não'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Sim'),
-          ),
-        ],
-      ),
-    );
-    if (confirma != true || !mounted) return;
+
+    final posicao = estado.posicaoEm(fila, coluna);
+    if (posicao == null) return;
+
+    if (estado.emManutencao(fila, coluna)) {
+      final motivo = estado.motivoManutencaoEm(fila, coluna);
+      setState(() {
+        _posicaoEscolhida = null;
+        _tituloPainel = 'Em manutenção';
+        _subPainel = motivo?.isNotEmpty == true ? motivo : 'Sem descrição';
+      });
+      return;
+    }
+
+    final checkin = estado.checkinEm(fila, coluna);
+    if (checkin != null && checkin.alunoId == dados.alunoId) {
+      setState(() {
+        _posicaoEscolhida = null;
+        _tituloPainel = 'Sua reserva';
+        _subPainel = posicao.bikeNome;
+      });
+      return;
+    }
+
+    if (checkin != null) {
+      final partes = checkin.nomeAluno.trim().split(' ');
+      final nome = partes.isNotEmpty ? partes.first : '—';
+      setState(() {
+        _posicaoEscolhida = null;
+        _tituloPainel = nome;
+        _subPainel = posicao.bikeNome;
+      });
+      return;
+    }
+
+    // bike livre — selecionar para check-in
+    if (dados.idCheckinDoAluno == null &&
+        dados.posicaoNaFila == null &&
+        dados.janelAberta) {
+      setState(() {
+        _posicaoEscolhida = _posicaoEscolhida?.bikeNome == posicao.bikeNome
+            ? null // deselect ao tocar de novo
+            : posicao;
+        _tituloPainel = null;
+        _subPainel = null;
+      });
+    }
+  }
+
+  Future<void> _reservar() async {
+    final posicao = _posicaoEscolhida;
+    final dados = _dados;
+    if (posicao == null || dados == null) return;
 
     setState(() => _agindo = true);
     final agora = DateTime.now();
@@ -95,11 +144,12 @@ class _TelaMapeamentoCheckinAlunoState
     );
     if (!mounted) return;
     setState(() => _agindo = false);
-    _snack(
-      resultado.sucesso ? 'Reserva confirmada!' : resultado.mensagemErro!,
-      erro: !resultado.sucesso,
-    );
-    if (resultado.sucesso) await _carregar();
+
+    if (resultado.sucesso) {
+      Navigator.of(context).pop();
+    } else {
+      _snack(resultado.mensagemErro!, erro: true);
+    }
   }
 
   Future<void> _cancelarMinha() async {
@@ -117,9 +167,8 @@ class _TelaMapeamentoCheckinAlunoState
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: TextButton.styleFrom(
-              foregroundColor: Theme.of(
-                context,
-              ).extension<CoresSemanticasApp>()!.erro,
+              foregroundColor:
+                  Theme.of(context).extension<CoresSemanticasApp>()!.erro,
             ),
             child: const Text('Cancelar'),
           ),
@@ -140,10 +189,12 @@ class _TelaMapeamentoCheckinAlunoState
   }
 
   Future<void> _entrarFilaEspera() async {
+    final dados = _dados;
+    if (dados == null) return;
     final confirma = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(widget.nomeTurma),
+        title: Text(dados.mapa.turma.nome),
         content: const Text('Entrar na fila de espera?'),
         actions: [
           TextButton(
@@ -168,11 +219,11 @@ class _TelaMapeamentoCheckinAlunoState
     );
     if (!mounted) return;
     setState(() => _agindo = false);
-    _snack(
-      resultado.sucesso ? 'Você entrou na fila!' : resultado.mensagemErro!,
-      erro: !resultado.sucesso,
-    );
-    if (resultado.sucesso) await _carregar();
+    if (resultado.sucesso) {
+      Navigator.of(context).pop();
+    } else {
+      _snack(resultado.mensagemErro!, erro: true);
+    }
   }
 
   Future<void> _sairDaFila() async {
@@ -219,7 +270,7 @@ class _TelaMapeamentoCheckinAlunoState
     );
   }
 
-  // ── UI ─────────────────────────────────────────────────────────────────────
+  // -- UI ---------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -231,231 +282,167 @@ class _TelaMapeamentoCheckinAlunoState
       body: _carregando
           ? const Center(child: CircularProgressIndicator())
           : _dados == null
-          ? const Center(child: Text('Erro ao carregar.'))
-          : _buildConteudo(),
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Erro ao carregar mapa.'),
+                      const SizedBox(height: 12),
+                      TextButton.icon(
+                        onPressed: _carregar,
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Tentar novamente'),
+                      ),
+                    ],
+                  ),
+                )
+              : _buildConteudo(),
     );
   }
 
   Widget _buildConteudo() {
     final dados = _dados!;
-    final sala = dados.mapa.sala;
 
-    return Column(
-      children: [
-        _buildLegenda(dados),
-        Expanded(
-          child: _agindo
-              ? const Center(child: CircularProgressIndicator())
-              : GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: sala.numeroColunas,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
+    return _agindo
+        ? const Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (dados.mix != null)
+                  Card(
+                    margin: EdgeInsets.zero,
+                    child: PainelMix(
+                      mix: dados.mix!,
+                      onAvaliar: (musicaId, nota) =>
+                          _controlador.avaliarMusica(widget.alunoId, musicaId, nota),
+                    ),
                   ),
-                  itemCount: sala.numeroFilas * sala.numeroColunas,
-                  itemBuilder: (_, index) {
-                    final fila = index ~/ sala.numeroColunas;
-                    final coluna = index % sala.numeroColunas;
-                    return _buildCelula(dados, fila, coluna);
-                  },
+                if (dados.mix != null) const SizedBox(height: 8),
+                _CabecalhoAula(dados: dados),
+                const SizedBox(height: 10),
+                _LegendaBikes(dados: dados),
+                const SizedBox(height: 8),
+                _GradeBikes(
+                  dados: dados,
+                  posicaoEscolhida: _posicaoEscolhida,
+                  onTocar: (f, c) => _aoTocarCelula(dados, f, c),
                 ),
-        ),
-        _buildBarraAcoes(dados),
-      ],
-    );
-  }
-
-  Widget _buildCelula(MapaCheckinAluno dados, int fila, int coluna) {
-    final estado = dados.mapa;
-    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-
-    if (estado.ehProfessora(fila, coluna)) {
-      return _Celula(
-        cor: cores.bikeProfessora,
-        label: 'Profa',
-        sub: 'F${fila + 1}C${coluna + 1}',
-      );
-    }
-
-    final posicao = estado.posicaoEm(fila, coluna);
-    if (posicao == null) {
-      return _Celula(
-        cor: cores.textoFraco.withValues(alpha: 0.18),
-        label: '—',
-        sub: 'F${fila + 1}C${coluna + 1}',
-        textEscuro: true,
-      );
-    }
-
-    if (estado.emManutencao(fila, coluna)) {
-      return _Celula(
-        cor: cores.bikeManutencao,
-        label: 'Manut',
-        sub: posicao.bikeNome,
-      );
-    }
-
-    final checkin = estado.checkinEm(fila, coluna);
-
-    if (checkin != null && checkin.alunoId == dados.alunoId) {
-      return _Celula(
-        cor: cores.bikeMinhaReserva,
-        label: 'Minha',
-        sub: posicao.bikeNome,
-        onTap: _cancelarMinha,
-      );
-    }
-
-    if (checkin != null) {
-      return _Celula(
-        cor: cores.bikeOcupada,
-        label: _primeiroNome(checkin),
-        sub: posicao.bikeNome,
-      );
-    }
-
-    return _Celula(
-      cor: cores.bikeLivre,
-      label: posicao.bikeNome,
-      sub: 'F${fila + 1}C${coluna + 1}',
-      textEscuro: true,
-      borda: true,
-      onTap: () => _reservar(posicao),
-    );
-  }
-
-  String _primeiroNome(ModeloCheckin c) {
-    final partes = c.nomeAluno.trim().split(' ');
-    return partes.isNotEmpty ? partes.first : '—';
-  }
-
-  Widget _buildLegenda(MapaCheckinAluno dados) {
-    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
-      child: Wrap(
-        spacing: 10,
-        runSpacing: 4,
-        children: [
-          _ItemLegenda(cor: cores.bikeMinhaReserva, texto: 'Minha reserva'),
-          _ItemLegenda(cor: cores.bikeLivre, texto: 'Livre', borda: true),
-          _ItemLegenda(cor: cores.bikeOcupada, texto: 'Ocupada'),
-          _ItemLegenda(cor: cores.bikeProfessora, texto: 'Professora'),
-          if (!dados.janelAberta)
-            _ItemLegenda(cor: cores.bikeManutencao, texto: 'Janela fechada'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBarraAcoes(MapaCheckinAluno dados) {
-    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-    Widget conteudo;
-
-    if (dados.idCheckinDoAluno != null) {
-      conteudo = TextButton.icon(
-        onPressed: _cancelarMinha,
-        icon: const Icon(Icons.cancel_outlined),
-        label: const Text('Cancelar minha reserva'),
-        style: TextButton.styleFrom(foregroundColor: cores.erro),
-      );
-    } else if (dados.posicaoNaFila != null) {
-      conteudo = Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Fila de espera: ${dados.posicaoNaFila}ª posição',
-            style: TextStyle(color: cores.alerta, fontWeight: FontWeight.w600),
-          ),
-          TextButton(onPressed: _sairDaFila, child: const Text('Sair')),
-        ],
-      );
-    } else if (!dados.janelAberta) {
-      conteudo = Text(
-        'Reservas abertas 30 min antes do início.',
-        style: TextStyle(color: cores.textoSuave),
-        textAlign: TextAlign.center,
-      );
-    } else if (dados.lotada) {
-      conteudo = SizedBox(
-        width: double.infinity,
-        child: ElevatedButton.icon(
-          onPressed: _entrarFilaEspera,
-          icon: const Icon(Icons.queue),
-          label: const Text('Entrar na fila de espera'),
-        ),
-      );
-    } else {
-      conteudo = const SizedBox.shrink();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-      child: conteudo,
-    );
+                const SizedBox(height: 8),
+                _PainelInfo(
+                  titulo: _tituloPainel,
+                  subtitulo: _subPainel,
+                  posicaoEscolhida: _posicaoEscolhida,
+                ),
+                const SizedBox(height: 12),
+                _BotaoAcao(
+                  dados: dados,
+                  posicaoEscolhida: _posicaoEscolhida,
+                  onReservar: _reservar,
+                  onCancelar: _cancelarMinha,
+                  onEntrarFila: _entrarFilaEspera,
+                  onSairFila: _sairDaFila,
+                ),
+              ],
+            ),
+          );
   }
 }
 
-// ── Widgets auxiliares ──────────────────────────────────────────────────────
+// -- Cabeçalho ---------------------------------------------------------------
 
-class _Celula extends StatelessWidget {
-  final Color cor;
-  final String label;
-  final String sub;
-  final VoidCallback? onTap;
-  final bool textEscuro;
-  final bool borda;
+class _CabecalhoAula extends StatelessWidget {
+  final MapaCheckinAluno dados;
 
-  const _Celula({
-    required this.cor,
-    required this.label,
-    required this.sub,
-    this.onTap,
-    this.textEscuro = false,
-    this.borda = false,
-  });
+  const _CabecalhoAula({required this.dados});
 
   @override
   Widget build(BuildContext context) {
     final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-    final ct = textEscuro
-        ? Theme.of(context).colorScheme.onSurface
-        : Colors.white;
+    final turma = dados.mapa.turma;
+    final dias = turma.diasSemana.map((d) => d.dbValue).join(' · ');
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: cor,
-          borderRadius: BorderRadius.circular(8),
-          border: borda ? Border.all(color: cores.borda) : null,
-        ),
-        padding: const EdgeInsets.all(3),
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              sub,
-              style: TextStyle(
-                color: ct,
-                fontSize: 8,
-                fontWeight: FontWeight.w600,
-              ),
+              turma.nome,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
             ),
-            const SizedBox(height: 1),
+            const SizedBox(height: 2),
             Text(
-              label,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: ct, fontSize: 10),
+              [
+                if (dados.nomeProfessora != null) dados.nomeProfessora!,
+                '${turma.horarioInicio} · ${turma.duracaoMinutos} min',
+              ].join(' · '),
+              style: TextStyle(fontSize: 13, color: cores.textoSuave),
             ),
+            if (dias.isNotEmpty)
+              Text(
+                dias,
+                style: TextStyle(fontSize: 12, color: cores.textoFraco),
+              ),
+            const SizedBox(height: 6),
+            _ResumoBikes(dados: dados),
           ],
         ),
       ),
+    );
+  }
+}
+
+// -- Resumo de bikes ---------------------------------------------------------
+
+class _ResumoBikes extends StatelessWidget {
+  final MapaCheckinAluno dados;
+
+  const _ResumoBikes({required this.dados});
+
+  @override
+  Widget build(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+    final mapa = dados.mapa;
+    final disponiveis = mapa.totalBikes - mapa.checkinsAtivos.length;
+    final manut = mapa.bikesEmManutencao;
+
+    final partes = <String>[
+      '$disponiveis de ${mapa.totalBikes} vagas disponíveis',
+      if (manut > 0) '$manut em manutenção',
+    ];
+
+    return Text(
+      partes.join(' · '),
+      style: TextStyle(fontSize: 12, color: cores.textoFraco),
+    );
+  }
+}
+
+// -- Legenda -----------------------------------------------------------------
+
+class _LegendaBikes extends StatelessWidget {
+  final MapaCheckinAluno dados;
+
+  const _LegendaBikes({required this.dados});
+
+  @override
+  Widget build(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+
+    return Wrap(
+      spacing: 10,
+      runSpacing: 4,
+      children: [
+        _ItemLegenda(cor: cores.bikeMinhaReserva, texto: 'Minha reserva'),
+        _ItemLegenda(cor: cores.bikeLivre, texto: 'Livre', borda: true),
+        _ItemLegenda(cor: cores.bikeOcupada, texto: 'Ocupada'),
+        _ItemLegenda(cor: cores.bikeProfessora, texto: 'Professora'),
+        _ItemLegenda(cor: cores.bikeManutencao, texto: 'Manutenção'),
+      ],
     );
   }
 }
@@ -465,16 +452,11 @@ class _ItemLegenda extends StatelessWidget {
   final String texto;
   final bool borda;
 
-  const _ItemLegenda({
-    required this.cor,
-    required this.texto,
-    this.borda = false,
-  });
+  const _ItemLegenda({required this.cor, required this.texto, this.borda = false});
 
   @override
   Widget build(BuildContext context) {
     final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -489,6 +471,366 @@ class _ItemLegenda extends StatelessWidget {
         const SizedBox(width: 4),
         Text(texto, style: const TextStyle(fontSize: 10)),
       ],
+    );
+  }
+}
+
+// -- Grade de bikes ----------------------------------------------------------
+
+class _GradeBikes extends StatelessWidget {
+  final MapaCheckinAluno dados;
+  final PosicaoBike? posicaoEscolhida;
+  final void Function(int fila, int coluna) onTocar;
+
+  const _GradeBikes({
+    required this.dados,
+    required this.posicaoEscolhida,
+    required this.onTocar,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final sala = dados.mapa.sala;
+
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        final cellSize = constraints.maxWidth / sala.numeroColunas;
+        return SizedBox(
+          height: cellSize * sala.numeroFilas,
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: sala.numeroColunas,
+              crossAxisSpacing: 4,
+              mainAxisSpacing: 4,
+            ),
+            itemCount: sala.numeroFilas * sala.numeroColunas,
+            itemBuilder: (_, index) {
+              final fila = index ~/ sala.numeroColunas;
+              final coluna = index % sala.numeroColunas;
+              return _buildCelula(context, fila, coluna);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCelula(BuildContext context, int fila, int coluna) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+    final estado = dados.mapa;
+
+    if (estado.ehProfessora(fila, coluna)) {
+      return _Celula(
+        cor: cores.bikeProfessora,
+        numero: 'P',
+        onTap: () => onTocar(fila, coluna),
+      );
+    }
+
+    final posicao = estado.posicaoEm(fila, coluna);
+    if (posicao == null) {
+      return _Celula(
+        cor: cores.textoFraco.withValues(alpha: 0.15),
+        numero: '—',
+        textoEscuro: true,
+      );
+    }
+
+    if (estado.emManutencao(fila, coluna)) {
+      return _Celula(
+        cor: cores.bikeManutencao,
+        numero: posicao.numeroDisplay,
+        onTap: () => onTocar(fila, coluna),
+      );
+    }
+
+    final checkin = estado.checkinEm(fila, coluna);
+
+    if (checkin != null && checkin.alunoId == dados.alunoId) {
+      return _Celula(
+        cor: cores.bikeMinhaReserva,
+        numero: posicao.numeroDisplay,
+        onTap: () => onTocar(fila, coluna),
+      );
+    }
+
+    if (checkin != null) {
+      return _Celula(
+        cor: cores.bikeOcupada,
+        numero: posicao.numeroDisplay,
+        onTap: () => onTocar(fila, coluna),
+      );
+    }
+
+    final selecionada = posicaoEscolhida?.bikeNome == posicao.bikeNome &&
+        posicaoEscolhida?.fila == fila &&
+        posicaoEscolhida?.coluna == coluna;
+
+    return _Celula(
+      cor: selecionada ? cores.bikeMinhaReserva : cores.bikeLivre,
+      numero: posicao.bikeNome,
+      textoEscuro: !selecionada,
+      borda: !selecionada,
+      selecionada: selecionada,
+      onTap: () => onTocar(fila, coluna),
+    );
+  }
+}
+
+class _Celula extends StatelessWidget {
+  final Color cor;
+  final String numero;
+  final VoidCallback? onTap;
+  final bool textoEscuro;
+  final bool borda;
+  final bool selecionada;
+
+  const _Celula({
+    required this.cor,
+    required this.numero,
+    this.onTap,
+    this.textoEscuro = false,
+    this.borda = false,
+    this.selecionada = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+    final textoCor = textoEscuro
+        ? CoresApp.textoPrincipal
+        : Colors.white;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: cor,
+          borderRadius: BorderRadius.circular(8),
+          border: selecionada
+              ? Border.all(color: Colors.white, width: 2.5)
+              : borda
+                  ? Border.all(color: cores.borda)
+                  : null,
+        ),
+        child: Center(
+          child: Text(
+            numero,
+            style: TextStyle(
+              color: textoCor,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// -- Painel informativo ------------------------------------------------------
+
+class _PainelInfo extends StatelessWidget {
+  final String? titulo;
+  final String? subtitulo;
+  final PosicaoBike? posicaoEscolhida;
+
+  const _PainelInfo({
+    required this.titulo,
+    required this.subtitulo,
+    required this.posicaoEscolhida,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+
+    final String textoTitulo;
+    String? textoSub;
+    IconData icone;
+    Color corIcone;
+
+    if (posicaoEscolhida != null) {
+      textoTitulo = 'Bike selecionada para check-in';
+      textoSub = posicaoEscolhida!.numeroDisplay;
+      icone = Icons.check_circle_outline;
+      corIcone = cores.sucesso;
+    } else if (titulo == 'Em manutenção') {
+      textoTitulo = titulo!;
+      textoSub = subtitulo;
+      icone = Icons.build_outlined;
+      corIcone = cores.alerta;
+    } else if (titulo == 'Sua reserva') {
+      textoTitulo = titulo!;
+      textoSub = subtitulo;
+      icone = Icons.star_outline;
+      corIcone = cores.info;
+    } else if (titulo != null) {
+      textoTitulo = titulo!;
+      textoSub = subtitulo;
+      icone = Icons.person_outline;
+      corIcone = cores.textoSuave;
+    } else {
+      textoTitulo = 'Toque em uma bike para ver detalhes';
+      icone = Icons.touch_app_outlined;
+      corIcone = cores.textoFraco;
+    }
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: SizedBox(
+        height: 56,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Row(
+            children: [
+              Icon(icone, size: 20, color: corIcone),
+              const SizedBox(width: 10),
+              Expanded(
+                child: textoSub != null
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            textoTitulo,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            textoSub,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: cores.textoSuave,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text(
+                        textoTitulo,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: titulo == null ? cores.textoFraco : null,
+                          fontStyle: titulo == null ? FontStyle.italic : null,
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// -- Botão de ação principal -------------------------------------------------
+
+class _BotaoAcao extends StatelessWidget {
+  final MapaCheckinAluno dados;
+  final PosicaoBike? posicaoEscolhida;
+  final VoidCallback onReservar;
+  final VoidCallback onCancelar;
+  final VoidCallback onEntrarFila;
+  final VoidCallback onSairFila;
+
+  const _BotaoAcao({
+    required this.dados,
+    required this.posicaoEscolhida,
+    required this.onReservar,
+    required this.onCancelar,
+    required this.onEntrarFila,
+    required this.onSairFila,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (dados.idCheckinDoAluno != null) {
+      return _botao(
+        label: 'Cancelar Reserva',
+        cor: CoresApp.erro,
+        onTap: onCancelar,
+      );
+    }
+
+    if (dados.posicaoNaFila != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Você está na fila · posição ${dados.posicaoNaFila}',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              color: Theme.of(context).extension<CoresSemanticasApp>()!.alerta,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 6),
+          _botao(label: 'Sair da Fila', cor: CoresApp.alerta, onTap: onSairFila),
+        ],
+      );
+    }
+
+    if (!dados.janelAberta) {
+      return _botao(
+        label: 'Aguardando · Abre 30 min antes',
+        cor: CoresApp.superficieSuave,
+        onTap: null,
+        textoCor: CoresApp.textoFraco,
+      );
+    }
+
+    if (dados.lotada) {
+      return _botao(
+        label: 'Entrar na Fila',
+        cor: CoresApp.alerta,
+        onTap: onEntrarFila,
+      );
+    }
+
+    if (posicaoEscolhida != null) {
+      return _botao(
+        label: 'Confirmar Check-in',
+        cor: CoresApp.sucesso,
+        onTap: onReservar,
+      );
+    }
+
+    return _botao(
+      label: 'Selecione uma bike disponível',
+      cor: CoresApp.superficieSuave,
+      onTap: null,
+      textoCor: CoresApp.textoFraco,
+    );
+  }
+
+  Widget _botao({
+    required String label,
+    required Color cor,
+    required VoidCallback? onTap,
+    Color textoCor = Colors.white,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: cor,
+          foregroundColor: textoCor,
+          disabledBackgroundColor: cor,
+          disabledForegroundColor: textoCor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        child: Text(label),
+      ),
     );
   }
 }

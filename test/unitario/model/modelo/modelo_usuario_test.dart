@@ -1,15 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spin_flow/model/modelo/modelo_usuario.dart';
+import 'package:spin_flow/domain/modelo/usuario.dart';
 
 void main() {
-  group('ModeloUsuario', () {
+  group('Usuario', () {
     test('identifica perfil professora', () {
-      const usuario = ModeloUsuario(
+      const usuario = Usuario(
         id: 1,
         nome: 'Professora',
         email: 'professora@gmail.com',
         cpf: '11122233344',
-        perfil: 'professora',
+        professoraId: 1,
         ativo: true,
       );
 
@@ -18,12 +18,12 @@ void main() {
     });
 
     test('identifica perfil aluno', () {
-      const usuario = ModeloUsuario(
+      const usuario = Usuario(
         id: 2,
-        nome: 'Aluno',
-        email: 'aluno@gmail.com',
+        nome: 'Ana Clara Almeida',
+        email: 'aluna@gmail.com',
         cpf: '55566677788',
-        perfil: 'aluno',
+        alunoId: 1,
         ativo: true,
       );
 
@@ -32,12 +32,12 @@ void main() {
     });
 
     test('valida integridade basica do usuario', () {
-      const usuario = ModeloUsuario(
+      const usuario = Usuario(
         id: 1,
         nome: 'Professora',
         email: 'professora@gmail.com',
         cpf: '11122233344',
-        perfil: 'professora',
+        professoraId: 1,
         ativo: true,
       );
 

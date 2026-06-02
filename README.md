@@ -35,7 +35,7 @@ lib/excluir/
 O fluxo de login ja foi iniciado como exemplo da nova organizacao:
 
 ```text
-view -> controller -> model/servico -> model/dao -> SQLite
+view -> controller -> domain/servico -> database/dao -> SQLite
 ```
 
 Mais detalhes estao em:

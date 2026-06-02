@@ -22,12 +22,6 @@ classDiagram
         DOMINGO
     }
 
-    class PerfilUsuario {
-        <<enumeration>>
-        PROFESSORA
-        ALUNO
-    }
-
     %% Autenticacao
     class Usuario {
         +int id
@@ -35,12 +29,18 @@ classDiagram
         +String email
         +String cpf
         +String senha
-        +PerfilUsuario perfil
+        +int alunoId
+        +int professoraId
         +bool ativo
         +bool ehProfessora()
         +bool ehAluno()
         +bool emailValido()
         +bool cpfValido()
+    }
+
+    class Professora {
+        +int id
+        +bool ativo
     }
 
     %% Folhas - Bikes e Manutencao
@@ -202,6 +202,14 @@ classDiagram
         +reservar(int fila, int coluna)
     }
 
+    class AulaRealizada {
+        +int id
+        +int alunoId
+        +int turmaId
+        +DateTime data
+        +bool ativo
+    }
+
     %% Associacoes - Bikes e Manutencao
     Bike "0..*" --> "1..1" Fabricante
     Manutencao "0..*" --> "1..1" Bike
@@ -215,10 +223,12 @@ classDiagram
     AvaliacaoMusica "0..*" --> "1..1" Musica
 
     %% Associacoes - Alunos e usuarios
-    Usuario "0..1" --> "0..1" Aluno
+    Usuario "1" --> "0..1" Aluno : aluno_id
+    Usuario "1" --> "0..1" Professora : professora_id
     GrupoAlunos "1" *-- "1..*" GrupoAluno
     GrupoAluno "0..*" --> "1..1" Aluno
     Checkin "0..*" --> "1..1" Aluno
+    AulaRealizada "0..*" --> "1..1" Aluno
     AvaliacaoMusica "0..*" --> "1..1" Aluno
 
     %% Associacoes - Salas e Turmas
@@ -227,6 +237,7 @@ classDiagram
     Turma "0..*" --> "1..1" Sala
     Turma "1" *-- "1..*" TurmaDiaSemana
     Checkin "0..*" --> "1..1" Turma
+    AulaRealizada "0..*" --> "1..1" Turma
 
     %% Associacoes - Cruzamento de clusters
     TurmaMix "0..*" --> "1..1" Turma

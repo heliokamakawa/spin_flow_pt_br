@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spin_flow/model/servico/servico_aluno.dart';
-import 'package:spin_flow/model/modelo/modelo_aluno.dart';
+import 'package:spin_flow/infra/database/repositorio/repositorio_aluno.dart';
+import 'package:spin_flow/domain/modelo/aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'form_aluno.dart';
@@ -13,8 +13,8 @@ class ListaAlunos extends StatefulWidget {
 }
 
 class _ListaAlunosState extends State<ListaAlunos> {
-  final _servico = ServicoAluno();
-  late Future<List<ModeloAluno>> _alunosFuture;
+  final _servico = RepositorioAluno();
+  late Future<List<Aluno>> _alunosFuture;
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _ListaAlunosState extends State<ListaAlunos> {
     });
   }
 
-  void _editar(ModeloAluno aluno) async {
+  void _editar(Aluno aluno) async {
     await Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => FormAluno(aluno: aluno)));
@@ -47,7 +47,7 @@ class _ListaAlunosState extends State<ListaAlunos> {
         title: const TituloAppBarSpinFlow(),
         actions: const [AcaoSairAppBar()],
       ),
-      body: FutureBuilder<List<ModeloAluno>>(
+      body: FutureBuilder<List<Aluno>>(
         future: _alunosFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

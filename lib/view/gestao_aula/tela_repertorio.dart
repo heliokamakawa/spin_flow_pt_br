@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:spin_flow/view/gestao_aula/form_artista_banda.dart';
-import 'package:spin_flow/view/gestao_aula/form_mix.dart';
-import 'package:spin_flow/view/gestao_aula/form_musica.dart';
-import 'package:spin_flow/view/gestao_aula/form_videoaulas_musica.dart';
+import 'form_artista_banda.dart';
+import 'form_mix.dart';
+import 'form_musica.dart';
+import 'form_videoaulas_musica.dart';
 
 class TelaRepertorio extends StatelessWidget {
   const TelaRepertorio({super.key});

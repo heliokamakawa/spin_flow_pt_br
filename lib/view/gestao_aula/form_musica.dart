@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_aula/controlador_musica.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_artista_banda.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_categoria_musica.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_musica.dart';
+import 'package:spin_flow/controller/controlador_musica.dart';
+import 'package:spin_flow/domain/dominio/dominio_musica.dart';
+import 'package:spin_flow/domain/modelo/artista_banda.dart';
+import 'package:spin_flow/domain/modelo/categoria_musica.dart';
+import 'package:spin_flow/domain/modelo/musica.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_busca_multipla.dart';
-import 'package:spin_flow/view/gestao_aula/form_artista_banda.dart';
+import 'form_artista_banda.dart';
 
 class FormMusica extends StatefulWidget {
-  final ModeloMusica? musica;
+  final Musica? musica;
   const FormMusica({super.key, this.musica});
 
   @override
@@ -23,9 +24,9 @@ class _FormMusicaState extends State<FormMusica> {
   final _controlador = GetIt.I<ControladorMusica>();
 
   final _nomeCtrl = TextEditingController();
-  List<ModeloArtistaBanda> _artistas = [];
-  List<ModeloCategoriaMusica> _categoriasDisponiveis = [];
-  List<ModeloCategoriaMusica> _categoriasSelecionadas = [];
+  List<ArtistaBanda> _artistas = [];
+  List<CategoriaMusica> _categoriasDisponiveis = [];
+  List<CategoriaMusica> _categoriasSelecionadas = [];
   int? _artistaId;
   bool _carregando = true;
   bool _salvando = false;
@@ -52,7 +53,7 @@ class _FormMusicaState extends State<FormMusica> {
     final categorias = await _controlador.listarCategorias();
     final categoriasSelecionadas = widget.musica?.id != null
         ? await _controlador.buscarCategorias(widget.musica!.id!)
-        : <ModeloCategoriaMusica>[];
+        : <CategoriaMusica>[];
 
     if (!mounted) return;
     setState(() {
@@ -78,14 +79,17 @@ class _FormMusicaState extends State<FormMusica> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _salvando = true);
 
-    final musica = ModeloMusica(
+    final musica = Musica(
       id: widget.musica?.id,
       nome: _nomeCtrl.text.trim(),
       artistaId: _artistaId,
     );
 
     final nomes = _categoriasSelecionadas.map((c) => c.nome).toList();
-    final resultado = await _controlador.salvarComCategorias(musica, nomes);
+    final resultado = await _controlador.salvarComCategorias(
+      DominioMusica(musica),
+      nomes,
+    );
     if (!mounted) return;
     setState(() => _salvando = false);
 
@@ -163,7 +167,7 @@ class _FormMusicaState extends State<FormMusica> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  CampoBuscaMultipla<ModeloCategoriaMusica>(
+                  CampoBuscaMultipla<CategoriaMusica>(
                     opcoes: _categoriasDisponiveis,
                     selecionados: _categoriasSelecionadas,
                     getNome: (c) => c.nome,
@@ -174,7 +178,7 @@ class _FormMusicaState extends State<FormMusica> {
                     aoAlterar: (lista) =>
                         setState(() => _categoriasSelecionadas = lista),
                     hintBusca: 'Buscar ou criar categoria...',
-                    criarNovo: (texto) => ModeloCategoriaMusica(nome: texto),
+                    criarNovo: (texto) => CategoriaMusica(nome: texto),
                   ),
                   const SizedBox(height: 24),
                   SizedBox(

@@ -1,4 +1,4 @@
-﻿# Prompt Operacional (IA)
+# Prompt Operacional (IA)
 
 Use este prompt como base para manutenção técnica contínua do projeto SpinFlow.
 

@@ -1,22 +1,19 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spin_flow/model/dao/i_dao_usuario.dart';
-import 'package:spin_flow/model/modelo/modelo_usuario.dart';
-import 'package:spin_flow/model/servico/servico_recuperacao_senha.dart';
+import 'package:get_it/get_it.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_usuario.dart';
+import 'package:spin_flow/infra/database/repositorio/repositorio_recuperacao_senha.dart';
+import 'package:spin_flow/domain/modelo/usuario.dart';
 
-class FakeDAOUsuario implements IDAOUsuario {
-  ModeloUsuario? usuarioPorEmail;
+class _FakeDAO implements IDAOUsuario {
+  Usuario? usuarioPorEmail;
   int? idAtualizado;
   String? senhaAtualizada;
 
   @override
-  Future<ModeloUsuario?> autenticar({
-    required String identificador,
-    required String senha,
-  }) async => null;
+  Future<Usuario?> buscarPorCredencial({required String identificador, required String senha}) async => null;
 
   @override
-  Future<ModeloUsuario?> buscarPorEmail(String email) async =>
-      usuarioPorEmail;
+  Future<Usuario?> buscarPorEmail(String email) async => usuarioPorEmail;
 
   @override
   Future<void> atualizarSenha(int id, String novaSenha) async {
@@ -25,57 +22,54 @@ class FakeDAOUsuario implements IDAOUsuario {
   }
 }
 
-const _professora = ModeloUsuario(
+const _professora = Usuario(
   id: 1,
   nome: 'Professora',
   email: 'professora@gmail.com',
   cpf: '11122233344',
-  perfil: 'professora',
+  professoraId: 1,
   ativo: true,
 );
 
 void main() {
-  group('ServicoRecuperacaoSenha', () {
-    late FakeDAOUsuario dao;
-    late ServicoRecuperacaoSenha servico;
+  final getIt = GetIt.instance;
+
+  group('RepositorioRecuperacaoSenha', () {
+    late _FakeDAO dao;
 
     setUp(() {
-      dao = FakeDAOUsuario();
-      servico = ServicoRecuperacaoSenha(daoUsuario: dao);
+      dao = _FakeDAO();
+      getIt.registerSingleton<IDAOUsuario>(dao);
     });
+
+    tearDown(getIt.reset);
 
     test('verificarEmail retorna usuario quando email existe', () async {
       dao.usuarioPorEmail = _professora;
-
-      final resultado = await servico.verificarEmail('professora@gmail.com');
-
+      final resultado = await RepositorioRecuperacaoSenha().verificarEmail('professora@gmail.com');
       expect(resultado, isNotNull);
       expect(resultado!.id, 1);
     });
 
     test('verificarEmail retorna nulo quando email nao existe', () async {
-      dao.usuarioPorEmail = null;
-
-      final resultado = await servico.verificarEmail('inexistente@email.com');
-
+      final resultado = await RepositorioRecuperacaoSenha().verificarEmail('inexistente@email.com');
       expect(resultado, isNull);
     });
 
     test('verificarCpf retorna true para CPF correto sem formatacao', () {
-      expect(servico.verificarCpf(_professora, '11122233344'), isTrue);
+      expect(RepositorioRecuperacaoSenha().verificarCpf(_professora, '11122233344'), isTrue);
     });
 
     test('verificarCpf retorna true para CPF correto com formatacao', () {
-      expect(servico.verificarCpf(_professora, '111.222.333-44'), isTrue);
+      expect(RepositorioRecuperacaoSenha().verificarCpf(_professora, '111.222.333-44'), isTrue);
     });
 
     test('verificarCpf retorna false para CPF incorreto', () {
-      expect(servico.verificarCpf(_professora, '99988877766'), isFalse);
+      expect(RepositorioRecuperacaoSenha().verificarCpf(_professora, '99988877766'), isFalse);
     });
 
     test('redefinirSenha delega atualizacao ao DAO', () async {
-      await servico.redefinirSenha(1, 'nova123');
-
+      await RepositorioRecuperacaoSenha().redefinirSenha(1, 'nova123');
       expect(dao.idAtualizado, 1);
       expect(dao.senhaAtualizada, 'nova123');
     });

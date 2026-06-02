@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_aula/controlador_musica.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_categoria_musica.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_musica.dart';
+import 'package:spin_flow/controller/controlador_musica.dart';
+import 'package:spin_flow/domain/modelo/categoria_musica.dart';
+import 'package:spin_flow/domain/modelo/musica.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
@@ -18,9 +18,9 @@ class FormCategoriasMusicaFlow extends StatefulWidget {
 class _FormCategoriasMusicaFlowState extends State<FormCategoriasMusicaFlow> {
   final _controlador = GetIt.I<ControladorMusica>();
 
-  List<ModeloMusica> _musicas = [];
-  ModeloMusica? _musicaSelecionada;
-  List<ModeloCategoriaMusica> _categorias = [];
+  List<Musica> _musicas = [];
+  Musica? _musicaSelecionada;
+  List<CategoriaMusica> _categorias = [];
 
   final _categoriaCtrl = TextEditingController();
   bool _carregando = true;
@@ -47,7 +47,7 @@ class _FormCategoriasMusicaFlowState extends State<FormCategoriasMusicaFlow> {
     });
   }
 
-  Future<void> _selecionarMusica(ModeloMusica musica) async {
+  Future<void> _selecionarMusica(Musica musica) async {
     final cats = await _controlador.buscarCategorias(musica.id!);
     if (!mounted) return;
     setState(() {
@@ -64,13 +64,13 @@ class _FormCategoriasMusicaFlowState extends State<FormCategoriasMusicaFlow> {
     );
     if (!jaExiste) {
       setState(
-        () => _categorias = [..._categorias, ModeloCategoriaMusica(nome: nome)],
+        () => _categorias = [..._categorias, CategoriaMusica(nome: nome)],
       );
     }
     _categoriaCtrl.clear();
   }
 
-  void _removerCategoria(ModeloCategoriaMusica cat) {
+  void _removerCategoria(CategoriaMusica cat) {
     setState(() => _categorias = _categorias.where((c) => c != cat).toList());
   }
 
@@ -111,7 +111,7 @@ class _FormCategoriasMusicaFlowState extends State<FormCategoriasMusicaFlow> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Autocomplete<ModeloMusica>(
+                Autocomplete<Musica>(
                   optionsBuilder: (textEditingValue) {
                     if (textEditingValue.text.isEmpty) return const [];
                     final q = textEditingValue.text.toLowerCase();

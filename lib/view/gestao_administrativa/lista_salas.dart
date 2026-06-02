@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
-import 'package:spin_flow/controller/gestao_administrativa/controlador_sala.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_sala.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/controller/controlador_sala.dart';
+import '../../domain/modelo/sala.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
-import 'package:spin_flow/view/gestao_administrativa/form_sala.dart';
+import 'form_sala.dart';
 
 class ListaSalas extends StatefulWidget {
   const ListaSalas({super.key});
@@ -16,7 +16,7 @@ class ListaSalas extends StatefulWidget {
 
 class _ListaSalasState extends State<ListaSalas> {
   final _controlador = GetIt.I<ControladorSala>();
-  late Future<List<ModeloSala>> _futuro;
+  late Future<List<Sala>> _futuro;
 
   @override
   void initState() {
@@ -30,14 +30,14 @@ class _ListaSalasState extends State<ListaSalas> {
     });
   }
 
-  Future<void> _abrirForm([ModeloSala? sala]) async {
+  Future<void> _abrirForm([Sala? sala]) async {
     final atualizado = await Navigator.of(
       context,
     ).push<bool>(MaterialPageRoute(builder: (_) => FormSala(sala: sala)));
     if (atualizado == true) _carregar();
   }
 
-  Future<void> _excluir(ModeloSala sala) async {
+  Future<void> _excluir(Sala sala) async {
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -78,7 +78,7 @@ class _ListaSalasState extends State<ListaSalas> {
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
-      body: FutureBuilder<List<ModeloSala>>(
+      body: FutureBuilder<List<Sala>>(
         future: _futuro,
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -126,7 +126,7 @@ class _ListaSalasState extends State<ListaSalas> {
 }
 
 class _CardSala extends StatelessWidget {
-  final ModeloSala sala;
+  final Sala sala;
   final VoidCallback onEditar;
   final VoidCallback onExcluir;
 

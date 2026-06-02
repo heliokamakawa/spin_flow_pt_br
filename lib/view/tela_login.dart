@@ -1,12 +1,12 @@
-import 'dart:ui' show ImageFilter;
+﻿import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/core/config/erro.dart';
-import 'package:spin_flow/core/config/rotas.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
-import 'package:spin_flow/controller/autenticacao/controlador_login.dart';
+import 'package:spin_flow/infra/config/erro.dart';
+import 'package:spin_flow/infra/navegacao/rotas.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/controller/controlador_login.dart';
 import 'package:spin_flow/view/componentes/campo_identificador_login.dart';
 import 'package:spin_flow/view/componentes/campo_senha.dart';
 import 'package:spin_flow/view/autenticacao/tela_escolha_perfil_professora.dart';
@@ -187,7 +187,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
+                      padding: const EdgeInsets.only(bottom: 8),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -266,22 +266,6 @@ class _TelaLoginState extends State<TelaLogin> {
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  'PEDAL · SUOR · EVOLUÇÃO',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white.withValues(alpha: 0.8),
-                                    letterSpacing: 3.5,
-                                    shadows: const [
-                                      Shadow(
-                                        color: Colors.black87,
-                                        blurRadius: 8,
                                       ),
                                     ],
                                   ),

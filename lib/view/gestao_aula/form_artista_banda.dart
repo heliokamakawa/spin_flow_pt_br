@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_aula/controlador_artista_banda.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_artista_banda.dart';
+import 'package:spin_flow/controller/controlador_artista_banda.dart';
+import 'package:spin_flow/domain/dominio/dominio_artista_banda.dart';
+import 'package:spin_flow/domain/modelo/artista_banda.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormArtistaBanda extends StatefulWidget {
-  final ModeloArtistaBanda? artista;
+  final ArtistaBanda? artista;
   const FormArtistaBanda({super.key, this.artista});
 
   @override
@@ -49,7 +50,7 @@ class _FormArtistaBandaState extends State<FormArtistaBanda> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _salvando = true);
 
-    final artista = ModeloArtistaBanda(
+    final artista = ArtistaBanda(
       id: widget.artista?.id,
       nome: _nomeCtrl.text.trim(),
       descricao: _descricaoCtrl.text.trim(),
@@ -57,7 +58,7 @@ class _FormArtistaBandaState extends State<FormArtistaBanda> {
       foto: _fotoCtrl.text.trim(),
     );
 
-    final resultado = await _controlador.salvar(artista);
+    final resultado = await _controlador.salvar(DominioArtistaBanda(artista));
     if (!mounted) return;
     setState(() => _salvando = false);
 

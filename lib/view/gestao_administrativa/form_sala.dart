@@ -1,16 +1,17 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_administrativa/controlador_sala.dart';
-import 'package:spin_flow/core/config/erro.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_sala.dart';
+import 'package:spin_flow/controller/controlador_sala.dart';
+import 'package:spin_flow/infra/config/erro.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/domain/dominio/dominio_sala.dart';
+import '../../domain/modelo/sala.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_ativo.dart';
 
 class FormSala extends StatefulWidget {
-  final ModeloSala? sala;
+  final Sala? sala;
   const FormSala({super.key, this.sala});
 
   @override
@@ -95,7 +96,7 @@ class _FormSalaState extends State<FormSala> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _salvando = true);
 
-    final sala = ModeloSala(
+    final sala = Sala(
       id: widget.sala?.id,
       nome: _nomeController.text.trim(),
       numeroFilas: _filas,
@@ -105,7 +106,7 @@ class _FormSalaState extends State<FormSala> {
       ativa: _ativo,
     );
 
-    final resultado = await _controlador.salvar(sala);
+    final resultado = await _controlador.salvar(DominioSala(sala));
     if (!mounted) return;
     setState(() => _salvando = false);
 
@@ -333,7 +334,7 @@ class _FormSalaState extends State<FormSala> {
       return Padding(
         padding: const EdgeInsets.only(top: 4),
         child: Text(
-          'Fora da grade — ajuste para fila ≤ $_filas e coluna ≤ $_colunas.',
+          'Fora da grade — ajuste para fila = $_filas e coluna = $_colunas.',
           style: const TextStyle(fontSize: 12, color: CoresApp.erro),
         ),
       );

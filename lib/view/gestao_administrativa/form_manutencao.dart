@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_administrativa/controlador_manutencao.dart';
-import 'package:spin_flow/core/config/erro.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_bike.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_manutencao.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_tipo_manutencao.dart';
+import 'package:spin_flow/controller/controlador_manutencao.dart';
+import 'package:spin_flow/infra/config/erro.dart';
+import 'package:spin_flow/domain/dominio/dominio_manutencao.dart';
+import 'package:spin_flow/domain/modelo/bike.dart';
+import 'package:spin_flow/domain/modelo/manutencao.dart';
+import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_data.dart';
 
 class FormManutencao extends StatefulWidget {
-  final ModeloManutencao? manutencao;
+  final Manutencao? manutencao;
 
   const FormManutencao({super.key, this.manutencao});
 
@@ -24,8 +25,8 @@ class _FormManutencaoState extends State<FormManutencao> {
   final _controlador = GetIt.I<ControladorManutencao>();
   final _descricaoController = TextEditingController();
 
-  List<ModeloBike> _bikes = [];
-  List<ModeloTipoManutencao> _tipos = [];
+  List<Bike> _bikes = [];
+  List<TipoManutencao> _tipos = [];
   bool _carregando = true;
   bool _salvando = false;
 
@@ -71,7 +72,7 @@ class _FormManutencaoState extends State<FormManutencao> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _salvando = true);
 
-    final manutencao = ModeloManutencao(
+    final manutencao = Manutencao(
       id: widget.manutencao?.id,
       bikeId: _bikeId!,
       tipoManutencaoId: _tipoId!,
@@ -80,7 +81,9 @@ class _FormManutencaoState extends State<FormManutencao> {
       estadoOperacional: _estado,
     );
 
-    final resultado = await _controlador.salvar(manutencao);
+    final resultado = await _controlador.salvar(
+      DominioManutencao(manutencao),
+    );
     if (!mounted) return;
     setState(() => _salvando = false);
 

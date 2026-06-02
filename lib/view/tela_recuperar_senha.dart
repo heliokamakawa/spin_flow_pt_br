@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/controlador_recuperacao_senha.dart';
-import 'package:spin_flow/core/config/erro.dart';
-import 'package:spin_flow/core/config/rotas.dart';
-import 'package:spin_flow/model/modelo/modelo_usuario.dart';
-import 'package:spin_flow/core/validacoes/validador_cpf.dart';
+import 'package:spin_flow/infra/config/erro.dart';
+import 'package:spin_flow/infra/navegacao/rotas.dart';
+import 'package:spin_flow/domain/modelo/usuario.dart';
+import 'package:spin_flow/domain/modelo/validador_cpf.dart';
 import 'package:spin_flow/view/componentes/campo_senha.dart';
 
 class TelaRecuperarSenha extends StatefulWidget {
@@ -26,7 +26,7 @@ class _TelaRecuperarSenhaState extends State<TelaRecuperarSenha> {
   int _etapa = 0;
   bool _carregando = false;
   String? _erro;
-  ModeloUsuario? _usuario;
+  Usuario? _usuario;
 
   @override
   void dispose() {

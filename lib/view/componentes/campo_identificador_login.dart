@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/config/erro.dart';
-import 'package:spin_flow/core/validacoes/validador_cpf.dart';
-import 'package:spin_flow/core/validacoes/validador_email.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/config/erro.dart';
+import 'package:spin_flow/domain/modelo/validador_cpf.dart';
+import 'package:spin_flow/domain/modelo/validador_email.dart';
 
 class CampoIdentificadorLogin extends StatelessWidget {
   final TextEditingController? controle;
@@ -15,7 +15,7 @@ class CampoIdentificadorLogin extends StatelessWidget {
     super.key,
     this.controle,
     this.rotulo = 'E-mail ou CPF',
-    this.dica = 'nome@provedora.com ou 000.000.000-00',
+    this.dica = 'E-mail ou CPF',
     this.eObrigatorio = true,
     this.validador,
     this.aoAlterar,

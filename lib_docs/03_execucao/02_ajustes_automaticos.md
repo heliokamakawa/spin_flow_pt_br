@@ -1,4 +1,4 @@
-﻿# Ajustes Automáticos do Projeto
+# Ajustes Automáticos do Projeto
 
 ## ✅ Concluído
 - sincronização DAO/DTO com exclusão lógica em entidades de domínio

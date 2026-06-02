@@ -1,4 +1,4 @@
-﻿# Revisao de Aceite (Visao PO/Analista)
+# Revisao de Aceite (Visao PO/Analista)
 
 ## 1. Escopo e metodo
 

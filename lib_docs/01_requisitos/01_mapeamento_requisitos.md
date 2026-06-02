@@ -1,4 +1,4 @@
-﻿# Mapeamento de Requisitos Funcionais (RF001-RF056)
+# Mapeamento de Requisitos Funcionais (RF001-RF056)
 
 ## Resumo
 

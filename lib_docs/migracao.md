@@ -5,7 +5,7 @@
 Migrar o projeto de forma incremental para a arquitetura prometida no diagrama de pacotes:
 
 ```text
-view -> controller -> model/servico -> model/dao -> core/database/sqlite
+view -> controller -> domain/servico -> database/dao -> lib/database/sqlite
 ```
 
 A migracao deve ser feita em fatias pequenas, sempre com validacao apos cada etapa.
@@ -41,17 +41,17 @@ lib/
 - `view/tela_nome.dart` para telas especificas
 - `view/componentes/` para widgets reutilizaveis
 - `controller/controlador_nome.dart` para coordenacao de fluxos
-- `model/servico/servico_nome.dart` para regras de aplicacao
-- `model/dao/i_dao_nome.dart` para contratos de DAO
-- `model/dao/dao_nome_sqlite.dart` para implementacoes futuras explicitamente SQLite
+- `domain/servico/servico_nome.dart` para regras de aplicacao
+- `database/dao/i_dao_nome.dart` para contratos de DAO
+- `database/dao/dao_nome_sqlite.dart` para implementacoes futuras explicitamente SQLite
 - `model/modelo/modelo_nome.dart` para objetos de dados da aplicacao
 
 ## Decisoes arquiteturais
 
 - `view` contem apenas interface.
 - `controller` orquestra fluxos iniciados pela view.
-- `model/servico` concentra regras de aplicacao e coordenacao entre DAOs.
-- `model/dao` concentra contratos e acesso a dados.
+- `domain/servico` concentra regras de aplicacao e coordenacao entre DAOs.
+- `database/dao` concentra contratos e acesso a dados.
 - `core` concentra infraestrutura e configuracoes compartilhadas.
 - rotas ficam definidas em `core/config`, mas a escolha da rota de destino pode ser feita pelo controller.
 - nao usar `repository` nesta versao, pois o projeto possui uma unica fonte de dados real: SQLite local.
@@ -82,7 +82,7 @@ lib/
 ## Estado atual
 
 - Fluxos ja migrados para a nova arquitetura: **login** e **recuperacao de senha**.
-- `lib/core/` organizada por dominio: `autenticacao/`, `validacoes/`, `database/sqlite/`.
+- `lib/core/` organizada por dominio: `autenticacao/`, `validacoes/`, `lib/database/sqlite/`.
 - `lib/controller/autenticacao/` agrupa os controllers do dominio de autenticacao.
 - Re-exports em `excluir/` garantem que o legado continua funcionando sem alteracoes.
 - Sessao gerenciada via `_SessaoObserver` no `SpinFlowApp` — rotas publicas ignoradas, expiradas redirecionam para `sessaoExpirada`.
@@ -142,7 +142,7 @@ lib/
 5. Dashboard da professora.
 6. Listas e formularios CRUD.
 7. Reorganizacao fisica final das views e componentes.
-8. Reorganizacao final de `core/config`, `core/validacoes` e `core/database/sqlite`.
+8. Reorganizacao final de `core/config`, `core/validacoes` e `lib/database/sqlite`.
 
 ## Diretrizes de Organização por Fluxo (2026-05-31)
 
@@ -194,8 +194,8 @@ lib/
 ### 2026-05-31 - Inicio da migracao pelo login
 
 - Criado `model/modelo/modelo_usuario.dart`.
-- Criado contrato `model/dao/i_dao_usuario.dart`.
-- Criado `model/servico/servico_autenticacao.dart`.
+- Criado contrato `database/dao/i_dao_usuario.dart`.
+- Criado `domain/servico/servico_autenticacao.dart`.
 - Criado `controller/controlador_login.dart`.
 - `DAOUsuario.autenticar` passou a implementar o contrato e retornar `ModeloUsuario`.
 - `TelaLogin` passou a chamar `ControladorLogin` em vez de acessar `DAOUsuario` diretamente.
@@ -242,16 +242,16 @@ lib/
 - Criada estrutura de testes espelhando a arquitetura:
   - `test/unitario/controller`
   - `test/unitario/model/modelo`
-  - `test/unitario/model/servico`
-  - `test/integracao/model/dao`
+  - `test/unitario/domain/servico`
+  - `test/integracao/database/dao`
   - `integration_test/sistema`
 - Removido `test/widget_test.dart`, pois era o teste padrao do contador e nao representava o app.
 - Criados testes unitarios:
   - `test/unitario/controller/controlador_login_test.dart`
   - `test/unitario/model/modelo/modelo_usuario_test.dart`
-  - `test/unitario/model/servico/servico_autenticacao_test.dart`
+  - `test/unitario/domain/servico/servico_autenticacao_test.dart`
 - Criado teste de integracao com SQLite:
-  - `test/integracao/model/dao/dao_usuario_sqlite_test.dart`
+  - `test/integracao/database/dao/dao_usuario_sqlite_test.dart`
 - Movidos testes de sistema existentes:
   - `integration_test/sistema/fluxo_aluno_sistema_test.dart`
   - `integration_test/sistema/fluxo_professora_sistema_test.dart`
@@ -275,7 +275,7 @@ lib/
 
 ### 2026-05-31 - Implementacao correta do DAO de usuario migrado
 
-- Criada a implementacao `lib/model/dao/sqlite/dao_usuario_sqlite.dart`.
+- Criada a implementacao `lib/database/sqlite/dao/dao_usuario_sqlite.dart`.
 - `DAOUsuarioSQLite` implementa `IDAOUsuario`.
 - `ControladorLogin` passou a usar `DAOUsuarioSQLite` como implementacao padrao.
 - O DAO legado em `lib/excluir/banco/sqlite/dao/dao_usuario.dart` foi mantido apenas para telas ainda nao migradas.
@@ -300,15 +300,15 @@ lib/
 
 ### 2026-05-31 - Criacao de `core/` e correcao das dependencias do fluxo de login
 
-- Criada a pasta `lib/core` com as subpastas `config`, `validacoes` e `database/sqlite`.
+- Criada a pasta `lib/core` com as subpastas `config`, `validacoes` e `lib/database/sqlite`.
 - Movidos para `core/config`:
   - `erro.dart`
   - `rotas.dart`
   - `sessao_usuario.dart`
-- Movidos para `core/database/sqlite`:
+- Movidos para `lib/database/sqlite`:
   - `conexao.dart`
   - `script.dart`
-- `lib/excluir/banco/sqlite/conexao.dart` substituido por re-export de `core/database/sqlite/conexao.dart`, mantendo todos os DAOs legados funcionando sem alteracao.
+- `lib/excluir/banco/sqlite/conexao.dart` substituido por re-export de `lib/database/sqlite/conexao.dart`, mantendo todos os DAOs legados funcionando sem alteracao.
 - Criados validadores reutilizaveis em `core/validacoes`:
   - `validador_email.dart`
   - `validador_cpf.dart`
@@ -317,7 +317,7 @@ lib/
   - `view/tela_login.dart`
   - `view/componentes/campo_email.dart`
   - `view/componentes/campo_identificador_login.dart` (agora usa `ValidadorEmail` e `ValidadorCpf`)
-  - `model/dao/sqlite/dao_usuario_sqlite.dart`
+  - `database/sqlite/dao/dao_usuario_sqlite.dart`
   - `test/unitario/controller/controlador_login_test.dart`
 - Observacao: arquivos em `lib/excluir/` continuam importando de `excluir/configuracoes/` sem alteracao, ate serem migrados nos proximos fluxos.
 - Validacao: `flutter test test/unitario test/integracao` executado com sucesso (11/11).
@@ -329,7 +329,7 @@ lib/
 - Sem sessao no fluxo: recuperacao ocorre antes do login, a identidade e garantida pelos proprios passos (e-mail + CPF).
 - Adicionados metodos `buscarPorEmail` e `atualizarSenha` em `IDAOUsuario` e implementados em `DAOUsuarioSQLite`.
 - Adicionadas mensagens em `core/config/erro.dart`: `emailNaoEncontrado`, `cpfNaoConfere`, `senhasNaoConferem`.
-- Criado `model/servico/servico_recuperacao_senha.dart` com `verificarEmail`, `verificarCpf` e `redefinirSenha`.
+- Criado `domain/servico/servico_recuperacao_senha.dart` com `verificarEmail`, `verificarCpf` e `redefinirSenha`.
 - Criado `controller/controlador_recuperacao_senha.dart` com `ResultadoRecuperacao` e tres metodos de fluxo.
 - Criada `view/tela_recuperar_senha.dart` com 3 etapas (e-mail, CPF, nova senha) e tela de confirmacao.
 - Testes unitarios do controller e do servico com fake do DAO.
@@ -405,9 +405,9 @@ lib/
 - O banco ainda usa `dias_semana` como JSON; a nova implementacao grava o dia selecionado como lista com um unico item para manter compatibilidade com a estrutura existente.
 - Criados:
   - `model/gestao_administrativa/modelo_turma.dart`
-  - `model/dao/i_dao_turma.dart`
-  - `model/dao/sqlite/dao_turma_sqlite.dart`
-  - `model/servico/servico_turma.dart`
+  - `database/dao/i_dao_turma.dart`
+  - `database/sqlite/dao/dao_turma_sqlite.dart`
+  - `domain/servico/servico_turma.dart`
   - `controller/gestao_administrativa/controlador_turma.dart`
   - `view/gestao_administrativa/form_turma.dart`
   - `view/gestao_administrativa/lista_turmas.dart`
@@ -456,11 +456,11 @@ lib/
 - A leitura do DAO novo prioriza `grupo_aluno` e usa `grupo_alunos.aluno_ids` apenas como fallback.
 - Criados:
   - `model/gestao_administrativa/modelo_grupo_alunos.dart`
-  - `model/dao/i_dao_aluno.dart`
-  - `model/dao/i_dao_grupo_alunos.dart`
-  - `model/dao/sqlite/dao_aluno_sqlite.dart`
-  - `model/dao/sqlite/dao_grupo_alunos_sqlite.dart`
-  - `model/servico/servico_grupo_alunos.dart`
+  - `database/dao/i_dao_aluno.dart`
+  - `database/dao/i_dao_grupo_alunos.dart`
+  - `database/sqlite/dao/dao_aluno_sqlite.dart`
+  - `database/sqlite/dao/dao_grupo_alunos_sqlite.dart`
+  - `domain/servico/servico_grupo_alunos.dart`
   - `controller/gestao_administrativa/controlador_grupo_alunos.dart`
   - `view/gestao_administrativa/form_grupo_alunos.dart`
   - `view/gestao_administrativa/lista_grupos_alunos.dart`
@@ -586,7 +586,7 @@ lib/
   - `Mix` perdeu `dataInicio` e `dataFim` (pertencem a `TurmaMix`).
   - Adicionada `MixMusica` com `posicao: int` para representar 10 slots ordenados.
   - Associacao `Mix --> Musica` substituida por `Mix *-- MixMusica --> Musica`.
-- `core/database/sqlite/script.dart` atualizado.
+- `lib/database/sqlite/script.dart` atualizado.
   - Tabela `mix` sem `data_inicio` e `data_fim`.
   - Novas tabelas normalizadas: `musica_categoria`, `musica_video_aula`, `mix_musica` (com `posicao`).
   - Seeds atualizados para popular as novas tabelas.

@@ -10,7 +10,7 @@
 - Sala
 - VideoAula
 
-## Cadastros com associações
+## Cadastros com associaï¿½ï¿½es
 
 - Bike -> Fabricante
 - Musica -> ArtistaBanda + Categorias + VideoAulas
@@ -18,7 +18,7 @@
 - Turma -> Sala + DiasSemana
 - GrupoAlunos -> Alunos
 - Manutencao -> Bike + TipoManutencao
-- Checkin -> Aluno + Turma + posição
+- Checkin -> Aluno + Turma + posiï¿½ï¿½o
 - TurmaMix -> Turma + Mix
 
 ## Entidades principais (DTO)
@@ -31,7 +31,7 @@
 
 Todos os DTOs operacionais possuem DAO em `lib/banco/sqlite/dao/`.
 
-## Observação
+## Observaï¿½ï¿½o
 
-Este arquivo é visão rápida para dev humano. O mapeamento de requisitos detalhado está em:
+Este arquivo ï¿½ visï¿½o rï¿½pida para dev humano. O mapeamento de requisitos detalhado estï¿½ em:
 - `lib_docs/01_requisitos/01_mapeamento_requisitos.md`

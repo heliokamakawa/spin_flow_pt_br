@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
-import 'package:spin_flow/controller/gestao_administrativa/controlador_grupo_alunos.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_grupo_alunos.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/controller/controlador_grupo_alunos.dart';
+import 'package:spin_flow/domain/modelo/grupo_alunos.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
-import 'package:spin_flow/view/gestao_administrativa/form_grupo_alunos.dart';
+import 'form_grupo_alunos.dart';
 
 class ListaGruposAlunos extends StatefulWidget {
   const ListaGruposAlunos({super.key});
@@ -16,7 +16,7 @@ class ListaGruposAlunos extends StatefulWidget {
 
 class _ListaGruposAlunosState extends State<ListaGruposAlunos> {
   final _controlador = GetIt.I<ControladorGrupoAlunos>();
-  late Future<List<ModeloGrupoAlunos>> _futuro;
+  late Future<List<GrupoAlunos>> _futuro;
 
   @override
   void initState() {
@@ -30,14 +30,14 @@ class _ListaGruposAlunosState extends State<ListaGruposAlunos> {
     });
   }
 
-  Future<void> _abrirForm([ModeloGrupoAlunos? grupo]) async {
+  Future<void> _abrirForm([GrupoAlunos? grupo]) async {
     final atualizado = await Navigator.of(context).push<bool>(
       MaterialPageRoute(builder: (_) => FormGrupoAlunos(grupo: grupo)),
     );
     if (atualizado == true) _carregar();
   }
 
-  Future<void> _excluir(ModeloGrupoAlunos grupo) async {
+  Future<void> _excluir(GrupoAlunos grupo) async {
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -78,7 +78,7 @@ class _ListaGruposAlunosState extends State<ListaGruposAlunos> {
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
-      body: FutureBuilder<List<ModeloGrupoAlunos>>(
+      body: FutureBuilder<List<GrupoAlunos>>(
         future: _futuro,
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

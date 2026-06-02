@@ -104,7 +104,7 @@ Evitar:
 - executar SQL
 - conter logica de persistencia
 
-### `model/servico`
+### `domain/servico`
 
 Contem regras de aplicacao e casos de uso.
 
@@ -118,7 +118,7 @@ Evitar:
 - conhecer widgets ou `BuildContext`
 - navegar entre telas
 
-### `model/dao`
+### `database/dao`
 
 Contem a logica de acesso a dados.
 
@@ -173,7 +173,7 @@ Exemplos:
 
 Validacoes reutilizaveis devem ficar aqui. Modelos e controllers podem usar esses validadores. Validacoes especificas de fluxo devem ser orquestradas pelo controller.
 
-### `core/database`
+### `database`
 
 Contem infraestrutura de banco.
 
@@ -183,14 +183,14 @@ Responsabilidades:
 - scripts de criacao e seed
 
 Sugestao:
-- manter detalhes especificos do SQLite em `core/database/sqlite`.
+- manter detalhes especificos do SQLite em `lib/database/sqlite`.
 
 ## Regra de dependencia
 
 Fluxo desejado:
 
 ```text
-view -> controller -> model/servico -> model/dao -> core/database -> sqlite
+view -> controller -> domain/servico -> database/dao -> database -> sqlite
 ```
 
 Modelos podem trafegar entre as camadas:
@@ -207,8 +207,8 @@ view <-> controller <-> servico <-> dao
 2. Mover `configuracoes` para `core/config`.
 3. Mover `validacoes` para `core/validacoes`.
 4. Mover DTOs para `model/modelo`, renomeando gradualmente para `Modelo...`.
-5. Mover DAOs para `model/dao`.
-6. Mover conexao e script SQLite para `core/database/sqlite`.
+5. Mover DAOs para `database/dao`.
+6. Mover conexao e script SQLite para `lib/database/sqlite`.
 7. Mover telas para `view/`, mantendo componentes em `view/componentes/`.
 8. Renomear telas conforme a convencao `form_`, `lista_`, `dash_` e `tela_`.
 9. Criar controller e servico para o fluxo de login.
@@ -235,7 +235,7 @@ Quando um arquivo de infraestrutura compartilhada (ex: conexao, config) e movido
 
 ```dart
 // lib/excluir/banco/sqlite/conexao.dart
-export 'package:spin_flow/core/database/sqlite/conexao.dart';
+export 'package:spin_flow/database/sqlite/conexao.dart';
 ```
 
 Isso permite:

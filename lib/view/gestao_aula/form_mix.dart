@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_aula/controlador_mix.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_mix.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_musica.dart';
+import 'package:spin_flow/controller/controlador_mix.dart';
+import 'package:spin_flow/domain/dominio/dominio_mix.dart';
+import 'package:spin_flow/domain/modelo/mix.dart';
+import 'package:spin_flow/domain/modelo/musica.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormMix extends StatefulWidget {
-  final ModeloMix? mix;
+  final Mix? mix;
   const FormMix({super.key, this.mix});
 
   @override
@@ -22,7 +23,7 @@ class _FormMixState extends State<FormMix> {
   final _nomeCtrl = TextEditingController();
   final _descricaoCtrl = TextEditingController();
 
-  List<ModeloMusica> _musicasDisponiveis = [];
+  List<Musica> _musicasDisponiveis = [];
   int? _musicaEscolhida;
   late List<int?> _posicoes;
 
@@ -38,7 +39,7 @@ class _FormMixState extends State<FormMix> {
       _descricaoCtrl.text = m.descricao;
       _posicoes = List<int?>.from(m.posicoes);
     } else {
-      _posicoes = List<int?>.filled(ModeloMix.totalSlots, null);
+      _posicoes = List<int?>.filled(Mix.totalSlots, null);
     }
     _carregarMusicas();
   }
@@ -83,7 +84,7 @@ class _FormMixState extends State<FormMix> {
   String _nomeDaMusica(int musicaId) {
     final musica = _musicasDisponiveis.firstWhere(
       (m) => m.id == musicaId,
-      orElse: () => ModeloMusica(nome: '—', artistaId: null),
+      orElse: () => Musica(nome: '—', artistaId: null),
     );
     return musica.exibicao;
   }
@@ -92,14 +93,14 @@ class _FormMixState extends State<FormMix> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _salvando = true);
 
-    final mix = ModeloMix(
+    final mix = Mix(
       id: widget.mix?.id,
       nome: _nomeCtrl.text.trim(),
       descricao: _descricaoCtrl.text.trim(),
       posicoes: _posicoes,
     );
 
-    final resultado = await _controlador.salvar(mix);
+    final resultado = await _controlador.salvar(DominioMix(mix));
     if (!mounted) return;
     setState(() => _salvando = false);
 
@@ -192,13 +193,13 @@ class _FormMixState extends State<FormMix> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${ModeloMix.totalSlots} espaços fixos para músicas',
+                    '${Mix.totalSlots} espaços fixos para músicas',
                     style: tema.textTheme.bodySmall?.copyWith(
                       color: tema.hintColor,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  ...List.generate(ModeloMix.totalSlots, (i) {
+                  ...List.generate(Mix.totalSlots, (i) {
                     final musicaId = _posicoes[i];
                     final vazio = musicaId == null;
                     return ListTile(

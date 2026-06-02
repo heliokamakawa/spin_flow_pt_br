@@ -1,64 +1,57 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/controlador_recuperacao_senha.dart';
-import 'package:spin_flow/core/config/erro.dart';
-import 'package:spin_flow/model/dao/i_dao_usuario.dart';
-import 'package:spin_flow/model/modelo/modelo_usuario.dart';
-import 'package:spin_flow/model/servico/servico_recuperacao_senha.dart';
+import 'package:spin_flow/infra/config/erro.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_usuario.dart';
+import 'package:spin_flow/infra/database/repositorio/repositorio_recuperacao_senha.dart';
+import 'package:spin_flow/domain/modelo/usuario.dart';
 
-class FakeDAOUsuario implements IDAOUsuario {
-  ModeloUsuario? usuarioPorEmail;
-
-  @override
-  Future<ModeloUsuario?> autenticar({
-    required String identificador,
-    required String senha,
-  }) async => null;
+class _FakeDAO implements IDAOUsuario {
+  Usuario? usuarioPorEmail;
 
   @override
-  Future<ModeloUsuario?> buscarPorEmail(String email) async =>
-      usuarioPorEmail;
+  Future<Usuario?> buscarPorCredencial({required String identificador, required String senha}) async => null;
+
+  @override
+  Future<Usuario?> buscarPorEmail(String email) async => usuarioPorEmail;
 
   @override
   Future<void> atualizarSenha(int id, String novaSenha) async {}
 }
 
-const _professora = ModeloUsuario(
+const _professora = Usuario(
   id: 1,
   nome: 'Professora',
   email: 'professora@gmail.com',
   cpf: '11122233344',
-  perfil: 'professora',
+  professoraId: 1,
   ativo: true,
 );
 
 void main() {
+  final getIt = GetIt.instance;
+
   group('ControladorRecuperacaoSenha', () {
-    late FakeDAOUsuario dao;
-    late ControladorRecuperacaoSenha controlador;
+    late _FakeDAO dao;
 
     setUp(() {
-      dao = FakeDAOUsuario();
-      controlador = ControladorRecuperacaoSenha(
-        servico: ServicoRecuperacaoSenha(daoUsuario: dao),
-      );
+      dao = _FakeDAO();
+      getIt.registerSingleton<IDAOUsuario>(dao);
+      getIt.registerSingleton(RepositorioRecuperacaoSenha());
     });
+
+    tearDown(getIt.reset);
 
     group('verificarEmail', () {
       test('retorna sucesso com usuario quando email existe', () async {
         dao.usuarioPorEmail = _professora;
-
-        final resultado = await controlador.verificarEmail('professora@gmail.com');
-
+        final resultado = await ControladorRecuperacaoSenha().verificarEmail('professora@gmail.com');
         expect(resultado.sucesso, isTrue);
-        expect(resultado.usuario, isNotNull);
-        expect(resultado.usuario!.id, 1);
+        expect(resultado.usuario?.id, 1);
       });
 
       test('retorna falha quando email nao encontrado', () async {
-        dao.usuarioPorEmail = null;
-
-        final resultado = await controlador.verificarEmail('nao@existe.com');
-
+        final resultado = await ControladorRecuperacaoSenha().verificarEmail('nao@existe.com');
         expect(resultado.sucesso, isFalse);
         expect(resultado.mensagemErro, Erro.emailNaoEncontrado);
       });
@@ -66,14 +59,12 @@ void main() {
 
     group('verificarCpf', () {
       test('retorna sucesso para CPF correto', () {
-        final resultado = controlador.verificarCpf(_professora, '111.222.333-44');
-
+        final resultado = ControladorRecuperacaoSenha().verificarCpf(_professora, '111.222.333-44');
         expect(resultado.sucesso, isTrue);
       });
 
       test('retorna falha para CPF incorreto', () {
-        final resultado = controlador.verificarCpf(_professora, '999.888.777-66');
-
+        final resultado = ControladorRecuperacaoSenha().verificarCpf(_professora, '999.888.777-66');
         expect(resultado.sucesso, isFalse);
         expect(resultado.mensagemErro, Erro.cpfNaoConfere);
       });
@@ -81,14 +72,12 @@ void main() {
 
     group('redefinirSenha', () {
       test('retorna sucesso quando senhas conferem', () async {
-        final resultado = await controlador.redefinirSenha(1, 'nova123', 'nova123');
-
+        final resultado = await ControladorRecuperacaoSenha().redefinirSenha(1, 'nova123', 'nova123');
         expect(resultado.sucesso, isTrue);
       });
 
       test('retorna falha quando senhas nao conferem', () async {
-        final resultado = await controlador.redefinirSenha(1, 'nova123', 'diferente');
-
+        final resultado = await ControladorRecuperacaoSenha().redefinirSenha(1, 'nova123', 'diferente');
         expect(resultado.sucesso, isFalse);
         expect(resultado.mensagemErro, Erro.senhasNaoConferem);
       });

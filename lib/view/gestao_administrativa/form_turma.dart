@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/core/tema/cores_app.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_administrativa/controlador_turma.dart';
-import 'package:spin_flow/core/config/erro.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_sala.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_turma.dart';
+import 'package:spin_flow/controller/controlador_turma.dart';
+import 'package:spin_flow/infra/config/erro.dart';
+import 'package:spin_flow/domain/dominio/dominio_turma.dart';
+import '../../domain/modelo/sala.dart';
+import 'package:spin_flow/domain/modelo/turma.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/campo_ativo.dart';
 
 class FormTurma extends StatefulWidget {
-  final ModeloTurma? turma;
+  final Turma? turma;
 
   const FormTurma({super.key, this.turma});
 
@@ -27,12 +28,14 @@ class _FormTurmaState extends State<FormTurma> {
   final _horarioController = TextEditingController();
   final _duracaoController = TextEditingController();
 
-  List<ModeloSala> _salas = [];
+  List<Sala> _salas = [];
+  Map<int, String> _professoras = {};
   bool _carregando = true;
   bool _salvando = false;
   bool _ativo = true;
   List<DiaSemana> _diasSemana = [];
   int? _salaId;
+  int? _professoraId;
 
   @override
   void initState() {
@@ -44,23 +47,24 @@ class _FormTurmaState extends State<FormTurma> {
       _duracaoController.text = '${turma.duracaoMinutos}';
       _diasSemana = List<DiaSemana>.from(turma.diasSemana);
       _salaId = turma.salaId;
+      _professoraId = turma.professoraId;
       _ativo = turma.ativo;
     } else {
       _horarioController.text = '18:00';
       _duracaoController.text = '50';
       _diasSemana = [DiaSemana.segunda];
     }
-    _carregarSalas();
+    _carregar();
   }
 
-  Future<void> _carregarSalas() async {
+  Future<void> _carregar() async {
     final salas = await _controlador.listarSalas();
+    final professoras = await _controlador.listarProfessoras();
     if (!mounted) return;
     setState(() {
       _salas = salas;
-      if (_salaId == null && salas.isNotEmpty) {
-        _salaId = salas.first.id;
-      }
+      _professoras = professoras;
+      if (_salaId == null && salas.isNotEmpty) _salaId = salas.first.id;
       _carregando = false;
     });
   }
@@ -77,17 +81,18 @@ class _FormTurmaState extends State<FormTurma> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _salvando = true);
 
-    final turma = ModeloTurma(
+    final turma = Turma(
       id: widget.turma?.id,
       nome: _nomeController.text.trim(),
       horarioInicio: _horarioController.text.trim(),
       duracaoMinutos: int.tryParse(_duracaoController.text) ?? 0,
       diasSemana: _diasSemana,
       salaId: _salaId ?? 0,
+      professoraId: _professoraId,
       ativo: _ativo,
     );
 
-    final resultado = await _controlador.salvar(turma);
+    final resultado = await _controlador.salvar(DominioTurma(turma));
     if (!mounted) return;
     setState(() => _salvando = false);
 
@@ -126,6 +131,8 @@ class _FormTurmaState extends State<FormTurma> {
                   _buildCampoDuracao(),
                   const SizedBox(height: 16),
                   _buildDropdownSala(),
+                  const SizedBox(height: 16),
+                  _buildDropdownProfessora(),
                   const SizedBox(height: 16),
                   CampoAtivo(
                     valor: _ativo,
@@ -240,6 +247,18 @@ class _FormTurmaState extends State<FormTurma> {
           .toList(),
       onChanged: (valor) => setState(() => _salaId = valor),
       validator: (valor) => valor == null ? 'Sala é obrigatória.' : null,
+    );
+  }
+
+  Widget _buildDropdownProfessora() {
+    return DropdownButtonFormField<int>(
+      initialValue: _professoraId,
+      decoration: const InputDecoration(labelText: 'Professora'),
+      hint: const Text('Selecione uma professora'),
+      items: _professoras.entries
+          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+          .toList(),
+      onChanged: (valor) => setState(() => _professoraId = valor),
     );
   }
 

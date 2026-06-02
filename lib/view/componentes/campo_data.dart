@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:spin_flow/core/config/erro.dart';
+import 'package:spin_flow/infra/config/erro.dart';
 
 class CampoData extends StatelessWidget {
   final String rotulo;

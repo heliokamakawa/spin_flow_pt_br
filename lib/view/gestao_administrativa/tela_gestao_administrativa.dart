@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
-import 'package:spin_flow/core/config/rotas.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
-import 'package:spin_flow/view/gestao_administrativa/form_manutencao.dart';
-import 'package:spin_flow/view/gestao_administrativa/form_grupo_alunos.dart';
-import 'package:spin_flow/view/gestao_administrativa/form_sala.dart';
-import 'package:spin_flow/view/gestao_administrativa/form_turma.dart';
-import 'package:spin_flow/view/gestao_administrativa/lista_grupos_alunos.dart';
-import 'package:spin_flow/view/gestao_administrativa/lista_manutencoes.dart';
-import 'package:spin_flow/view/gestao_administrativa/lista_salas.dart';
-import 'package:spin_flow/view/gestao_administrativa/lista_turmas.dart';
-import 'package:spin_flow/view/gestao_aula/form_aluno.dart';
+import 'form_manutencao.dart';
+import 'form_grupo_alunos.dart';
+import 'form_sala.dart';
+import 'form_turma.dart';
+import 'lista_grupos_alunos.dart';
+import 'lista_manutencoes.dart';
+import 'lista_salas.dart';
+import 'lista_turmas.dart';
+import '../gestao_aula/form_aluno.dart';
+import 'package:spin_flow/view/gestao_aula/lista_alunos.dart';
 
 class TelaGestaoAdministrativa extends StatelessWidget {
   final bool exibirAppBar;
@@ -35,22 +35,9 @@ class TelaGestaoAdministrativa extends StatelessWidget {
             onCadastro: () => Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const FormAluno())),
-            onLista: () => Navigator.pushNamed(context, Rotas.listaAlunos),
-          ),
-          _ItemGestao(
-            icone: Icons.factory,
-            titulo: 'Fabricantes',
-            onCadastro: () =>
-                Navigator.pushNamed(context, Rotas.cadastroFabricante),
-            onLista: () => Navigator.pushNamed(context, Rotas.listaFabricantes),
-          ),
-          _ItemGestao(
-            icone: Icons.build,
-            titulo: 'Tipos de Manutenção',
-            onCadastro: () =>
-                Navigator.pushNamed(context, Rotas.cadastroTipoManutencao),
-            onLista: () =>
-                Navigator.pushNamed(context, Rotas.listaTiposManutencao),
+            onLista: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const ListaAlunos())),
           ),
           _ItemGestao(
             icone: Icons.build_circle,

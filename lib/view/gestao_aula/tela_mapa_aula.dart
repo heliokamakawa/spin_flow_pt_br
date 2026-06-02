@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spin_flow/controller/gestao_aula/controlador_operacao_aula.dart';
-import 'package:spin_flow/core/tema/tema_app.dart';
-import 'package:spin_flow/model/gestao_administrativa/modelo_tipo_manutencao.dart';
-import 'package:spin_flow/model/gestao_aula/estado_mapa_aula.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_checkin.dart';
-import 'package:spin_flow/model/gestao_aula/modelo_posicao_bike.dart';
+import 'package:spin_flow/controller/controlador_operacao_aula.dart';
+import 'package:spin_flow/infra/tema/tema_app.dart';
+import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
+import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
+import 'package:spin_flow/domain/modelo/checkin.dart';
+import 'package:spin_flow/domain/modelo/posicao_bike.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
@@ -27,7 +27,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
   final _controlador = GetIt.I<ControladorOperacaoAula>();
 
   EstadoMapaAula? _estado;
-  List<ModeloTipoManutencao> _tipos = [];
+  List<TipoManutencao> _tipos = [];
   bool _carregando = true;
   String? _erro;
 
@@ -60,9 +60,9 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     }
   }
 
-  // ── Ações ──────────────────────────────────────────────────────────────────
+  // -- Ações ------------------------------------------------------------------
 
-  Future<void> _confirmarCancelamento(ModeloCheckin checkin) async {
+  Future<void> _confirmarCancelamento(Checkin checkin) async {
     final confirma = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -96,7 +96,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     if (resultado.sucesso) await _carregar();
   }
 
-  Future<void> _resolverManutencao(ModeloPosicaoBike posicao) async {
+  Future<void> _resolverManutencao(PosicaoBike posicao) async {
     final confirma = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -137,7 +137,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     );
   }
 
-  Future<void> _abrirModalManutencao(ModeloPosicaoBike posicao) async {
+  Future<void> _abrirModalManutencao(PosicaoBike posicao) async {
     final bikeId = posicao.bikeId;
     if (bikeId == null) return;
 
@@ -174,7 +174,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     );
   }
 
-  // ── UI ─────────────────────────────────────────────────────────────────────
+  // -- UI ---------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -291,7 +291,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
   }
 }
 
-// ── Widgets auxiliares ──────────────────────────────────────────────────────
+// -- Widgets auxiliares ------------------------------------------------------
 
 class _Celula extends StatelessWidget {
   final Color cor;
@@ -388,7 +388,7 @@ class _ItemLegenda extends StatelessWidget {
 
 class _DialogManutencao extends StatefulWidget {
   final String bikeNome;
-  final List<ModeloTipoManutencao> tipos;
+  final List<TipoManutencao> tipos;
   final void Function(int tipoId, String descricao) onSalvar;
 
   const _DialogManutencao({

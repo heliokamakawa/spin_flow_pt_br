@@ -1,50 +1,50 @@
 # Regras de Dados para Seed
 
-Este arquivo define as regras para criação, revisão e manutenção dos dados iniciais do SpinFlow. O seed deve representar uma academia especializada em spinning, com dados coerentes entre si e úteis para demonstrar os fluxos reais do aplicativo.
+Este arquivo define as regras para cria��o, revis�o e manuten��o dos dados iniciais do SpinFlow. O seed deve representar uma academia especializada em spinning, com dados coerentes entre si e �teis para demonstrar os fluxos reais do aplicativo.
 
 ## Objetivo
 
-O seed deve permitir testar e demonstrar o app com dados próximos de uma operação real de estúdio de spinning:
+O seed deve permitir testar e demonstrar o app com dados pr�ximos de uma opera��o real de est�dio de spinning:
 
 - login de professora e aluno;
 - agenda de aulas;
 - check-in e reserva de bike;
 - mapa de sala;
-- controle de bikes e manutenção;
-- repertório musical usado nas aulas;
-- histórico e indicadores.
+- controle de bikes e manuten��o;
+- repert�rio musical usado nas aulas;
+- hist�rico e indicadores.
 
-Os dados devem ser persistidos via SQLite, preferencialmente em `lib/core/database/sqlite/script.dart`, e consumidos pelas camadas de modelo/serviço/DAO do app. Não usar listas mock em runtime.
+Os dados devem ser persistidos via SQLite, preferencialmente em `lib/database/sqlite/script.dart`, e consumidos pelas camadas de modelo/servi�o/DAO do app. N�o usar listas mock em runtime.
 
-## Contexto Obrigatório
+## Contexto Obrigat�rio
 
-Todos os dados devem pertencer ao contexto de academia de spinning. Evitar nomes genéricos, escolares, corporativos ou desconectados do domínio.
+Todos os dados devem pertencer ao contexto de academia de spinning. Evitar nomes gen�ricos, escolares, corporativos ou desconectados do dom�nio.
 
 Contexto-base:
 
-- Academia/estúdio: Pulse Studio Indoor.
+- Academia/est�dio: Pulse Studio Indoor.
 - Modalidade principal: spinning ou indoor cycling.
-- Operação: aulas coletivas com professora, sala, turma, bike, posição, check-in, fila de espera, manutenção e repertório.
-- Linguagem: português do Brasil, com termos naturais para academia.
+- Opera��o: aulas coletivas com professora, sala, turma, bike, posi��o, check-in, fila de espera, manuten��o e repert�rio.
+- Linguagem: portugu�s do Brasil, com termos naturais para academia.
 
 ## Regras Gerais
 
-- Usar nomes plausíveis, mas fictícios quando forem pessoas, e-mails, CPFs, telefones ou contatos.
-- Usar fabricantes e marcas compatíveis com equipamentos fitness, bicicletas ergométricas ou indoor cycling.
-- Não usar nomes como "Teste", "Mock", "Demo", "Exemplo", "Lorem", "Foo", "Bar" em dados exibidos no app.
-- Não usar dados fora do domínio, como escolas, escritórios, restaurantes, produtos aleatórios ou eventos sem relação com spinning.
-- Manter relações consistentes: bike deve ter fabricante; turma deve ter sala; check-in deve apontar para aluno/turma/data/posição válida; manutenção deve apontar para bike e tipo de manutenção.
-- Manter alguns dados inativos para testar exclusão lógica, mas eles também devem ser plausíveis.
-- Dados dinâmicos dependentes de data devem usar `DateTime.now()` apenas quando necessário para testar aulas de hoje, amanhã, janela de reserva, lotação e histórico.
-- Evitar seed excessivo. O volume deve cobrir cenários importantes sem poluir telas.
+- Usar nomes plaus�veis, mas fict�cios quando forem pessoas, e-mails, CPFs, telefones ou contatos.
+- Usar fabricantes e marcas compat�veis com equipamentos fitness, bicicletas ergom�tricas ou indoor cycling.
+- N�o usar nomes como "Teste", "Mock", "Demo", "Exemplo", "Lorem", "Foo", "Bar" em dados exibidos no app.
+- N�o usar dados fora do dom�nio, como escolas, escrit�rios, restaurantes, produtos aleat�rios ou eventos sem rela��o com spinning.
+- Manter rela��es consistentes: bike deve ter fabricante; turma deve ter sala; check-in deve apontar para aluno/turma/data/posi��o v�lida; manuten��o deve apontar para bike e tipo de manuten��o.
+- Manter alguns dados inativos para testar exclus�o l�gica, mas eles tamb�m devem ser plaus�veis.
+- Dados din�micos dependentes de data devem usar `DateTime.now()` apenas quando necess�rio para testar aulas de hoje, amanh�, janela de reserva, lota��o e hist�rico.
+- Evitar seed excessivo. O volume deve cobrir cen�rios importantes sem poluir telas.
 
-## Entidades e Padrões
+## Entidades e Padr�es
 
-### Usuários
+### Usu�rios
 
-Usuários do seed devem permitir login real pelo banco SQLite.
+Usu�rios do seed devem permitir login real pelo banco SQLite.
 
-Perfis mínimos:
+Perfis m�nimos:
 
 - Professora ativa: `professora`.
 - Aluno ativo: `aluno`.
@@ -52,8 +52,8 @@ Perfis mínimos:
 Regras:
 
 - E-mail deve coincidir com aluno/professora quando houver entidade relacionada.
-- CPF deve ser fictício, numérico e único.
-- Senha do seed pode ser simples para ambiente acadêmico/demonstração, mas deve estar documentada nos testes.
+- CPF deve ser fict�cio, num�rico e �nico.
+- Senha do seed pode ser simples para ambiente acad�mico/demonstra��o, mas deve estar documentada nos testes.
 - O login deve autenticar por e-mail e CPF.
 
 Exemplos de nomes:
@@ -67,33 +67,33 @@ Alunos devem parecer frequentadores reais de uma academia.
 
 Regras:
 
-- Usar nomes brasileiros plausíveis.
+- Usar nomes brasileiros plaus�veis.
 - Manter pelo menos 20 alunos ativos para teste de volume.
-- Separar os alunos por nível de uso: 10 de uso intenso, 5 iniciantes e 5 medianos.
-- Alunos de uso intenso devem ter histórico de participação mais forte, com pelo menos 6 check-ins/aulas por aluno no seed.
+- Separar os alunos por n�vel de uso: 10 de uso intenso, 5 iniciantes e 5 medianos.
+- Alunos de uso intenso devem ter hist�rico de participa��o mais forte, com pelo menos 6 check-ins/aulas por aluno no seed.
 - Alunos iniciantes devem ter pelo menos 2 check-ins/aulas por aluno no seed.
 - Alunos medianos devem ter pelo menos 3 check-ins/aulas por aluno no seed.
-- Ter gêneros, telefones e datas de nascimento coerentes.
-- Observações devem falar de frequência, preferência de horário, nível, restrição ou comportamento de aula.
+- Ter g�neros, telefones e datas de nascimento coerentes.
+- Observa��es devem falar de frequ�ncia, prefer�ncia de hor�rio, n�vel, restri��o ou comportamento de aula.
 - Manter pelo menos um aluno ativo usado no login.
-- Manter pelo menos um aluno inativo para validar filtros e exclusão lógica.
+- Manter pelo menos um aluno inativo para validar filtros e exclus�o l�gica.
 
-Exemplos de observações:
+Exemplos de observa��es:
 
-- "Preferência por aulas cedo."
-- "Aluna avançada, costuma reservar primeira fileira."
+- "Prefer�ncia por aulas cedo."
+- "Aluna avan�ada, costuma reservar primeira fileira."
 - "Aluno em retorno gradual aos treinos."
-- "Alta frequência nas turmas da noite."
+- "Alta frequ�ncia nas turmas da noite."
 
 ### Professoras
 
-Quando houver professoras como usuários ou futuras entidades, o contexto deve ser de instrutoras de spinning.
+Quando houver professoras como usu�rios ou futuras entidades, o contexto deve ser de instrutoras de spinning.
 
 Regras:
 
 - Usar perfil `professora`.
-- Associar nomes a aulas e operações de sala quando o modelo permitir.
-- Evitar títulos genéricos como "Admin" ou "Professor Teste".
+- Associar nomes a aulas e opera��es de sala quando o modelo permitir.
+- Evitar t�tulos gen�ricos como "Admin" ou "Professor Teste".
 
 ### Fabricantes
 
@@ -112,23 +112,23 @@ Exemplos adequados:
 
 Regras:
 
-- Descrição deve citar equipamento fitness, indoor cycling, bike de spinning, resistência magnética, manutenção ou uso em estúdios.
-- Contatos devem ser plausíveis e relacionados a suporte, vendas ou assistência técnica.
-- Não cadastrar fabricantes de itens sem relação com spinning.
+- Descri��o deve citar equipamento fitness, indoor cycling, bike de spinning, resist�ncia magn�tica, manuten��o ou uso em est�dios.
+- Contatos devem ser plaus�veis e relacionados a suporte, vendas ou assist�ncia t�cnica.
+- N�o cadastrar fabricantes de itens sem rela��o com spinning.
 
 ### Bikes
 
-Bikes representam equipamentos físicos do estúdio.
+Bikes representam equipamentos f�sicos do est�dio.
 
 Regras:
 
 - Nomear de forma operacional: "Bike 01", "Bike 02", "Sprint 01", "Climb 03", "Studio Bike 12".
-- Número de série deve ser único e padronizado.
+- N�mero de s�rie deve ser �nico e padronizado.
 - Toda bike deve apontar para um fabricante existente.
 - Deve haver bikes suficientes para preencher as salas cadastradas.
-- Algumas bikes podem estar inativas ou em manutenção para testar indisponibilidade.
+- Algumas bikes podem estar inativas ou em manuten��o para testar indisponibilidade.
 
-Exemplos de números de série:
+Exemplos de n�meros de s�rie:
 
 - `PSI-BK-0001`.
 - `MOVE-RIDE-0012`.
@@ -147,27 +147,27 @@ Exemplos:
 
 Regras:
 
-- Definir quantidade de filas e colunas compatível com bikes.
+- Definir quantidade de filas e colunas compat�vel com bikes.
 - Manter 2 salas principais para teste.
 - Cada sala de teste deve ter 3 filas de bikes.
-- Cada sala deve ter pelo menos 15 bikes reserváveis para alunos.
-- A posição da professora deve ficar fora das posições reserváveis pelos alunos.
-- Pelo menos uma sala deve ter mapa suficiente para testar lotação.
+- Cada sala deve ter pelo menos 15 bikes reserv�veis para alunos.
+- A posi��o da professora deve ficar fora das posi��es reserv�veis pelos alunos.
+- Pelo menos uma sala deve ter mapa suficiente para testar lota��o.
 
-### Posições de Bike
+### Posi��es de Bike
 
-Posições devem formar o mapa real da sala.
+Posi��es devem formar o mapa real da sala.
 
 Regras:
 
-- Cada posição deve ter fila e coluna válidas.
-- Não duplicar bike na mesma posição.
-- Não posicionar bike na posição da professora.
-- Deve haver posições livres, ocupadas, reservadas pelo aluno e bloqueadas por manutenção nos cenários de teste.
+- Cada posi��o deve ter fila e coluna v�lidas.
+- N�o duplicar bike na mesma posi��o.
+- N�o posicionar bike na posi��o da professora.
+- Deve haver posi��es livres, ocupadas, reservadas pelo aluno e bloqueadas por manuten��o nos cen�rios de teste.
 
 ### Turmas
 
-Turmas são aulas recorrentes de spinning.
+Turmas s�o aulas recorrentes de spinning.
 
 Exemplos de nomes:
 
@@ -176,16 +176,16 @@ Exemplos de nomes:
 - Climb Endurance.
 - Rhythm Ride.
 - Spin Burn.
-- Cadência Base.
+- Cad�ncia Base.
 - Ride Recovery.
 
 Regras:
 
-- Nome deve indicar estilo, intensidade ou horário da aula.
-- Descrição deve mencionar foco da aula: cadência, força, sprint, resistência, técnica, recuperação.
+- Nome deve indicar estilo, intensidade ou hor�rio da aula.
+- Descri��o deve mencionar foco da aula: cad�ncia, for�a, sprint, resist�ncia, t�cnica, recupera��o.
 - Dias da semana devem ser coerentes com agenda.
-- Horários devem permitir cenários de check-in: aula futura, aula dentro da janela de 30 minutos, aula encerrada, aula lotada.
-- Duração típica: 45, 50 ou 60 minutos.
+- Hor�rios devem permitir cen�rios de check-in: aula futura, aula dentro da janela de 30 minutos, aula encerrada, aula lotada.
+- Dura��o t�pica: 45, 50 ou 60 minutos.
 - Toda turma ativa deve ter sala ativa.
 
 ### Check-ins
@@ -194,73 +194,73 @@ Check-ins representam reservas reais de alunos em turmas.
 
 Regras:
 
-- Check-in ativo deve apontar para aluno ativo, turma ativa e posição válida.
-- Não criar dois check-ins ativos para a mesma posição/turma/data.
-- Criar cenários mínimos:
-  - aluno logado já reservado;
+- Check-in ativo deve apontar para aluno ativo, turma ativa e posi��o v�lida.
+- N�o criar dois check-ins ativos para a mesma posi��o/turma/data.
+- Criar cen�rios m�nimos:
+  - aluno logado j� reservado;
   - turma com vagas;
   - turma lotada;
   - fila de espera;
-  - histórico de aula passada;
+  - hist�rico de aula passada;
   - reserva cancelada/inativa.
-- Datas devem ser dinâmicas quando o fluxo depende de "hoje".
+- Datas devem ser din�micas quando o fluxo depende de "hoje".
 
 ### Fila de Espera
 
-Fila deve existir apenas para turma lotada ou cenário de indisponibilidade.
+Fila deve existir apenas para turma lotada ou cen�rio de indisponibilidade.
 
 Regras:
 
 - Aluno na fila deve estar ativo.
-- Fila ativa deve apontar para turma/data plausíveis.
-- Registrar `criado_em` com horário anterior à aula.
+- Fila ativa deve apontar para turma/data plaus�veis.
+- Registrar `criado_em` com hor�rio anterior � aula.
 
-### Manutenções
+### Manuten��es
 
-Manutenções devem refletir problemas típicos de bike de spinning.
+Manuten��es devem refletir problemas t�picos de bike de spinning.
 
 Tipos adequados:
 
 - Pedal quebrado.
 - Regulagem de altura.
 - Banco com problema.
-- Correia de transmissão.
-- Resistência com defeito.
-- Ruído no volante.
-- Sensor de cadência.
-- Aperto de guidão.
+- Correia de transmiss�o.
+- Resist�ncia com defeito.
+- Ru�do no volante.
+- Sensor de cad�ncia.
+- Aperto de guid�o.
 
 Regras:
 
-- Manutenção ativa deve deixar a bike indisponível no mapa/check-in.
+- Manuten��o ativa deve deixar a bike indispon�vel no mapa/check-in.
 - Estado operacional deve ser claro: pendente, em andamento, resolvida, cancelada.
-- Descrição deve parecer uma ocorrência real de sala.
+- Descri��o deve parecer uma ocorr�ncia real de sala.
 
-### Repertório Musical
+### Repert�rio Musical
 
-O repertório deve apoiar aulas de spinning, com músicas, categorias, artistas/bandas, mix e videoaulas.
+O repert�rio deve apoiar aulas de spinning, com m�sicas, categorias, artistas/bandas, mix e videoaulas.
 
 Categorias adequadas:
 
 - Aquecimento.
-- Cadência.
+- Cad�ncia.
 - Ritmo.
 - Sprint.
 - Subida.
-- Força.
-- Resistência.
-- Recuperação.
+- For�a.
+- Resist�ncia.
+- Recupera��o.
 - Alongamento.
 
 Regras:
 
-- Músicas devem ter função dentro da aula.
-- Mix deve ter ordem coerente: aquecimento, blocos principais, pico, recuperação.
+- M�sicas devem ter fun��o dentro da aula.
+- Mix deve ter ordem coerente: aquecimento, blocos principais, pico, recupera��o.
 - Todo mix usado no seed deve ter pelo menos 10 faixas.
-- Videoaulas devem orientar execução no spinning, não serem vídeos genéricos.
-- Artistas/bandas podem ser reais ou fictícios, mas o uso deve ser coerente com treino.
+- Videoaulas devem orientar execu��o no spinning, n�o serem v�deos gen�ricos.
+- Artistas/bandas podem ser reais ou fict�cios, mas o uso deve ser coerente com treino.
 
-Exemplos de nomes fictícios de músicas:
+Exemplos de nomes fict�cios de m�sicas:
 
 - Warm Wheels.
 - Ride the Fire.
@@ -272,62 +272,62 @@ Exemplos de nomes fictícios de músicas:
 
 ### Grupos de Alunos
 
-Grupos devem representar agrupamentos úteis para a operação.
+Grupos devem representar agrupamentos �teis para a opera��o.
 
 Exemplos:
 
-- Manhã Alta Frequência.
+- Manh� Alta Frequ�ncia.
 - Iniciantes 07h.
-- Sprint Avançado.
-- Recuperação e Técnica.
+- Sprint Avan�ado.
+- Recupera��o e T�cnica.
 - Noite Endurance.
 
 Regras:
 
-- Grupo deve ter descrição com objetivo operacional.
+- Grupo deve ter descri��o com objetivo operacional.
 - Associar alunos ativos.
-- Evitar grupos sem uso ou com nomes genéricos.
+- Evitar grupos sem uso ou com nomes gen�ricos.
 
-## Cenários Mínimos do Seed
+## Cen�rios M�nimos do Seed
 
-O seed deve cobrir, no mínimo:
+O seed deve cobrir, no m�nimo:
 
 1. Login de professora por e-mail.
 2. Login de aluno por e-mail.
 3. Login de aluno por CPF.
 4. Cadastro de pelo menos 20 alunos ativos: 10 de uso intenso, 5 iniciantes e 5 medianos.
-5. Histórico de aulas/check-ins coerente com o nível de uso de cada aluno.
-6. Cadastro de professoras, turmas, salas, bikes, fabricantes, repertório, artistas/bandas, músicas e mixes.
-7. Duas salas de teste, cada uma com 3 filas e pelo menos 15 bikes reserváveis.
-8. Todo mix com pelo menos 10 músicas.
+5. Hist�rico de aulas/check-ins coerente com o n�vel de uso de cada aluno.
+6. Cadastro de professoras, turmas, salas, bikes, fabricantes, repert�rio, artistas/bandas, m�sicas e mixes.
+7. Duas salas de teste, cada uma com 3 filas e pelo menos 15 bikes reserv�veis.
+8. Todo mix com pelo menos 10 m�sicas.
 9. Dashboard do aluno com aula de hoje e reserva ativa.
-10. Check-in com turma disponível.
+10. Check-in com turma dispon�vel.
 11. Check-in com turma lotada e fila de espera.
-12. Mapa de aula com posições livres, ocupadas, minha reserva, professora e manutenção.
-13. Dashboard da professora com aulas, repertório e administrativo.
-14. CRUD administrativo com dados reais de sala, turma, manutenção e grupo.
-15. Repertório com mix completo para uma aula.
-16. Histórico do aluno com aula passada.
+12. Mapa de aula com posi��es livres, ocupadas, minha reserva, professora e manuten��o.
+13. Dashboard da professora com aulas, repert�rio e administrativo.
+14. CRUD administrativo com dados reais de sala, turma, manuten��o e grupo.
+15. Repert�rio com mix completo para uma aula.
+16. Hist�rico do aluno com aula passada.
 
-## Proibições
+## Proibi��es
 
-Não usar no seed:
+N�o usar no seed:
 
 - `mock`, `teste`, `dummy`, `sample`, `lorem`, `foo`, `bar` em nomes exibidos.
-- Dados de escola, loja, escritório ou domínio sem relação com spinning.
-- Fabricantes aleatórios de tecnologia, alimentos ou roupas sem vínculo fitness.
-- Salas chamadas apenas "Sala 1" quando o nome aparece para o usuário.
+- Dados de escola, loja, escrit�rio ou dom�nio sem rela��o com spinning.
+- Fabricantes aleat�rios de tecnologia, alimentos ou roupas sem v�nculo fitness.
+- Salas chamadas apenas "Sala 1" quando o nome aparece para o usu�rio.
 - Turmas chamadas apenas "Turma A" ou "Aula Teste".
-- Músicas sem função no treino.
-- Check-ins sem aluno/turma/posição válidos.
+- M�sicas sem fun��o no treino.
+- Check-ins sem aluno/turma/posi��o v�lidos.
 
-## Critérios de Aceite
+## Crit�rios de Aceite
 
 Antes de considerar o seed pronto:
 
-- `rg -n "mock|dummy|sample|lorem|foo|bar|teste" lib/core/database/sqlite/script.dart` não deve encontrar dados exibidos ao usuário.
+- `rg -n "mock|dummy|sample|lorem|foo|bar|teste" lib/database/sqlite/script.dart` n�o deve encontrar dados exibidos ao usu�rio.
 - Login deve passar por `DAOUsuarioSQLite`.
-- O app não deve importar `lib/excluir/banco/mock` em nenhuma tela, controller, serviço ou DAO ativo.
+- O app n�o deve importar `lib/excluir/banco/mock` em nenhuma tela, controller, servi�o ou DAO ativo.
 - Os dados devem abrir telas principais sem listas vazias inesperadas.
 - O fluxo de reserva/cancelamento deve alterar dados no SQLite.
-- As entidades novas devem usar modelos (`Modelo...`) e DAOs SQLite da camada `lib/model/dao/sqlite` sempre que já existirem.
+- As entidades novas devem usar modelos (`Modelo...`) e DAOs SQLite da camada `lib/database/sqlite/dao` sempre que j� existirem.
