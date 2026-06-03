@@ -46,9 +46,9 @@ class ScriptDinamicasSQLite {
       // Power Ride Check-in Hoje: varios alunos com check-in feito e vagas restantes.
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$ontemIso', 1, 0, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 0, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 1, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 2, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 0, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 2, 1)",
+      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 3, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 1, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 3, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 4, 1)",
@@ -59,16 +59,16 @@ class ScriptDinamicasSQLite {
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (13, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 5, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (14, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 0, 1)",
 
-      // Sprint Lotado Hoje: 17 posicoes reservaveis preenchidas.
+      // Sprint Lotado Hoje: 15 posicoes reservaveis preenchidas.
+      // Bikes 2 (0,1) e 9 (1,2) em manutencao ativa — nao recebem check-in.
+      // Capacidade efetiva = 17 total - 2 manutencao = 15 reservaveis.
       // aluna@gmail.com (id=1) nao tem check-in aqui e pode entrar na fila.
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (20, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 0, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 1, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 3, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 4, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (5, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 5, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (6, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 0, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (7, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 1, 1)",
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (8, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 2, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (9, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 3, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (10, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 4, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (11, (SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 5, 1)",
