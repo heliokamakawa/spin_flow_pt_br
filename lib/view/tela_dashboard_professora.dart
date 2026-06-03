@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spin_flow/view/config/configuracao_abas.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'package:spin_flow/infra/navegacao/rotas.dart';
 import 'package:spin_flow/view/gestao_administrativa/tela_gestao_administrativa.dart';
 import 'package:spin_flow/view/gestao_aula/tela_operacao_aula.dart';
 import 'package:spin_flow/view/gestao_aula/tela_repertorio.dart';
@@ -35,7 +36,15 @@ class _TelaDashboardProfessoraState extends State<TelaDashboardProfessora>
     return Scaffold(
       appBar: AppBar(
         title: const TituloAppBarSpinFlow(),
-        actions: const [AcaoSairAppBar()],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.directions_bike),
+            tooltip: 'Entrar como aluna',
+            onPressed: () =>
+                Navigator.pushNamed(context, Rotas.dashboardAluno),
+          ),
+          const AcaoSairAppBar(),
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [

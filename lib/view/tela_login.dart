@@ -9,7 +9,6 @@ import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:spin_flow/controller/controlador_login.dart';
 import 'package:spin_flow/view/componentes/campo_identificador_login.dart';
 import 'package:spin_flow/view/componentes/campo_senha.dart';
-import 'package:spin_flow/view/tela_escolha_perfil_professora.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
@@ -116,24 +115,7 @@ class _TelaLoginState extends State<TelaLogin> {
     }
 
     if (resultado.requerEscolhaPerfil) {
-      // Professora: exibe tela de escolha
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => TelaEscolhaPerfilProfessora(
-            nome: resultado.nomeUsuario ?? 'Professora',
-            onEntrarComoProfessora: () {
-              Navigator.pushReplacementNamed(
-                context,
-                Rotas.dashboardProfessora,
-              );
-            },
-            onEntrarComoAluna: () {
-              Navigator.pushReplacementNamed(context, Rotas.dashboardAluno);
-            },
-          ),
-        ),
-      );
+      Navigator.pushReplacementNamed(context, Rotas.dashboardProfessora);
       return;
     }
 
