@@ -81,68 +81,71 @@ lib/
 
 ## Estado atual
 
-- Fluxos ja migrados para a nova arquitetura: **login** e **recuperacao de senha**.
-- `lib/core/` organizada por dominio: `autenticacao/`, `validacoes/`, `lib/database/sqlite/`.
-- `lib/controller/autenticacao/` agrupa os controllers do dominio de autenticacao.
-- Re-exports em `excluir/` garantem que o legado continua funcionando sem alteracoes.
-- Sessao gerenciada via `_SessaoObserver` no `SpinFlowApp` — rotas publicas ignoradas, expiradas redirecionam para `sessaoExpirada`.
+- Fluxos migrados para a nova arquitetura: **todos os fluxos principais**.
+- Pasta `excluir/` removida — codigo legado migrado ou descartado.
+- Sessao gerenciada via `_SessaoObserver` no `SpinFlowApp`.
 - Testes automatizados: 26 passando (unitarios + integracao).
-- `flutter analyze` com apenas 7 infos preexistentes de lint/deprecated no legado.
+- `flutter analyze lib/` sem erros de compilacao.
 
-### Estrutura atual da nova arquitetura
+### Estrutura atual
 
 ```text
 lib/
   view/
-    componentes/
-      campo_email.dart
-      campo_senha.dart
-      campo_identificador_login.dart
+    componentes/           <- widgets reutilizaveis
+    gestao_administrativa/ <- formularios e listas de cadastro
+    gestao_aula/           <- formularios e listas de aula/repertorio
+    requisitos_interface/  <- MDs de requisitos por tela
+    config/                <- configuracao de abas
     tela_login.dart
     tela_recuperar_senha.dart
+    tela_sessao_expirada.dart
+    tela_escolha_perfil_professora.dart
+    tela_dashboard_professora.dart
+    tela_dashboard_checkin.dart   <- dashboard do aluno (check-in + painel)
+    tela_checkin.dart             <- mapa de bikes
 
   controller/
-    autenticacao/
-      controlador_login.dart
+    controlador_login.dart
     controlador_recuperacao_senha.dart
+    controlador_checkin_aluno.dart
+    controlador_operacao_aula.dart
+    controlador_turma.dart | controlador_sala.dart | controlador_aluno.dart
+    controlador_manutencao.dart | controlador_grupo_alunos.dart
+    controlador_artista_banda.dart | controlador_musica.dart | controlador_mix.dart
+    resultado_operacao.dart
 
-  model/
-    modelo/
-      modelo_usuario.dart
-    dao/
-      i_dao_usuario.dart
-      sqlite/
-        dao_usuario_sqlite.dart
-    servico/
-      servico_autenticacao.dart
-      servico_recuperacao_senha.dart
+  domain/
+    modelo/                <- objetos de dados e agregados
+    dominio/               <- regras de negocio puras (DominioSala, DominioTurma, etc.)
 
-  core/
-    autenticacao/
-      erro.dart
-      rotas.dart
-      sessao_usuario.dart
-    validacoes/
-      validador_email.dart
-      validador_cpf.dart
+  infra/
+    autenticacao/          <- sessao_usuario.dart
+    config/                <- erro.dart
+    navegacao/             <- rotas.dart
+    tema/                  <- cores_app.dart, tema_app.dart
+    di/                    <- injecao.dart (get_it)
     database/
+      dao/                 <- interfaces (IDAOCheckin, IDAOAluno, etc.)
+      repositorio/         <- repositorios por dominio
       sqlite/
-        conexao.dart
-        script.dart
+        dao/               <- implementacoes SQLite
+        conexao.dart | script.dart | script_dinamicas.dart
 
-  excluir/   <- legado pendente de migracao
+  spin_flow_app.dart
+  main.dart
 ```
 
 ## Ordem sugerida
 
 1. ~~Login.~~ (concluido)
 2. ~~Recuperacao de senha.~~ (concluido)
-3. Check-in do aluno.
-4. Mapa de check-in.
-5. Dashboard da professora.
-6. Listas e formularios CRUD.
-7. Reorganizacao fisica final das views e componentes.
-8. Reorganizacao final de `core/config`, `core/validacoes` e `lib/database/sqlite`.
+3. ~~Check-in do aluno.~~ (concluido)
+4. ~~Mapa de check-in.~~ (concluido)
+5. ~~Dashboard da professora.~~ (concluido)
+6. ~~Listas e formularios CRUD.~~ (concluido)
+7. ~~Reorganizacao fisica das views.~~ (concluido)
+8. ~~Reorganizacao final da infra/config.~~ (concluido)
 
 ## Diretrizes de Organização por Fluxo (2026-05-31)
 
@@ -720,3 +723,52 @@ lib/
 
 - A secao `Proxima aula` foi removida do `Meu Painel`.
 - O calculo interno dessa informacao tambem foi removido, evitando estado sem uso.
+
+### 2026-06-02 - Reimplementacao completa com arquitetura definitiva
+
+- Pasta `excluir/` removida; todo o codigo legado foi substituido ou descartado.
+- Arquitetura reestruturada para `domain/`, `infra/`, `controller/`, `view/`.
+- `domain/modelo/` concentra entidades e agregados do dominio.
+- `domain/dominio/` concentra regras de negocio puras: `DominioSala`, `DominioTurma`, `DominioCheckin`.
+- `infra/database/repositorio/` introduz repositorios por dominio (sem interface, acesso direto via DAOs via get_it).
+- `infra/di/injecao.dart` registra DAOs, repositorios e controllers via get_it.
+- `infra/tema/` centraliza `CoresApp`, `CoresSemanticasApp` e `TemaApp`.
+- Fluxo de check-in do aluno implementado e validado:
+  - `RepositorioCheckinAluno` orquestra DAOs de checkin, sala, posicao, fila, mix e avaliacao.
+  - `ControladorCheckinAluno` expoe listarTurmasHoje, carregarMapa, reservar, cancelar, fila, avaliar.
+  - `TelaDashboardCheckin` lista turmas do dia com status e botao contextual.
+  - `TelaCheckin` exibe mapa visual de bikes com selecao, reserva, cancelamento e fila.
+- Fluxo de operacao de aula da professora implementado:
+  - `RepositorioOperacaoAula` orquestra mapa de bikes, manutencoes e check-ins.
+  - `ControladorOperacaoAula` expoe listarTurmasHoje, carregarMapa, resolverManutencao, cancelarCheckin.
+  - `TelaDashboardProfessora` com 3 abas: Aulas | Repertorio | Administrativo.
+- `CLAUDE.md` atualizado com protocolo de correcao por camada e obrigatoriedade dos MDs de tela.
+- Validacao: `flutter analyze lib/` sem erros de compilacao.
+
+### 2026-06-02 - Dashboard do aluno com abas e Painel
+
+- `TelaDashboardCheckin` convertida de lista simples para dashboard com `TabBar` de 2 abas.
+- Aba 0 — Check-in: funcionalidade anterior preservada.
+- Aba 1 — Meu Painel: perfil do aluno, aulas realizadas (semana/mes/ano) e avaliacao de mix.
+- Novas entidades: `AulaRealizada`, `PainelAluno`, `AvaliacaoMusicaDetalhe`.
+- Novos DAOs: `IDAOAulaRealizada` com contagem por periodo e busca do ultimo registro.
+- `IDAOTurmaMix` ampliado com `buscarMixPorId`.
+- `IDAOAvaliacaoMusica` ampliado com `buscarTodasComDetalhes` (JOIN musica + artista).
+- `PainelMix` expoe `abrirModal` estatico e pre-popula notas ja registradas pelo aluno.
+- Secao de avaliacao de mix exibe o ultimo mix participado e campo de busca por nome de mix.
+- Validacao: `flutter analyze lib/` sem erros de compilacao.
+
+### 2026-06-02 - Reorganizacao fisica das telas em lib/view/
+
+- Telas movidas para a raiz de `lib/view/`, sem subpastas por dominio.
+- Convencao adotada: nome do arquivo ja indica categoria (ex: `tela_dashboard_checkin.dart`).
+- Renomeacoes realizadas:
+  - `checkin/tela_turmas_checkin.dart` -> `tela_dashboard_checkin.dart` (classe `TelaDashboardCheckin`)
+  - `checkin/tela_mapa_checkin_aluno.dart` -> `tela_checkin.dart` (classe `TelaCheckin`)
+  - `gestao_professora/tela_dashboard_professora.dart` -> `tela_dashboard_professora.dart`
+  - `autenticacao/tela_escolha_perfil_professora.dart` -> `tela_escolha_perfil_professora.dart`
+- Pastas `checkin/`, `gestao_professora/` e `autenticacao/` removidas.
+- Pasta `componentes/` mantida (widgets reutilizaveis nao sao telas).
+- Pastas `gestao_administrativa/` e `gestao_aula/` mantidas (contêm formularios e listas, nao apenas telas).
+- `spin_flow_app.dart` e `tela_login.dart` atualizados com os novos caminhos de import.
+- Validacao: `flutter analyze lib/` sem erros de compilacao.
