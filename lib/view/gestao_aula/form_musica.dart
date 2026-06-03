@@ -137,6 +137,8 @@ class _FormMusicaState extends State<FormMusica> {
                       Expanded(
                         child: DropdownButtonFormField<int>(
                           initialValue: _artistaId,
+                          hint: const Text('Selecione'),
+                          isExpanded: true,
                           decoration: const InputDecoration(
                             labelText: 'Artista ou banda *',
                           ),

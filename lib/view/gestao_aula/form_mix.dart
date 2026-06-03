@@ -167,10 +167,9 @@ class _FormMixState extends State<FormMix> {
                       Expanded(
                         child: DropdownButtonFormField<int>(
                           initialValue: _musicaEscolhida,
-                          decoration: const InputDecoration(
-                            hintText: 'Escolha uma música',
-                            isDense: true,
-                          ),
+                          hint: const Text('Escolha uma música'),
+                          isExpanded: true,
+                          decoration: const InputDecoration(isDense: true),
                           items: musicasNaoAdicionadas.map((m) {
                             return DropdownMenuItem(
                               value: m.id,
