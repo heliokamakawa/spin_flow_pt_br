@@ -306,7 +306,7 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
 
 // ── Aba Painel — conteúdo ────────────────────────────────────────────────────
 
-enum _ModoMix { top, preferidas, media }
+enum _ModoMix { top, preferidas, avaliacao }
 
 class _AbaPainelAluno extends StatefulWidget {
   final PainelAluno painel;
@@ -329,6 +329,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
   _ModoMix _modoMix = _ModoMix.top;
   MixCheckin? _mixAtual;
   bool _carregandoMixBusca = false;
+  final Map<int, int> _avaliacoesAvaliacao = {};
 
   @override
   void initState() {
@@ -391,7 +392,91 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Busca / troca de mix
+        // Seletor de modo — sempre visível
+        SegmentedButton<_ModoMix>(
+          segments: const [
+            ButtonSegment(
+              value: _ModoMix.top,
+              label: Text('Top 5'),
+              icon: Icon(Icons.star),
+            ),
+            ButtonSegment(
+              value: _ModoMix.preferidas,
+              label: Text('Preferidas'),
+              icon: Icon(Icons.favorite),
+            ),
+            ButtonSegment(
+              value: _ModoMix.avaliacao,
+              label: Text('Avaliação'),
+              icon: Icon(Icons.rate_review_outlined),
+            ),
+          ],
+          selected: {_modoMix},
+          onSelectionChanged: (s) => setState(() => _modoMix = s.first),
+          style: const ButtonStyle(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+          ),
+        ),
+
+        const SizedBox(height: 14),
+
+        if (_modoMix == _ModoMix.avaliacao)
+          _buildAvaliacao(painel, mix, cores)
+        else if (mix == null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(
+              'Nenhum mix encontrado nas suas aulas.',
+              style: TextStyle(color: cores.textoFraco, fontSize: 13),
+            ),
+          )
+        else ...[
+          // Cabeçalho do mix para Top 5 / Preferidas
+          Row(
+            children: [
+              Icon(Icons.music_note, size: 16, color: cores.textoSuave),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  mix.nomeMix,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          _buildConteudoModo(mix, cores),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildConteudoModo(MixCheckin mix, CoresSemanticasApp cores) {
+    switch (_modoMix) {
+      case _ModoMix.top:       return _buildTop5(mix, cores);
+      case _ModoMix.preferidas: return _buildPreferidas(mix, cores);
+      case _ModoMix.avaliacao:  return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildAvaliacao(
+    PainelAluno painel,
+    MixCheckin? mix,
+    CoresSemanticasApp cores,
+  ) {
+    final mixSelecionado = mix != null
+        ? painel.mixesDisponiveis
+            .where((m) => m.id == mix.mixId)
+            .firstOrNull
+        : null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         _carregandoMixBusca
             ? const Center(
                 child: Padding(
@@ -400,8 +485,10 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
                 ),
               )
             : DropdownMenu<Mix>(
+                key: ValueKey(mix?.mixId),
                 width: double.infinity,
-                hintText: 'Buscar mix por nome...',
+                initialSelection: mixSelecionado,
+                hintText: 'Selecionar mix...',
                 enableFilter: true,
                 leadingIcon: const Icon(Icons.search, size: 18),
                 inputDecorationTheme: const InputDecorationTheme(
@@ -418,87 +505,71 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
                 },
               ),
 
-        const SizedBox(height: 14),
-
         if (mix == null)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.only(top: 12),
             child: Text(
               'Nenhum mix encontrado nas suas aulas.',
               style: TextStyle(color: cores.textoFraco, fontSize: 13),
             ),
           )
         else ...[
-          // Cabeçalho do mix selecionado
-          Row(
-            children: [
-              Icon(Icons.music_note, size: 16, color: cores.textoSuave),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  mix.nomeMix,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              TextButton.icon(
-                onPressed: () =>
-                    PainelMix.abrirModal(context, mix, _aoAvaliarNoMix),
-                icon: const Icon(Icons.star_border, size: 16),
-                label: const Text('Avaliar'),
-                style: TextButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 10),
-
-          // Seletor de modo
-          SegmentedButton<_ModoMix>(
-            segments: const [
-              ButtonSegment(
-                value: _ModoMix.top,
-                label: Text('Top 5'),
-                icon: Icon(Icons.star),
-              ),
-              ButtonSegment(
-                value: _ModoMix.preferidas,
-                label: Text('Preferidas'),
-                icon: Icon(Icons.favorite),
-              ),
-              ButtonSegment(
-                value: _ModoMix.media,
-                label: Text('Média'),
-                icon: Icon(Icons.analytics_outlined),
-              ),
-            ],
-            selected: {_modoMix},
-            onSelectionChanged: (s) => setState(() => _modoMix = s.first),
-            style: ButtonStyle(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              visualDensity: VisualDensity.compact,
-            ),
-          ),
-
           const SizedBox(height: 12),
-
-          _buildConteudoModo(mix, cores),
+          ...mix.musicas
+              .map((m) => _linhaMusicaParaAvaliar(m, cores)),
         ],
       ],
     );
   }
 
-  Widget _buildConteudoModo(MixCheckin mix, CoresSemanticasApp cores) {
-    switch (_modoMix) {
-      case _ModoMix.top:   return _buildTop5(mix, cores);
-      case _ModoMix.preferidas: return _buildPreferidas(mix, cores);
-      case _ModoMix.media: return _buildMedia(mix, cores);
-    }
+  Widget _linhaMusicaParaAvaliar(MusicaCheckin m, CoresSemanticasApp cores) {
+    final nota = _avaliacoesAvaliacao[m.musicaId] ?? 0;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  m.nome,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                if (m.nomeArtista.isNotEmpty)
+                  Text(
+                    m.nomeArtista,
+                    style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                  ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(5, (i) {
+              final valor = i + 1;
+              return GestureDetector(
+                onTap: () {
+                  setState(() => _avaliacoesAvaliacao[m.musicaId] = valor);
+                  _aoAvaliarNoMix(m.musicaId, valor);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Icon(
+                    valor <= nota ? Icons.star : Icons.star_border,
+                    color: valor <= nota ? Colors.amber : cores.textoFraco,
+                    size: 20,
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildTop5(MixCheckin mix, CoresSemanticasApp cores) {
@@ -527,7 +598,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(
-          'Nenhuma música preferida ainda. Avalie com 5 estrelas no modal.',
+          'Nenhuma música preferida ainda. Use a aba Avaliação para avaliar.',
           style: TextStyle(color: cores.textoFraco, fontSize: 13),
         ),
       );
@@ -588,52 +659,6 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
     );
   }
 
-  Widget _buildMedia(MixCheckin mix, CoresSemanticasApp cores) {
-    final avaliadas = mix.musicas.where((m) => m.avaliacao != null).toList();
-
-    if (avaliadas.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text(
-          'Nenhuma música avaliada neste mix ainda.',
-          style: TextStyle(color: cores.textoFraco, fontSize: 13),
-        ),
-      );
-    }
-
-    final media =
-        avaliadas.map((m) => m.avaliacao!).reduce((a, b) => a + b) /
-        avaliadas.length;
-
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        Text(
-          media.toStringAsFixed(1),
-          style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w800),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(5, (i) {
-            final preenchida = (i + 1) <= media.round();
-            return Icon(
-              preenchida ? Icons.star : Icons.star_border,
-              color: preenchida ? Colors.amber : cores.textoFraco,
-              size: 28,
-            );
-          }),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          '${avaliadas.length} música${avaliadas.length == 1 ? "" : "s"} '
-          'avaliada${avaliadas.length == 1 ? "" : "s"}',
-          style: TextStyle(fontSize: 12, color: cores.textoSuave),
-        ),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
-
   Widget _linhaMusicaAvaliada(MusicaCheckin m, CoresSemanticasApp cores) {
     final nota = m.avaliacao ?? 0;
     return Padding(
@@ -681,7 +706,10 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
     if (!mounted) return;
     setState(() {
       _carregandoMixBusca = false;
-      if (mix != null) _mixAtual = mix;
+      if (mix != null) {
+        _mixAtual = mix;
+        _avaliacoesAvaliacao.clear();
+      }
     });
   }
 
