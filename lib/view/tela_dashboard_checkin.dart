@@ -339,7 +339,11 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
   @override
   void didUpdateWidget(_AbaPainelAluno oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_mixAtual?.mixId == oldWidget.painel.ultimoMix?.mixId) {
+    // Só sincroniza quando o painel foi recarregado de fato (objeto novo).
+    // Rebuilds do pai sem recarga não devem sobrescrever _mixAtual atualizado
+    // localmente por _aoAvaliarNoMix.
+    if (!identical(widget.painel, oldWidget.painel) &&
+        _mixAtual?.mixId == oldWidget.painel.ultimoMix?.mixId) {
       setState(() => _mixAtual = widget.painel.ultimoMix);
     }
   }
