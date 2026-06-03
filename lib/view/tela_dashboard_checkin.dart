@@ -347,51 +347,11 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
   @override
   Widget build(BuildContext context) {
     final painel = widget.painel;
-    final aluno = painel.aluno;
     final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // ── Perfil ────────────────────────────────────────────────────────
-        _secao(
-          context,
-          icone: Icons.person_outline,
-          titulo: 'Perfil',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _infoLinha(Icons.badge_outlined, aluno.nome),
-              _infoLinha(Icons.email_outlined, aluno.email),
-              if (aluno.telefone.isNotEmpty)
-                _infoLinha(Icons.phone_outlined, aluno.telefone),
-              if (aluno.dataNascimento != null)
-                _infoLinha(
-                  Icons.cake_outlined,
-                  _formatarDataNascimento(aluno.dataNascimento!),
-                ),
-              if (aluno.instagram.isNotEmpty)
-                _infoLinha(Icons.camera_alt_outlined, '@${aluno.instagram}'),
-              if (aluno.tiktok.isNotEmpty)
-                _infoLinha(Icons.music_note_outlined, aluno.tiktok),
-              if (aluno.facebook.isNotEmpty)
-                _infoLinha(Icons.people_outline, aluno.facebook),
-              if (aluno.observacoes.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(
-                  aluno.observacoes,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: cores.textoSuave,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-
         // ── Participação ──────────────────────────────────────────────────
         _secao(
           context,
@@ -784,32 +744,6 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
   Widget _divisorVertical() =>
       const SizedBox(height: 40, child: VerticalDivider());
 
-  Widget _infoLinha(IconData icone, String texto) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icone, size: 16),
-          const SizedBox(width: 8),
-          Expanded(child: Text(texto, style: const TextStyle(fontSize: 13))),
-        ],
-      ),
-    );
-  }
-
-  String _formatarDataNascimento(DateTime data) {
-    final hoje = DateTime.now();
-    final idade = hoje.year -
-        data.year -
-        ((hoje.month < data.month ||
-                (hoje.month == data.month && hoje.day < data.day))
-            ? 1
-            : 0);
-    final dia = data.day.toString().padLeft(2, '0');
-    final mes = data.month.toString().padLeft(2, '0');
-    return '$dia/$mes/${data.year} ($idade anos)';
-  }
 }
 
 // ── Card Check-in ─────────────────────────────────────────────────────────────
