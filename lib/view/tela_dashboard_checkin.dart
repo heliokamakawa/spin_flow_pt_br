@@ -296,7 +296,8 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
         painel: _painel!,
         alunoId: _alunoId!,
         onAvaliar: (musicaId, nota) =>
-            _controlador.avaliarMusica(_alunoId!, musicaId, nota),
+            _controlador.avaliarMusica(_alunoId!, musicaId, nota)
+                .then((_) => _carregarPainel()),
         onBuscarMix: (mixId) =>
             _controlador.buscarMixComAvaliacoes(mixId, _alunoId!),
       ),
