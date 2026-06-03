@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/controlador_checkin_aluno.dart';
 import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/mix_checkin.dart';
+import 'package:spin_flow/domain/modelo/musica_checkin.dart';
 import 'package:spin_flow/domain/modelo/painel_aluno.dart';
 import 'package:spin_flow/infra/autenticacao/sessao_usuario.dart';
 import 'package:spin_flow/infra/tema/cores_app.dart';
@@ -295,7 +296,7 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
         painel: _painel!,
         alunoId: _alunoId!,
         onAvaliar: (musicaId, nota) =>
-            _controlador.avaliarMusica(_alunoId!, musicaId, nota).then((_) => _carregarPainel()),
+            _controlador.avaliarMusica(_alunoId!, musicaId, nota),
         onBuscarMix: (mixId) =>
             _controlador.buscarMixComAvaliacoes(mixId, _alunoId!),
       ),
@@ -304,6 +305,8 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
 }
 
 // ── Aba Painel — conteúdo ────────────────────────────────────────────────────
+
+enum _ModoMix { top, todas, media }
 
 class _AbaPainelAluno extends StatefulWidget {
   final PainelAluno painel;
@@ -323,7 +326,23 @@ class _AbaPainelAluno extends StatefulWidget {
 }
 
 class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
+  _ModoMix _modoMix = _ModoMix.top;
+  MixCheckin? _mixAtual;
   bool _carregandoMixBusca = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _mixAtual = widget.painel.ultimoMix;
+  }
+
+  @override
+  void didUpdateWidget(_AbaPainelAluno oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_mixAtual?.mixId == oldWidget.painel.ultimoMix?.mixId) {
+      setState(() => _mixAtual = widget.painel.ultimoMix);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -403,39 +422,12 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
   }
 
   Widget _buildSecaoMix(PainelAluno painel, CoresSemanticasApp cores) {
+    final mix = _mixAtual;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Último mix participado
-        if (painel.ultimoMix != null) ...[
-          Text(
-            'Último mix participado',
-            style: TextStyle(fontSize: 12, color: cores.textoSuave),
-          ),
-          const SizedBox(height: 6),
-          _BotaoAbrirMix(
-            mix: painel.ultimoMix!,
-            onAvaliar: widget.onAvaliar,
-          ),
-        ] else
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Text(
-              'Nenhum mix encontrado nas suas aulas.',
-              style: TextStyle(color: cores.textoFraco, fontSize: 13),
-            ),
-          ),
-
-        const SizedBox(height: 16),
-        const Divider(height: 1),
-        const SizedBox(height: 12),
-
-        // Busca por nome de mix
-        Text(
-          'Buscar outro mix',
-          style: TextStyle(fontSize: 12, color: cores.textoSuave),
-        ),
-        const SizedBox(height: 8),
+        // Busca / troca de mix
         _carregandoMixBusca
             ? const Center(
                 child: Padding(
@@ -445,7 +437,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
               )
             : DropdownMenu<Mix>(
                 width: double.infinity,
-                hintText: 'Pesquisar mix...',
+                hintText: 'Buscar mix por nome...',
                 enableFilter: true,
                 leadingIcon: const Icon(Icons.search, size: 18),
                 inputDecorationTheme: const InputDecorationTheme(
@@ -455,27 +447,227 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
                       EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 ),
                 dropdownMenuEntries: painel.mixesDisponiveis
-                    .map((m) => DropdownMenuEntry<Mix>(
-                          value: m,
-                          label: m.nome,
-                        ))
+                    .map((m) => DropdownMenuEntry<Mix>(value: m, label: m.nome))
                     .toList(),
-                onSelected: (mix) {
-                  if (mix == null) return;
-                  _abrirMixPorId(mix.id!);
+                onSelected: (m) {
+                  if (m?.id != null) _selecionarMix(m!.id!);
                 },
               ),
+
+        const SizedBox(height: 14),
+
+        if (mix == null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(
+              'Nenhum mix encontrado nas suas aulas.',
+              style: TextStyle(color: cores.textoFraco, fontSize: 13),
+            ),
+          )
+        else ...[
+          // Cabeçalho do mix selecionado
+          Row(
+            children: [
+              Icon(Icons.music_note, size: 16, color: cores.textoSuave),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  mix.nomeMix,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () =>
+                    PainelMix.abrirModal(context, mix, _aoAvaliarNoMix),
+                icon: const Icon(Icons.star_border, size: 16),
+                label: const Text('Avaliar'),
+                style: TextButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          // Seletor de modo
+          SegmentedButton<_ModoMix>(
+            segments: const [
+              ButtonSegment(
+                value: _ModoMix.top,
+                label: Text('Top 5'),
+                icon: Icon(Icons.star),
+              ),
+              ButtonSegment(
+                value: _ModoMix.todas,
+                label: Text('Todas'),
+                icon: Icon(Icons.list),
+              ),
+              ButtonSegment(
+                value: _ModoMix.media,
+                label: Text('Média'),
+                icon: Icon(Icons.analytics_outlined),
+              ),
+            ],
+            selected: {_modoMix},
+            onSelectionChanged: (s) => setState(() => _modoMix = s.first),
+            style: ButtonStyle(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.compact,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          _buildConteudoModo(mix, cores),
+        ],
       ],
     );
   }
 
-  Future<void> _abrirMixPorId(int mixId) async {
+  Widget _buildConteudoModo(MixCheckin mix, CoresSemanticasApp cores) {
+    switch (_modoMix) {
+      case _ModoMix.top:   return _buildTop5(mix, cores);
+      case _ModoMix.todas: return _buildTodas(mix, cores);
+      case _ModoMix.media: return _buildMedia(mix, cores);
+    }
+  }
+
+  Widget _buildTop5(MixCheckin mix, CoresSemanticasApp cores) {
+    final avaliadas = mix.musicas
+        .where((m) => m.avaliacao != null)
+        .toList()
+      ..sort((a, b) => b.avaliacao!.compareTo(a.avaliacao!));
+    final top = avaliadas.take(5).toList();
+
+    if (top.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          'Nenhuma música avaliada neste mix ainda.',
+          style: TextStyle(color: cores.textoFraco, fontSize: 13),
+        ),
+      );
+    }
+    return Column(children: top.map((m) => _linhaMusicaAvaliada(m, cores)).toList());
+  }
+
+  Widget _buildTodas(MixCheckin mix, CoresSemanticasApp cores) {
+    final lista = [...mix.musicas]
+      ..sort((a, b) => (b.avaliacao ?? 0).compareTo(a.avaliacao ?? 0));
+    return Column(children: lista.map((m) => _linhaMusicaAvaliada(m, cores)).toList());
+  }
+
+  Widget _buildMedia(MixCheckin mix, CoresSemanticasApp cores) {
+    final avaliadas = mix.musicas.where((m) => m.avaliacao != null).toList();
+
+    if (avaliadas.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          'Nenhuma música avaliada neste mix ainda.',
+          style: TextStyle(color: cores.textoFraco, fontSize: 13),
+        ),
+      );
+    }
+
+    final media =
+        avaliadas.map((m) => m.avaliacao!).reduce((a, b) => a + b) /
+        avaliadas.length;
+
+    return Column(
+      children: [
+        const SizedBox(height: 8),
+        Text(
+          media.toStringAsFixed(1),
+          style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w800),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (i) {
+            final preenchida = (i + 1) <= media.round();
+            return Icon(
+              preenchida ? Icons.star : Icons.star_border,
+              color: preenchida ? Colors.amber : cores.textoFraco,
+              size: 28,
+            );
+          }),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          '${avaliadas.length} música${avaliadas.length == 1 ? "" : "s"} '
+          'avaliada${avaliadas.length == 1 ? "" : "s"}',
+          style: TextStyle(fontSize: 12, color: cores.textoSuave),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _linhaMusicaAvaliada(MusicaCheckin m, CoresSemanticasApp cores) {
+    final nota = m.avaliacao ?? 0;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  m.nome,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                if (m.nomeArtista.isNotEmpty)
+                  Text(
+                    m.nomeArtista,
+                    style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                  ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(5, (i) {
+              final preenchida = (i + 1) <= nota;
+              return Icon(
+                preenchida ? Icons.star : Icons.star_border,
+                color: preenchida ? Colors.amber : cores.textoFraco,
+                size: 16,
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _selecionarMix(int mixId) async {
     setState(() => _carregandoMixBusca = true);
     final mix = await widget.onBuscarMix(mixId);
     if (!mounted) return;
-    setState(() => _carregandoMixBusca = false);
-    if (mix == null) return;
-    PainelMix.abrirModal(context, mix, widget.onAvaliar);
+    setState(() {
+      _carregandoMixBusca = false;
+      if (mix != null) _mixAtual = mix;
+    });
+  }
+
+  Future<void> _aoAvaliarNoMix(int musicaId, int nota) async {
+    await widget.onAvaliar(musicaId, nota);
+    final mix = _mixAtual;
+    if (mix == null || !mounted) return;
+    final mixAtualizado = await widget.onBuscarMix(mix.mixId);
+    if (!mounted) return;
+    setState(() {
+      if (mixAtualizado != null) _mixAtual = mixAtualizado;
+    });
   }
 
   Widget _secao(
@@ -555,54 +747,6 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
     final dia = data.day.toString().padLeft(2, '0');
     final mes = data.month.toString().padLeft(2, '0');
     return '$dia/$mes/${data.year} ($idade anos)';
-  }
-}
-
-// ── Botão abrir mix ───────────────────────────────────────────────────────────
-
-class _BotaoAbrirMix extends StatelessWidget {
-  final MixCheckin mix;
-  final Future<void> Function(int musicaId, int nota) onAvaliar;
-
-  const _BotaoAbrirMix({required this.mix, required this.onAvaliar});
-
-  @override
-  Widget build(BuildContext context) {
-    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-    return InkWell(
-      onTap: () => PainelMix.abrirModal(context, mix, onAvaliar),
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: CoresApp.borda),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.music_note, size: 18, color: cores.textoSuave),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                mix.nomeMix,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-            ),
-            Icon(Icons.star_outline, size: 16, color: cores.textoFraco),
-            const SizedBox(width: 4),
-            Text(
-              'Avaliar',
-              style: TextStyle(fontSize: 13, color: cores.textoSuave),
-            ),
-            const SizedBox(width: 4),
-            Icon(Icons.chevron_right, size: 18, color: cores.textoFraco),
-          ],
-        ),
-      ),
-    );
   }
 }
 
