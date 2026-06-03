@@ -408,6 +408,7 @@ class ScriptSQLite {
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Ribeiro', 'ana.ribeiro@email.com', '1991-06-24', 'feminino', '(11) 99999-1118', '', '', '', '', 'Mediano: prefere turmas no almoco e ritmos constantes', 1)",
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Pedro Lima', 'pedro.lima@email.com', '1984-12-02', 'masculino', '(11) 99999-1119', '', '', '', '', 'Mediano: participa de treinos funcionais e spinning em dias alternados', 1)",
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Sabrina Duarte', 'sabrina.duarte@email.com', '1993-09-05', 'feminino', '(11) 99999-1120', '', '', '', '', 'Mediano: boa adaptacao a sprint, ainda evoluindo em aulas longas', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Beatriz', 'professora@gmail.com', '1985-03-20', 'feminino', '(11) 99999-0001', '', '', '', '', 'Professora e aluna — perfil criado para teste do fluxo duplo', 1)",
   ];
 
   static const List<String> _insercoesProfessora = [
@@ -418,7 +419,7 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesUsuario = [
-    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Ana Beatriz', 'professora@gmail.com', '11122233344', '123', 1, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, aluno_id, ativo) VALUES ('Ana Beatriz', 'professora@gmail.com', '11122233344', '123', 1, (SELECT id FROM aluno WHERE LOWER(email) = 'professora@gmail.com' LIMIT 1), 1)",
     "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Marina Torres', 'marina.torres@pulsestudio.com.br', '22233344455', '123', 2, 1)",
     "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Paula Nogueira', 'paula.nogueira@pulsestudio.com.br', '33344455566', '123', 3, 1)",
     "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Ricardo Mendes', 'ricardo.mendes@pulsestudio.com.br', '44455566677', '123', 4, 1)",
