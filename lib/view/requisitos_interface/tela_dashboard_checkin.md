@@ -42,10 +42,10 @@ Ambas as abas são carregadas na inicialização (`Future.wait`).
 |------------------|---------------------|--------|------------|
 | `disponivel`     | Check-in            | sim    | sucesso    |
 | `lotada`         | Entrar na Fila      | sim    | alerta     |
+| `confirmado`     | Cancelar Check-in   | sim    | erro       |
 | `janelaFechada`  | Aguardando          | não    | cinza      |
-| `confirmado`     | Reservado           | não    | info       |
 | `emFila`         | Na Fila · #N        | não    | cinza      |
-| `conflito`       | Conflito de Horário | não    | erro suave |
+| `conflito`       | Conflito de Horário | não    | cinza      |
 
 ### Estados da aba
 

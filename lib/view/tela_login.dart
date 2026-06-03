@@ -9,7 +9,7 @@ import 'package:spin_flow/infra/tema/cores_app.dart';
 import 'package:spin_flow/controller/controlador_login.dart';
 import 'package:spin_flow/view/componentes/campo_identificador_login.dart';
 import 'package:spin_flow/view/componentes/campo_senha.dart';
-import 'package:spin_flow/view/autenticacao/tela_escolha_perfil_professora.dart';
+import 'package:spin_flow/view/tela_escolha_perfil_professora.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
