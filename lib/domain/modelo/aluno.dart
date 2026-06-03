@@ -64,6 +64,10 @@ class Aluno {
       return 'E-mail inválido';
     }
     if (telefone.trim().isEmpty) return 'Telefone obrigatório';
+    final digitosTel = telefone.replaceAll(RegExp(r'\D'), '');
+    if (digitosTel.length < 10 || digitosTel.length > 11) {
+      return 'Telefone inválido — informe DDD + número';
+    }
     if (dataNascimento == null) return 'Data de nascimento obrigatória';
     if (genero.trim().isEmpty) return 'Gênero obrigatório';
     return null;
