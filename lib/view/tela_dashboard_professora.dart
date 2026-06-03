@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:spin_flow/view/config/configuracao_abas.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
-import '../gestao_administrativa/tela_gestao_administrativa.dart';
-import '../gestao_aula/tela_operacao_aula.dart';
-import '../gestao_aula/tela_repertorio.dart';
+import 'package:spin_flow/view/gestao_administrativa/tela_gestao_administrativa.dart';
+import 'package:spin_flow/view/gestao_aula/tela_operacao_aula.dart';
+import 'package:spin_flow/view/gestao_aula/tela_repertorio.dart';
 
 class TelaDashboardProfessora extends StatefulWidget {
   const TelaDashboardProfessora({super.key});

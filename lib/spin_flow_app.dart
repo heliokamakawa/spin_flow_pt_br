@@ -5,7 +5,7 @@ import 'package:spin_flow/infra/navegacao/rotas.dart';
 import 'package:spin_flow/infra/tema/tema_app.dart';
 import 'package:spin_flow/view/tela_dashboard_checkin.dart';
 import 'package:spin_flow/view/gestao_aula/lista_alunos.dart';
-import 'package:spin_flow/view/gestao_professora/tela_dashboard_professora.dart';
+import 'package:spin_flow/view/tela_dashboard_professora.dart';
 import 'package:spin_flow/view/tela_login.dart';
 import 'package:spin_flow/view/tela_recuperar_senha.dart';
 import 'package:spin_flow/view/tela_sessao_expirada.dart';
