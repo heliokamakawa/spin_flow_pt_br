@@ -268,7 +268,7 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
   // ── Aba Painel ────────────────────────────────────────────────────────────
 
   Widget _buildAbaPainel(BuildContext context) {
-    if (_carregandoPainel) {
+    if (_carregandoPainel && _painel == null) {
       return const Center(child: CircularProgressIndicator());
     }
     if (_erroPainel != null) {
@@ -524,7 +524,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
   }
 
   Widget _linhaMusicaParaAvaliar(MusicaCheckin m, CoresSemanticasApp cores) {
-    final nota = _avaliacoesAvaliacao[m.musicaId] ?? 0;
+    final nota = _avaliacoesAvaliacao[m.musicaId] ?? m.avaliacao ?? 0;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
