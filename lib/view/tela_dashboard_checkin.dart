@@ -306,7 +306,7 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
 
 // ── Aba Painel — conteúdo ────────────────────────────────────────────────────
 
-enum _ModoMix { top, todas, media }
+enum _ModoMix { top, preferidas, media }
 
 class _AbaPainelAluno extends StatefulWidget {
   final PainelAluno painel;
@@ -503,9 +503,9 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
                 icon: Icon(Icons.star),
               ),
               ButtonSegment(
-                value: _ModoMix.todas,
-                label: Text('Todas'),
-                icon: Icon(Icons.list),
+                value: _ModoMix.preferidas,
+                label: Text('Preferidas'),
+                icon: Icon(Icons.favorite),
               ),
               ButtonSegment(
                 value: _ModoMix.media,
@@ -532,7 +532,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
   Widget _buildConteudoModo(MixCheckin mix, CoresSemanticasApp cores) {
     switch (_modoMix) {
       case _ModoMix.top:   return _buildTop5(mix, cores);
-      case _ModoMix.todas: return _buildTodas(mix, cores);
+      case _ModoMix.preferidas: return _buildPreferidas(mix, cores);
       case _ModoMix.media: return _buildMedia(mix, cores);
     }
   }
@@ -556,10 +556,72 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
     return Column(children: top.map((m) => _linhaMusicaAvaliada(m, cores)).toList());
   }
 
-  Widget _buildTodas(MixCheckin mix, CoresSemanticasApp cores) {
-    final lista = [...mix.musicas]
-      ..sort((a, b) => (b.avaliacao ?? 0).compareTo(a.avaliacao ?? 0));
-    return Column(children: lista.map((m) => _linhaMusicaAvaliada(m, cores)).toList());
+  Widget _buildPreferidas(MixCheckin mix, CoresSemanticasApp cores) {
+    final preferidas = mix.musicas.where((m) => m.avaliacao == 5).toList();
+
+    if (preferidas.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          'Nenhuma música preferida ainda. Avalie com 5 estrelas no modal.',
+          style: TextStyle(color: cores.textoFraco, fontSize: 13),
+        ),
+      );
+    }
+
+    return Column(
+      children: preferidas
+          .map((m) => _linhaMusicaInterativa(m, cores))
+          .toList(),
+    );
+  }
+
+  Widget _linhaMusicaInterativa(MusicaCheckin m, CoresSemanticasApp cores) {
+    final nota = m.avaliacao ?? 0;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  m.nome,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                if (m.nomeArtista.isNotEmpty)
+                  Text(
+                    m.nomeArtista,
+                    style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                  ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(5, (i) {
+              final valor = i + 1;
+              final preenchida = valor <= nota;
+              return GestureDetector(
+                onTap: () => _aoAvaliarNoMix(m.musicaId, valor),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Icon(
+                    preenchida ? Icons.star : Icons.star_border,
+                    color: preenchida ? Colors.amber : cores.textoFraco,
+                    size: 20,
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildMedia(MixCheckin mix, CoresSemanticasApp cores) {
