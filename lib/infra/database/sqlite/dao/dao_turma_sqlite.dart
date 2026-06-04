@@ -37,11 +37,11 @@ class DAOTurmaSQLite implements IDAOTurma {
 
     final dados = {
       'nome': turma.nome,
-      'descricao': '',
       'horario_inicio': turma.horarioInicio,
       'duracao_minutos': turma.duracaoMinutos,
       'sala_id': turma.salaId,
       'professora_id': turma.professoraId,
+      'mix_id': turma.mixId,
       'ativo': turma.ativo ? 1 : 0,
     };
 
@@ -83,6 +83,7 @@ class DAOTurmaSQLite implements IDAOTurma {
       diasSemana: dias,
       salaId: (map['sala_id'] as int?) ?? 0,
       professoraId: map['professora_id'] as int?,
+      mixId: map['mix_id'] as int?,
       ativo: ((map['ativo'] as int?) ?? 1) == 1,
     );
   }

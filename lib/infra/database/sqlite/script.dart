@@ -126,7 +126,6 @@ class ScriptSQLite {
     CREATE TABLE mix (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
-      musica_ids TEXT,
       descricao TEXT NOT NULL,
       ativo INTEGER NOT NULL DEFAULT 1
     )
@@ -209,11 +208,11 @@ class ScriptSQLite {
     CREATE TABLE turma (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT NOT NULL,
-      descricao TEXT NOT NULL,
       horario_inicio TEXT NOT NULL,
       duracao_minutos INTEGER NOT NULL,
       sala_id INTEGER,
       professora_id INTEGER,
+      mix_id INTEGER,
       ativo INTEGER NOT NULL DEFAULT 1
     )
   ''';
@@ -308,17 +307,6 @@ class ScriptSQLite {
     )
   ''';
 
-  static const String _criarTabelaTurmaMix = '''
-    CREATE TABLE turma_mix (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      turma_id INTEGER,
-      mix_id INTEGER,
-      data_inicio TEXT NOT NULL,
-      data_fim TEXT NOT NULL,
-      ativo INTEGER NOT NULL DEFAULT 1
-    )
-  ''';
-
   static const String _criarTabelaPosicaoBike = '''
     CREATE TABLE posicao_bike (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -353,7 +341,6 @@ class ScriptSQLite {
     _criarTabelaCheckin,
     _criarTabelaAulaRealizada,
     _criarTabelaFilaEsperaCheckin,
-    _criarTabelaTurmaMix,
     _criarTabelaPosicaoBike,
   ];
 
@@ -388,27 +375,27 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesAluno = [
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Clara Almeida', 'aluna@gmail.com', '1990-05-15', 'feminino', '(11) 99999-1101', '', '', '', '', 'Uso intenso: aluna de alta frequencia, treina spinning de 4 a 5 vezes por semana e costuma reservar primeira fileira', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Fernanda Lima', 'fernanda.lima@email.com', '1995-07-08', 'feminino', '(11) 99999-1102', '', '', '', '', 'Uso intenso: alta frequencia nas turmas da noite e preferencia por aulas de endurance', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Roberto Gomes', 'roberto.gomes@email.com', '1991-09-14', 'masculino', '(11) 99999-1103', '', '', '', '', 'Uso intenso: participa de treinos de sprint e acompanha indicadores de evolucao', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Juliana Martins', 'juliana.martins@email.com', '1994-06-03', 'feminino', '(11) 99999-1104', '', '', '', '', 'Uso intenso: aluna recorrente nas aulas da manha e costuma avaliar repertorios', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Patricia Souza', 'patricia.souza@email.com', '1987-01-25', 'feminino', '(11) 99999-1105', '', '', '', '', 'Uso intenso: treina em turmas avancadas e alterna bikes centrais', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Lucas Oliveira', 'lucas.oliveira@email.com', '1993-11-30', 'masculino', '(11) 99999-1106', '', '', '', '', 'Uso intenso: preferencia por aulas de subida e resistencia no fim do dia', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Mariana Costa', 'mariana.costa@email.com', '1992-12-10', 'feminino', '(11) 99999-1107', '', '', '', '', 'Uso intenso: frequenta quatro aulas por semana e prioriza bikes da lateral direita', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Clara Almeida', 'aluna@gmail.com', '1990-05-15', 'feminino', '(11) 99999-1101', '', '@anaclaraspinning', '', '', 'Uso intenso: aluna de alta frequencia, treina spinning de 4 a 5 vezes por semana e costuma reservar primeira fileira', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Fernanda Lima', 'fernanda.lima@email.com', '1995-07-08', 'feminino', '(11) 99999-1102', '', '@fernandalima.ride', '', '', 'Uso intenso: alta frequencia nas turmas da noite e preferencia por aulas de endurance', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Roberto Gomes', 'roberto.gomes@email.com', '1991-09-14', 'masculino', '(11) 99999-1103', '', '@robertogomes.fit', '', '', 'Uso intenso: participa de treinos de sprint e acompanha indicadores de evolucao', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Juliana Martins', 'juliana.martins@email.com', '1994-06-03', 'feminino', '(11) 99999-1104', '', '@jumartins.spin', '', '', 'Uso intenso: aluna recorrente nas aulas da manha e costuma avaliar repertorios', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Patricia Souza', 'patricia.souza@email.com', '1987-01-25', 'feminino', '(11) 99999-1105', '', '@patricia.souza.indoor', '', '', 'Uso intenso: treina em turmas avancadas e alterna bikes centrais', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Lucas Oliveira', 'lucas.oliveira@email.com', '1993-11-30', 'masculino', '(11) 99999-1106', '', '@lucasoliveira_spin', '', '', 'Uso intenso: preferencia por aulas de subida e resistencia no fim do dia', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Mariana Costa', 'mariana.costa@email.com', '1992-12-10', 'feminino', '(11) 99999-1107', '', '@maricosta.bike', '', '', 'Uso intenso: frequenta quatro aulas por semana e prioriza bikes da lateral direita', 1)",
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Diego Matos', 'diego.matos@email.com', '1989-02-19', 'masculino', '(11) 99999-1108', '', '', '', '', 'Uso intenso: foco em condicionamento cardiovascular e aulas HIIT', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Camila Teixeira', 'camila.teixeira@email.com', '1996-10-21', 'feminino', '(11) 99999-1109', '', '', '', '', 'Uso intenso: aluna assidua em rhythm ride e sprints curtos', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Rafael Monteiro', 'rafael.monteiro@email.com', '1986-04-12', 'masculino', '(11) 99999-1110', '', '', '', '', 'Uso intenso: participa de desafios internos e acompanha historico semanal', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Camila Teixeira', 'camila.teixeira@email.com', '1996-10-21', 'feminino', '(11) 99999-1109', '', '@camilateixeira.cycling', '', '', 'Uso intenso: aluna assidua em rhythm ride e sprints curtos', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Rafael Monteiro', 'rafael.monteiro@email.com', '1986-04-12', 'masculino', '(11) 99999-1110', '', '@rafamonteiro.ride', '', '', 'Uso intenso: participa de desafios internos e acompanha historico semanal', 1)",
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Joao Santos', 'joao.santos@email.com', '1985-08-22', 'masculino', '(11) 99999-1111', '', '', '', '', 'Iniciante: em adaptacao ao spinning, prefere aulas de tecnica e baixa intensidade', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Bruna Andrade', 'bruna.andrade@email.com', '1998-01-18', 'feminino', '(11) 99999-1112', '', '', '', '', 'Iniciante: primeiras semanas de treino, orientada a usar bikes de facil acesso', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Elaine Cardoso', 'elaine.cardoso@email.com', '1997-05-27', 'feminino', '(11) 99999-1113', '', '', '', '', 'Iniciante: retorno gradual aos treinos e acompanhamento de carga moderada', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Bruna Andrade', 'bruna.andrade@email.com', '1998-01-18', 'feminino', '(11) 99999-1112', '', '@brunaandrade.fit', '', '', 'Iniciante: primeiras semanas de treino, orientada a usar bikes de facil acesso', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Elaine Cardoso', 'elaine.cardoso@email.com', '1997-05-27', 'feminino', '(11) 99999-1113', '', '@elainecardoso', '', '', 'Iniciante: retorno gradual aos treinos e acompanhamento de carga moderada', 1)",
     "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Igor Pacheco', 'igor.pacheco@email.com', '1990-08-09', 'masculino', '(11) 99999-1114', '', '', '', '', 'Iniciante: foco em aprender cadencia e ajuste correto da bike', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Larissa Melo', 'larissa.melo@email.com', '1999-03-16', 'feminino', '(11) 99999-1115', '', '', '', '', 'Iniciante: prefere aulas de base e acompanhamento proximo da professora', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Maria Costa', 'maria.costa@email.com', '1992-07-11', 'feminino', '(11) 99999-1116', '', '', '', '', 'Mediano: participa duas vezes por semana e alterna entre ritmo e subida', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Carlos Pereira', 'carlos.pereira@email.com', '1988-03-20', 'masculino', '(11) 99999-1117', '', '', '', '', 'Mediano: frequencia regular, bom desempenho em aulas de resistencia', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Ribeiro', 'ana.ribeiro@email.com', '1991-06-24', 'feminino', '(11) 99999-1118', '', '', '', '', 'Mediano: prefere turmas no almoco e ritmos constantes', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Pedro Lima', 'pedro.lima@email.com', '1984-12-02', 'masculino', '(11) 99999-1119', '', '', '', '', 'Mediano: participa de treinos funcionais e spinning em dias alternados', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Sabrina Duarte', 'sabrina.duarte@email.com', '1993-09-05', 'feminino', '(11) 99999-1120', '', '', '', '', 'Mediano: boa adaptacao a sprint, ainda evoluindo em aulas longas', 1)",
-    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Beatriz', 'professora@gmail.com', '1985-03-20', 'feminino', '(11) 99999-0001', '', '', '', '', 'Professora e aluna — perfil criado para teste do fluxo duplo', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Larissa Melo', 'larissa.melo@email.com', '1999-03-16', 'feminino', '(11) 99999-1115', '', '@larissamelo.spin', '', '', 'Iniciante: prefere aulas de base e acompanhamento proximo da professora', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Maria Costa', 'maria.costa@email.com', '1992-07-11', 'feminino', '(11) 99999-1116', '', '@mariacosta.bike', '', '', 'Mediano: participa duas vezes por semana e alterna entre ritmo e subida', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Carlos Pereira', 'carlos.pereira@email.com', '1988-03-20', 'masculino', '(11) 99999-1117', '', '@carlospereira.cycling', '', '', 'Mediano: frequencia regular, bom desempenho em aulas de resistencia', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Ribeiro', 'ana.ribeiro@email.com', '1991-06-24', 'feminino', '(11) 99999-1118', '', '@anaribeiro.ride', '', '', 'Mediano: prefere turmas no almoco e ritmos constantes', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Pedro Lima', 'pedro.lima@email.com', '1984-12-02', 'masculino', '(11) 99999-1119', '', '@pedrolima.spin', '', '', 'Mediano: participa de treinos funcionais e spinning em dias alternados', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Sabrina Duarte', 'sabrina.duarte@email.com', '1993-09-05', 'feminino', '(11) 99999-1120', '', '@sabrinaduarte.indoor', '', '', 'Mediano: boa adaptacao a sprint, ainda evoluindo em aulas longas', 1)",
+    "INSERT INTO aluno (nome, email, data_nascimento, genero, telefone, url_foto, instagram, facebook, tiktok, observacoes, ativo) VALUES ('Ana Beatriz', 'professora@gmail.com', '1985-03-20', 'feminino', '(11) 99999-0001', '', '@anabeatriz.spinflow', '', '', 'Professora e aluna — perfil criado para teste do fluxo duplo', 1)",
   ];
 
   static const List<String> _insercoesProfessora = [
@@ -646,11 +633,11 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesMix = [
-    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Power Ride', '[1,2,3,4,5,6,7,8,9,10]', 'Sequencia completa para aula de power ride com aquecimento, forca, sprint e desaceleracao', 1)",
-    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Sprint HIIT', '[2,4,7,8,5,6,3,1,9,10]', 'Mix de spinning com tiros intensos, recuperacao curta e fechamento controlado', 1)",
-    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Climb Endurance', '[1,3,5,6,7,8,2,4,9,10]', 'Mix de subida progressiva e resistencia para aula longa de endurance', 1)",
-    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Rhythm Recovery', '[1,6,2,3,9,5,7,8,10,4]', 'Mix de ritmo moderado para tecnica, cadencia e recuperacao ativa', 1)",
-    "INSERT INTO mix (nome, musica_ids, descricao, ativo) VALUES ('Mix Interval Beats', '[2,5,8,4,7,3,6,1,9,10]', 'Mix intervalado com alternancia de tiros, subidas e recuperacao ativa', 1)",
+    "INSERT INTO mix (nome, descricao, ativo) VALUES ('Mix Power Ride', 'Sequencia completa para aula de power ride com aquecimento, forca, sprint e desaceleracao', 1)",
+    "INSERT INTO mix (nome, descricao, ativo) VALUES ('Mix Sprint HIIT', 'Mix de spinning com tiros intensos, recuperacao curta e fechamento controlado', 1)",
+    "INSERT INTO mix (nome, descricao, ativo) VALUES ('Mix Climb Endurance', 'Mix de subida progressiva e resistencia para aula longa de endurance', 1)",
+    "INSERT INTO mix (nome, descricao, ativo) VALUES ('Mix Rhythm Recovery', 'Mix de ritmo moderado para tecnica, cadencia e recuperacao ativa', 1)",
+    "INSERT INTO mix (nome, descricao, ativo) VALUES ('Mix Interval Beats', 'Mix intervalado com alternancia de tiros, subidas e recuperacao ativa', 1)",
   ];
 
   static const List<String> _insercoesMixMusicaPowerRide = [
@@ -745,10 +732,10 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesTurma = [
-    "INSERT INTO turma (nome, descricao, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Power Ride Manha 07h', 'Turma fixa de spinning pela manha para alunos de alta frequencia', '07:00', 50, 1, 1)",
-    "INSERT INTO turma (nome, descricao, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Cadencia Manha 09h', 'Turma fixa de tecnica e cadencia pela manha', '09:00', 50, 1, 1)",
-    "INSERT INTO turma (nome, descricao, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Endurance Tarde 15h', 'Turma fixa de resistencia no periodo da tarde', '15:00', 50, 2, 1)",
-    "INSERT INTO turma (nome, descricao, horario_inicio, duracao_minutos, sala_id, ativo) VALUES ('Sprint Tarde 18h30', 'Turma fixa de sprint e performance no fim da tarde', '18:30', 45, 2, 1)",
+    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, mix_id, ativo) VALUES ('Power Ride Manha 07h', '07:00', 50, 1, 1, 1)",
+    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, mix_id, ativo) VALUES ('Cadencia Manha 09h', '09:00', 50, 1, 4, 1)",
+    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, mix_id, ativo) VALUES ('Endurance Tarde 15h', '15:00', 50, 2, 3, 1)",
+    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, mix_id, ativo) VALUES ('Sprint Tarde 18h30', '18:30', 45, 2, 2, 1)",
   ];
 
   static const List<String> _insercoesTurmaDiaSemana = [
@@ -792,13 +779,6 @@ class ScriptSQLite {
     "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Medianos em Evolucao' LIMIT 1), 18)",
     "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Medianos em Evolucao' LIMIT 1), 19)",
     "INSERT INTO grupo_aluno (grupo_alunos_id, aluno_id) VALUES ((SELECT id FROM grupo_alunos WHERE nome = 'Medianos em Evolucao' LIMIT 1), 20)",
-  ];
-
-  static const List<String> _insercoesTurmaMix = [
-    "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = 'Power Ride Manha 07h' LIMIT 1), 1, '2026-05-01T00:00:00', '2026-05-31T23:59:59', 1)",
-    "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = 'Cadencia Manha 09h' LIMIT 1), 4, '2026-05-01T00:00:00', '2026-05-31T23:59:59', 1)",
-    "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = 'Endurance Tarde 15h' LIMIT 1), 3, '2026-05-01T00:00:00', '2026-05-31T23:59:59', 1)",
-    "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = 'Sprint Tarde 18h30' LIMIT 1), 2, '2026-05-01T00:00:00', '2026-05-31T23:59:59', 1)",
   ];
 
   static const List<String> _insercoesAulaRealizada = [
@@ -910,21 +890,15 @@ class ScriptSQLite {
   static const List<String> _insercoesFilaEspera = [];
 
   static const List<String> comandosGarantirMixDezMusicas = [
-    "UPDATE mix SET musica_ids = '[1,2,3,4,5,6,7,8,9,10]' WHERE id = 1",
     ..._insercoesMixMusicaPowerRide,
   ];
 
   static const List<String> comandosGarantirCincoMixesDezMusicas = [
-    "INSERT INTO mix (id, nome, musica_ids, descricao, ativo) VALUES (1, 'Mix Power Ride', '[1,2,3,4,5,6,7,8,9,10]', 'Sequencia completa para aula de power ride com aquecimento, forca, sprint e desaceleracao', 1)",
-    "INSERT INTO mix (id, nome, musica_ids, descricao, ativo) VALUES (2, 'Mix Sprint HIIT', '[2,4,7,8,5,6,3,1,9,10]', 'Mix de spinning com tiros intensos, recuperacao curta e fechamento controlado', 1)",
-    "INSERT INTO mix (id, nome, musica_ids, descricao, ativo) VALUES (3, 'Mix Climb Endurance', '[1,3,5,6,7,8,2,4,9,10]', 'Mix de subida progressiva e resistencia para aula longa de endurance', 1)",
-    "INSERT INTO mix (id, nome, musica_ids, descricao, ativo) VALUES (4, 'Mix Rhythm Recovery', '[1,6,2,3,9,5,7,8,10,4]', 'Mix de ritmo moderado para tecnica, cadencia e recuperacao ativa', 1)",
-    "INSERT INTO mix (id, nome, musica_ids, descricao, ativo) VALUES (5, 'Mix Interval Beats', '[2,5,8,4,7,3,6,1,9,10]', 'Mix intervalado com alternancia de tiros, subidas e recuperacao ativa', 1)",
-    "UPDATE mix SET musica_ids = '[1,2,3,4,5,6,7,8,9,10]' WHERE id = 1",
-    "UPDATE mix SET musica_ids = '[2,4,7,8,5,6,3,1,9,10]' WHERE id = 2",
-    "UPDATE mix SET musica_ids = '[1,3,5,6,7,8,2,4,9,10]' WHERE id = 3",
-    "UPDATE mix SET musica_ids = '[1,6,2,3,9,5,7,8,10,4]' WHERE id = 4",
-    "UPDATE mix SET musica_ids = '[2,5,8,4,7,3,6,1,9,10]' WHERE id = 5",
+    "INSERT INTO mix (id, nome, descricao, ativo) VALUES (1, 'Mix Power Ride', 'Sequencia completa para aula de power ride com aquecimento, forca, sprint e desaceleracao', 1)",
+    "INSERT INTO mix (id, nome, descricao, ativo) VALUES (2, 'Mix Sprint HIIT', 'Mix de spinning com tiros intensos, recuperacao curta e fechamento controlado', 1)",
+    "INSERT INTO mix (id, nome, descricao, ativo) VALUES (3, 'Mix Climb Endurance', 'Mix de subida progressiva e resistencia para aula longa de endurance', 1)",
+    "INSERT INTO mix (id, nome, descricao, ativo) VALUES (4, 'Mix Rhythm Recovery', 'Mix de ritmo moderado para tecnica, cadencia e recuperacao ativa', 1)",
+    "INSERT INTO mix (id, nome, descricao, ativo) VALUES (5, 'Mix Interval Beats', 'Mix intervalado com alternancia de tiros, subidas e recuperacao ativa', 1)",
     ..._insercoesMixMusicaPowerRide,
     ..._insercoesMixMusicaSprintHiit,
     ..._insercoesMixMusicaClimbEndurance,
@@ -937,7 +911,6 @@ class ScriptSQLite {
   static const List<List<String>> comandosGarantirAulasRealizadasContexto = [
     _insercoesTurma,
     _insercoesTurmaDiaSemana,
-    _insercoesTurmaMix,
     _insercoesAulaRealizada,
   ];
 
@@ -962,7 +935,6 @@ class ScriptSQLite {
     _insercoesTurmaDiaSemana,
     _insercoesGrupoAlunos,
     _insercoesGrupoAluno,
-    _insercoesTurmaMix,
     _insercoesAulaRealizada,
     _insercoesPosicaoBike,
     _insercoesManutencao,

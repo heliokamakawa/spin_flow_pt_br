@@ -47,6 +47,7 @@ class Turma {
   final List<DiaSemana> diasSemana;
   final int salaId;
   final int? professoraId;
+  final int? mixId;
   final bool ativo;
 
   const Turma({
@@ -57,6 +58,7 @@ class Turma {
     required this.diasSemana,
     required this.salaId,
     this.professoraId,
+    this.mixId,
     this.ativo = true,
   });
 
@@ -95,8 +97,8 @@ class Turma {
     if (!RegExp(r'^\d{2}:\d{2}$').hasMatch(horarioInicio)) {
       return 'Horário de início é obrigatório.';
     }
-    if (duracaoMinutos < 1 || duracaoMinutos > 180) {
-      return 'Duração deve ser entre 1 e 180 minutos.';
+    if (duracaoMinutos < 1 || duracaoMinutos > 100) {
+      return 'Duração deve ser entre 1 e 100 minutos.';
     }
     if (salaId <= 0) return 'Sala é obrigatória.';
     if (diasSemana.isEmpty) return 'Selecione pelo menos um dia da semana.';

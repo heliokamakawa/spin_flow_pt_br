@@ -1,4 +1,4 @@
-class ValidadorCpf {
+class Cpf {
   static bool valido(String cpf) {
     final normalizado = cpf.replaceAll(RegExp(r'\D'), '');
     return RegExp(r'^\d{11}$').hasMatch(normalizado);

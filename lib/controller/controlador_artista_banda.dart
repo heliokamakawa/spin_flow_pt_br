@@ -1,11 +1,10 @@
-import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/resultado_operacao.dart';
 import 'package:spin_flow/infra/database/repositorio/repositorio_artista_banda.dart';
 import 'package:spin_flow/domain/dominio/dominio_artista_banda.dart';
 import 'package:spin_flow/domain/modelo/artista_banda.dart';
 
 class ControladorArtistaBanda {
-  RepositorioArtistaBanda get _repositorio => GetIt.I<RepositorioArtistaBanda>();
+  final _repositorio = RepositorioArtistaBanda();
 
   Future<List<ArtistaBanda>> listar() => _repositorio.listarAtivos();
 

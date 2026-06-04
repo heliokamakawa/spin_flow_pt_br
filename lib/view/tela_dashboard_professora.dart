@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:spin_flow/view/config/configuracao_abas.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:spin_flow/infra/config/configuracao_abas.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
-import 'package:spin_flow/infra/autenticacao/sessao_usuario.dart';
-import 'package:spin_flow/infra/navegacao/rotas.dart';
+import 'package:spin_flow/controller/sessao_usuario.dart';
+import 'package:spin_flow/infra/config/rotas.dart';
 import 'package:spin_flow/view/gestao_administrativa/tela_gestao_administrativa.dart';
 import 'package:spin_flow/view/gestao_aula/tela_operacao_aula.dart';
 import 'package:spin_flow/view/gestao_aula/tela_repertorio.dart';

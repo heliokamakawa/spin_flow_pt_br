@@ -1,6 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_sala.dart';
 import '../../domain/modelo/sala.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -15,7 +14,7 @@ class ListaSalas extends StatefulWidget {
 }
 
 class _ListaSalasState extends State<ListaSalas> {
-  final _controlador = GetIt.I<ControladorSala>();
+  final _controlador = ControladorSala();
   late Future<List<Sala>> _futuro;
 
   @override

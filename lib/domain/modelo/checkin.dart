@@ -7,6 +7,7 @@ class Checkin {
   final int coluna; // 0-based
   final bool ativo;
   final String nomeAluno;
+  final String instagramAluno;
 
   const Checkin({
     this.id,
@@ -17,6 +18,7 @@ class Checkin {
     required this.coluna,
     this.ativo = true,
     this.nomeAluno = '',
+    this.instagramAluno = '',
   });
 
   // ── Invariantes do objeto ──────────────────────────────────────────────────

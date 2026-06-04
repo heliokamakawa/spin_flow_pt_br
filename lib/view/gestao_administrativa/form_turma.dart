@@ -1,10 +1,10 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/controlador_turma.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/domain/dominio/dominio_turma.dart';
+import '../../domain/modelo/mix.dart';
 import '../../domain/modelo/sala.dart';
 import 'package:spin_flow/domain/modelo/turma.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -22,13 +22,14 @@ class FormTurma extends StatefulWidget {
 
 class _FormTurmaState extends State<FormTurma> {
   final _formKey = GlobalKey<FormState>();
-  final _controlador = GetIt.I<ControladorTurma>();
+  final _controlador = ControladorTurma();
 
   final _nomeController = TextEditingController();
   final _horarioController = TextEditingController();
   final _duracaoController = TextEditingController();
 
   List<Sala> _salas = [];
+  List<Mix> _mixes = [];
   Map<int, String> _professoras = {};
   bool _carregando = true;
   bool _salvando = false;
@@ -36,6 +37,7 @@ class _FormTurmaState extends State<FormTurma> {
   List<DiaSemana> _diasSemana = [];
   int? _salaId;
   int? _professoraId;
+  int? _mixId;
 
   @override
   void initState() {
@@ -48,6 +50,7 @@ class _FormTurmaState extends State<FormTurma> {
       _diasSemana = List<DiaSemana>.from(turma.diasSemana);
       _salaId = turma.salaId;
       _professoraId = turma.professoraId;
+      _mixId = turma.mixId;
       _ativo = turma.ativo;
     } else {
       _horarioController.text = '18:00';
@@ -60,10 +63,12 @@ class _FormTurmaState extends State<FormTurma> {
   Future<void> _carregar() async {
     final salas = await _controlador.listarSalas();
     final professoras = await _controlador.listarProfessoras();
+    final mixes = await _controlador.listarMixes();
     if (!mounted) return;
     setState(() {
       _salas = salas;
       _professoras = professoras;
+      _mixes = mixes;
       if (_salaId == null && salas.isNotEmpty) _salaId = salas.first.id;
       _carregando = false;
     });
@@ -89,6 +94,7 @@ class _FormTurmaState extends State<FormTurma> {
       diasSemana: _diasSemana,
       salaId: _salaId ?? 0,
       professoraId: _professoraId,
+      mixId: _mixId,
       ativo: _ativo,
     );
 
@@ -133,6 +139,8 @@ class _FormTurmaState extends State<FormTurma> {
                   _buildDropdownSala(),
                   const SizedBox(height: 16),
                   _buildDropdownProfessora(),
+                  const SizedBox(height: 16),
+                  _buildDropdownMix(),
                   const SizedBox(height: 16),
                   CampoAtivo(
                     valor: _ativo,
@@ -229,7 +237,7 @@ class _FormTurmaState extends State<FormTurma> {
       validator: (valor) {
         final duracao = int.tryParse(valor ?? '');
         if (duracao == null) return Erro.obrigatorio;
-        if (duracao < 1 || duracao > 180) return '1-180';
+        if (duracao < 1 || duracao > 100) return 'Entre 1 e 100 minutos.';
         return null;
       },
     );
@@ -247,6 +255,18 @@ class _FormTurmaState extends State<FormTurma> {
           .toList(),
       onChanged: (valor) => setState(() => _salaId = valor),
       validator: (valor) => valor == null ? 'Sala é obrigatória.' : null,
+    );
+  }
+
+  Widget _buildDropdownMix() {
+    return DropdownButtonFormField<int>(
+      initialValue: _mixId,
+      decoration: const InputDecoration(labelText: 'Mix'),
+      hint: const Text('Nenhum mix selecionado'),
+      items: _mixes
+          .map((mix) => DropdownMenuItem(value: mix.id, child: Text(mix.nome)))
+          .toList(),
+      onChanged: (valor) => setState(() => _mixId = valor),
     );
   }
 

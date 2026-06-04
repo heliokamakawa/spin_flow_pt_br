@@ -1,6 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
-import 'package:get_it/get_it.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_musica.dart';
 import 'package:spin_flow/domain/modelo/musica.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -15,7 +14,7 @@ class FormVideoaulaMusica extends StatefulWidget {
 
 class _FormVideoaulaMusicaState extends State<FormVideoaulaMusica> {
   final _formKey = GlobalKey<FormState>();
-  final _controlador = GetIt.I<ControladorMusica>();
+  final _controlador = ControladorMusica();
 
   List<Musica> _musicas = [];
   int? _musicaId;

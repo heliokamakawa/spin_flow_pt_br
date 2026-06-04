@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter/services.dart';
 import 'package:spin_flow/controller/controlador_operacao_aula.dart';
-import 'package:spin_flow/infra/tema/tema_app.dart';
+import 'package:spin_flow/infra/config/tema_app.dart';
 import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
 import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
 import 'package:spin_flow/domain/modelo/checkin.dart';
@@ -24,7 +24,7 @@ class TelaMapeamentoAula extends StatefulWidget {
 }
 
 class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
-  final _controlador = GetIt.I<ControladorOperacaoAula>();
+  final _controlador = ControladorOperacaoAula();
 
   EstadoMapaAula? _estado;
   List<TipoManutencao> _tipos = [];
@@ -176,12 +176,32 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
 
   // -- UI ---------------------------------------------------------------------
 
+  Future<void> _abrirPainelInstagram() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => _PainelInstagram(checkins: _estado!.checkinsAtivos),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final temCheckins = _estado != null && _estado!.checkinsAtivos.isNotEmpty;
     return Scaffold(
       appBar: AppBar(
         title: const TituloAppBarSpinFlow(),
-        actions: const [AcaoSairAppBar()],
+        actions: [
+          if (temCheckins)
+            IconButton(
+              icon: const Icon(Icons.alternate_email),
+              tooltip: 'Marcações Instagram',
+              onPressed: _abrirPainelInstagram,
+            ),
+          const AcaoSairAppBar(),
+        ],
       ),
       body: _carregando
           ? const Center(child: CircularProgressIndicator())
@@ -459,6 +479,123 @@ class _DialogManutencaoState extends State<_DialogManutencao> {
         ),
         TextButton(onPressed: _salvar, child: const Text('Registrar')),
       ],
+    );
+  }
+}
+
+// -- Painel Instagram --------------------------------------------------------
+
+class _PainelInstagram extends StatefulWidget {
+  final List<Checkin> checkins;
+
+  const _PainelInstagram({required this.checkins});
+
+  @override
+  State<_PainelInstagram> createState() => _PainelInstagramState();
+}
+
+class _PainelInstagramState extends State<_PainelInstagram> {
+  late List<Checkin> _selecionados;
+
+  @override
+  void initState() {
+    super.initState();
+    _selecionados = widget.checkins
+        .where((c) => c.instagramAluno.trim().isNotEmpty)
+        .toList();
+  }
+
+  String _handle(Checkin c) {
+    final ig = c.instagramAluno.trim();
+    return ig.startsWith('@') ? ig : '@$ig';
+  }
+
+  String get _marcacoes => _selecionados.map(_handle).join(' ');
+
+  Future<void> _copiar() async {
+    await Clipboard.setData(ClipboardData(text: _marcacoes));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Marcações copiadas!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final semInstagram = widget.checkins
+        .where((c) => c.instagramAluno.trim().isEmpty)
+        .length;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.alternate_email),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Marcações para o Instagram',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (_selecionados.isEmpty)
+            const Text(
+              'Nenhum aluno com @Instagram cadastrado.',
+              style: TextStyle(color: Colors.grey),
+            )
+          else
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: _selecionados.map((c) {
+                return Chip(
+                  label: Text(_handle(c), style: const TextStyle(fontSize: 13)),
+                  deleteIcon: const Icon(Icons.close, size: 16),
+                  onDeleted: () => setState(() => _selecionados.remove(c)),
+                );
+              }).toList(),
+            ),
+          if (semInstagram > 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '$semInstagram aluno(s) sem Instagram cadastrado.',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ),
+          if (_selecionados.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.copy),
+                label: const Text('Copiar marcações'),
+                onPressed: _copiar,
+              ),
+            ),
+          ],
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:spin_flow/infra/autenticacao/sessao_usuario.dart';
-import 'package:spin_flow/infra/navegacao/rotas.dart';
-import 'package:spin_flow/infra/tema/tema_app.dart';
+import 'package:spin_flow/controller/sessao_usuario.dart';
+import 'package:spin_flow/infra/config/rotas.dart';
+import 'package:spin_flow/infra/config/tema_app.dart';
 import 'package:spin_flow/view/tela_dashboard_checkin.dart';
 import 'package:spin_flow/view/gestao_aula/lista_alunos.dart';
 import 'package:spin_flow/view/tela_dashboard_professora.dart';

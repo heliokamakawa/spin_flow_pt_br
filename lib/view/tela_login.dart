@@ -2,10 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:get_it/get_it.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/infra/navegacao/rotas.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/infra/config/rotas.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_login.dart';
 import 'package:spin_flow/view/componentes/campo_identificador_login.dart';
 import 'package:spin_flow/view/componentes/campo_senha.dart';
@@ -83,7 +82,7 @@ class _TelaLoginState extends State<TelaLogin> {
   final TextEditingController _identificadorController =
       TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
-  final ControladorLogin _controladorLogin = GetIt.I<ControladorLogin>();
+  final ControladorLogin _controladorLogin = ControladorLogin();
   bool _carregando = false;
 
   Future<void> _fazerLogin() async {

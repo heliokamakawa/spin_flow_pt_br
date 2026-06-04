@@ -1,5 +1,5 @@
-import 'package:spin_flow/domain/modelo/validador_cpf.dart';
-import 'package:spin_flow/domain/modelo/validador_email.dart';
+﻿import 'package:spin_flow/domain/modelo/cpf.dart';
+import 'package:spin_flow/domain/modelo/email.dart';
 
 class Usuario {
   final int id;
@@ -29,8 +29,8 @@ class Usuario {
     return '';
   }
 
-  bool get cpfValido   => ValidadorCpf.valido(cpf);
-  bool get emailValido => ValidadorEmail.valido(email);
+  bool get cpfValido   => Cpf.valido(cpf);
+  bool get emailValido => Email.valido(email);
   bool get valido =>
       id > 0 &&
       nome.isNotEmpty &&

@@ -1,4 +1,3 @@
-import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/resultado_operacao.dart';
 import 'package:spin_flow/infra/database/repositorio/repositorio_artista_banda.dart';
 import 'package:spin_flow/infra/database/repositorio/repositorio_musica.dart';
@@ -9,9 +8,8 @@ import 'package:spin_flow/domain/modelo/musica.dart';
 import 'package:spin_flow/domain/modelo/video_aula.dart';
 
 class ControladorMusica {
-  RepositorioMusica get _repositorio => GetIt.I<RepositorioMusica>();
-  RepositorioArtistaBanda get _repositorioArtista =>
-      GetIt.I<RepositorioArtistaBanda>();
+  final _repositorio = RepositorioMusica();
+  final _repositorioArtista = RepositorioArtistaBanda();
 
   Future<List<Musica>> listar() => _repositorio.listarAtivas();
   Future<List<ArtistaBanda>> listarArtistas() =>

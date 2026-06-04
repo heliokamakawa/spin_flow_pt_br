@@ -1,7 +1,6 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_manutencao.dart';
 import 'package:spin_flow/domain/modelo/manutencao.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -16,7 +15,7 @@ class ListaManutencoes extends StatefulWidget {
 }
 
 class _ListaManutencoesState extends State<ListaManutencoes> {
-  final _controlador = GetIt.I<ControladorManutencao>();
+  final _controlador = ControladorManutencao();
   late Future<List<Manutencao>> _futuro;
 
   static final _fmt = DateFormat('dd/MM/yyyy', 'pt_BR');

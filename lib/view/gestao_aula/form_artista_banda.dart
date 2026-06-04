@@ -1,6 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
-import 'package:get_it/get_it.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_artista_banda.dart';
 import 'package:spin_flow/domain/dominio/dominio_artista_banda.dart';
 import 'package:spin_flow/domain/modelo/artista_banda.dart';
@@ -17,7 +16,7 @@ class FormArtistaBanda extends StatefulWidget {
 
 class _FormArtistaBandaState extends State<FormArtistaBanda> {
   final _formKey = GlobalKey<FormState>();
-  final _controlador = GetIt.I<ControladorArtistaBanda>();
+  final _controlador = ControladorArtistaBanda();
 
   final _nomeCtrl = TextEditingController();
   final _descricaoCtrl = TextEditingController();

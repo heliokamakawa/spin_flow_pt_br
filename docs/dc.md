@@ -155,16 +155,10 @@ classDiagram
         +List~DiaSemana~ diasSemana
         +String horarioInicio
         +int duracaoMinutos
+        +int? mixId
         +bool ativo
         +bool horarioSalaEhLivre()
         +int bikesDisponiveis()
-    }
-
-    class TurmaMix {
-        +int id
-        +DateTime dataInicio
-        +DateTime dataFim
-        +bool ativo
     }
 
     %% Alunos
@@ -248,6 +242,5 @@ classDiagram
     AulaRealizada "0..*" --> "1..1" Turma
 
     %% Associações — Cruzamento de clusters
-    TurmaMix "0..*" --> "1..1" Turma
-    TurmaMix "0..*" --> "1..1" Mix
+    Turma "0..*" --> "0..1" Mix
 ```

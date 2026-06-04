@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spin_flow/view/componentes/painel_mix_professora.dart';
 import 'form_artista_banda.dart';
 import 'form_mix.dart';
 import 'form_musica.dart';
@@ -12,6 +13,7 @@ class TelaRepertorio extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        const PainelMixProfessora(),
         _ItemRepertorio(
           icone: Icons.mic,
           titulo: 'Artista ou banda',
@@ -40,9 +42,9 @@ class TelaRepertorio extends StatelessWidget {
           icone: Icons.queue_music,
           titulo: 'Mix',
           subtitulo: 'Sequência de músicas da aula',
-          aoTocar: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const FormMix())),
+          aoTocar: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const FormMix()),
+          ),
         ),
       ],
     );

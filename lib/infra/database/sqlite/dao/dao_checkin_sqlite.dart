@@ -15,7 +15,7 @@ class DAOCheckinSQLite implements IDAOCheckin {
     final maps = await db.rawQuery(
       '''
       SELECT c.id, c.aluno_id, c.turma_id, c.data, c.fila, c.coluna, c.ativo,
-             a.nome AS aluno_nome
+             a.nome AS aluno_nome, a.instagram AS aluno_instagram
       FROM checkin c
       LEFT JOIN aluno a ON c.aluno_id = a.id
       WHERE c.turma_id = ?
@@ -119,6 +119,7 @@ class DAOCheckinSQLite implements IDAOCheckin {
     coluna: (m['coluna'] as int?) ?? 0,
     ativo: ((m['ativo'] as int?) ?? 1) == 1,
     nomeAluno: (m['aluno_nome'] as String?) ?? '',
+    instagramAluno: (m['aluno_instagram'] as String?) ?? '',
   );
 
   String _chaveData(DateTime data) => DateTime(

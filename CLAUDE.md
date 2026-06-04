@@ -10,7 +10,7 @@ Usado em aula de Engenharia de Software.
 - **Nomes em português** — classes, métodos, variáveis, arquivos.
 - Organização por domínio: `domain/`, `infra/`, `controller/`, `view/`.
 - Sem repositório explícito — o repositório fica dentro de `infra/database/repositorio/`.
-- Controllers recebem dependências via `required` no construtor; DI com `get_it`.
+- `get_it` é usado **somente para DAOs** (ponto de variância de tecnologia). Repositórios, controllers e views instanciam dependências diretamente — sem `get_it`.
 - Antes de implementar qualquer entidade ou regra, ler `docs/dc.md`.
 - Requisitos de tela ficam em `lib/view/requisitos_interface/<nome_da_tela>.md`.
 

@@ -1,11 +1,10 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
-import 'package:get_it/get_it.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_recuperacao_senha.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/infra/navegacao/rotas.dart';
+import 'package:spin_flow/infra/config/rotas.dart';
 import 'package:spin_flow/domain/modelo/usuario.dart';
-import 'package:spin_flow/domain/modelo/validador_cpf.dart';
+import 'package:spin_flow/domain/modelo/cpf.dart';
 import 'package:spin_flow/view/componentes/campo_senha.dart';
 
 class TelaRecuperarSenha extends StatefulWidget {
@@ -21,7 +20,7 @@ class _TelaRecuperarSenhaState extends State<TelaRecuperarSenha> {
   final _cpfController = TextEditingController();
   final _novaSenhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
-  final _controlador = GetIt.I<ControladorRecuperacaoSenha>();
+  final _controlador = ControladorRecuperacaoSenha();
 
   int _etapa = 0;
   bool _carregando = false;
@@ -260,7 +259,7 @@ class _TelaRecuperarSenhaState extends State<TelaRecuperarSenha> {
         validator: (v) {
           final texto = v?.trim() ?? '';
           if (texto.isEmpty) return Erro.obrigatorio;
-          if (!ValidadorCpf.valido(texto)) return 'Informe um CPF válido.';
+          if (!Cpf.valido(texto)) return 'Informe um CPF válido.';
           return null;
         },
       ),

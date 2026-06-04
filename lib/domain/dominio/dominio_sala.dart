@@ -25,10 +25,8 @@ class DominioSala {
           posicao.coluna == modelo.colunaProfessora - 1) {
         return false;
       }
-      if (posicao.bikeId != null &&
-          bikeIdsEmManutencao.contains(posicao.bikeId)) {
-        return false;
-      }
+      if (!posicao.temBike) return false;
+      if (bikeIdsEmManutencao.contains(posicao.bikeId)) return false;
       return true;
     }).length;
   }

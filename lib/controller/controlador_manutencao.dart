@@ -1,4 +1,3 @@
-import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/resultado_operacao.dart';
 import 'package:spin_flow/infra/database/repositorio/repositorio_manutencao.dart';
 import 'package:spin_flow/domain/dominio/dominio_manutencao.dart';
@@ -7,7 +6,7 @@ import 'package:spin_flow/domain/modelo/manutencao.dart';
 import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
 
 class ControladorManutencao {
-  RepositorioManutencao get _repositorio => GetIt.I<RepositorioManutencao>();
+  final _repositorio = RepositorioManutencao();
 
   Future<List<Manutencao>> listar() => _repositorio.listar();
   Future<List<Bike>> listarBikes() => _repositorio.listarBikes();

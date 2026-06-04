@@ -1,6 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
-import 'package:get_it/get_it.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_manutencao.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/domain/dominio/dominio_manutencao.dart';
@@ -22,7 +21,7 @@ class FormManutencao extends StatefulWidget {
 
 class _FormManutencaoState extends State<FormManutencao> {
   final _formKey = GlobalKey<FormState>();
-  final _controlador = GetIt.I<ControladorManutencao>();
+  final _controlador = ControladorManutencao();
   final _descricaoController = TextEditingController();
 
   List<Bike> _bikes = [];

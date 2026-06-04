@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
-import 'package:spin_flow/view/config/configuracao_abas.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/infra/config/configuracao_abas.dart';
 
 abstract final class TemaApp {
   static ThemeData get claro {

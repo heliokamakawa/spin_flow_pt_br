@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/tema/tema_app.dart';
+import 'package:spin_flow/infra/config/tema_app.dart';
 
 class CampoAtivo extends StatelessWidget {
   final bool valor;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/controlador_operacao_aula.dart';
 import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
 import 'tela_mapa_aula.dart';
@@ -12,7 +11,7 @@ class TelaOperacaoAula extends StatefulWidget {
 }
 
 class _TelaOperacaoAulaState extends State<TelaOperacaoAula> {
-  final _controlador = GetIt.I<ControladorOperacaoAula>();
+  final _controlador = ControladorOperacaoAula();
   List<ResumoTurmaHoje> _resumos = [];
   bool _carregando = true;
   String? _erro;

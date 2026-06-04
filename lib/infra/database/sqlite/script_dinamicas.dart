@@ -17,7 +17,6 @@ class ScriptDinamicasSQLite {
 
     final hojeIso = hoje.toIso8601String();
     final ontemIso = ontem.toIso8601String();
-    final amanhaIso = amanha.toIso8601String();
     final criadoFila = agora
         .subtract(const Duration(minutes: 5))
         .toIso8601String();
@@ -30,18 +29,14 @@ class ScriptDinamicasSQLite {
     const nomeTurmaLotada = 'Sprint Lotado Hoje';
 
     return [
-      "INSERT INTO turma (nome, descricao, horario_inicio, duracao_minutos, sala_id, professora_id, ativo) VALUES ('$nomeTurmaFechada', 'Aula de spinning para tecnica de pedalada e controle de cadencia', '$horarioFechada', 50, (SELECT id FROM sala WHERE nome = 'Studio Sprint' LIMIT 1), (SELECT professora_id FROM usuario WHERE LOWER(email) = 'professora@gmail.com' LIMIT 1), 1)",
-      "INSERT INTO turma (nome, descricao, horario_inicio, duracao_minutos, sala_id, professora_id, ativo) VALUES ('$nomeTurmaCheckin', 'Aula de spinning com check-ins ja realizados e vagas restantes para demonstracao', '$horarioCheckin', 50, (SELECT id FROM sala WHERE nome = 'Studio Sprint' LIMIT 1), (SELECT professora_id FROM usuario WHERE LOWER(email) = 'marina.torres@pulsestudio.com.br' LIMIT 1), 1)",
-      "INSERT INTO turma (nome, descricao, horario_inicio, duracao_minutos, sala_id, professora_id, ativo) VALUES ('$nomeTurmaLotada', 'Aula de spinning intensa para alunos com maior condicionamento', '$horarioLotada', 45, (SELECT id FROM sala WHERE nome = 'Studio Endurance' LIMIT 1), (SELECT professora_id FROM usuario WHERE LOWER(email) = 'professora@gmail.com' LIMIT 1), 1)",
+      "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, professora_id, mix_id, ativo) VALUES ('$nomeTurmaFechada', '$horarioFechada', 50, (SELECT id FROM sala WHERE nome = 'Studio Sprint' LIMIT 1), (SELECT professora_id FROM usuario WHERE LOWER(email) = 'professora@gmail.com' LIMIT 1), 4, 1)",
+      "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, professora_id, mix_id, ativo) VALUES ('$nomeTurmaCheckin', '$horarioCheckin', 50, (SELECT id FROM sala WHERE nome = 'Studio Sprint' LIMIT 1), (SELECT professora_id FROM usuario WHERE LOWER(email) = 'marina.torres@pulsestudio.com.br' LIMIT 1), 1, 1)",
+      "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, professora_id, mix_id, ativo) VALUES ('$nomeTurmaLotada', '$horarioLotada', 45, (SELECT id FROM sala WHERE nome = 'Studio Endurance' LIMIT 1), (SELECT professora_id FROM usuario WHERE LOWER(email) = 'professora@gmail.com' LIMIT 1), 2, 1)",
 
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaFechada' ORDER BY id DESC LIMIT 1), '$diaHoje')",
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$diaHoje')",
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$diaHoje')",
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$diaAmanha')",
-
-      "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaFechada' ORDER BY id DESC LIMIT 1), 4, '$hojeIso', '$amanhaIso', 1)",
-      "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), 1, '$ontemIso', '$amanhaIso', 1)",
-      "INSERT INTO turma_mix (turma_id, mix_id, data_inicio, data_fim, ativo) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), 2, '$hojeIso', '$amanhaIso', 1)",
 
       // Power Ride Check-in Hoje: varios alunos com check-in feito e vagas restantes.
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$ontemIso', 1, 0, 1)",

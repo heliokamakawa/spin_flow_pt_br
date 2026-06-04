@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/domain/modelo/validador_cpf.dart';
-import 'package:spin_flow/domain/modelo/validador_email.dart';
+import 'package:spin_flow/domain/modelo/cpf.dart';
+import 'package:spin_flow/domain/modelo/email.dart';
 
 class CampoIdentificadorLogin extends StatelessWidget {
   final TextEditingController? controle;
@@ -49,7 +49,7 @@ class CampoIdentificadorLogin extends StatelessWidget {
 
     if (texto.isEmpty) return null;
 
-    if (!ValidadorEmail.valido(texto) && !ValidadorCpf.valido(texto)) {
+    if (!Email.valido(texto) && !Cpf.valido(texto)) {
       return 'Informe um e-mail ou CPF valido.';
     }
 

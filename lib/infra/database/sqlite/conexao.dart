@@ -105,7 +105,6 @@ class ConexaoSQLite {
   static Future<void> _normalizarAulasSeed(Database db) async {
     await db.delete('fila_espera_checkin');
     await db.delete('checkin');
-    await db.delete('turma_mix');
     await db.delete('turma_dia_semana');
     await db.delete('turma');
 

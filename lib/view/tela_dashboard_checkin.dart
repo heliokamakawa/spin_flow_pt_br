@@ -1,13 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:spin_flow/controller/controlador_checkin_aluno.dart';
 import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/mix_checkin.dart';
 import 'package:spin_flow/domain/modelo/musica_checkin.dart';
 import 'package:spin_flow/domain/modelo/painel_aluno.dart';
-import 'package:spin_flow/infra/autenticacao/sessao_usuario.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
-import 'package:spin_flow/infra/tema/tema_app.dart';
+import 'package:spin_flow/controller/sessao_usuario.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/infra/config/tema_app.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/painel_mix.dart';
@@ -23,7 +22,7 @@ class TelaDashboardCheckin extends StatefulWidget {
 
 class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
     with SingleTickerProviderStateMixin {
-  final _controlador = GetIt.I<ControladorCheckinAluno>();
+  final _controlador = ControladorCheckinAluno();
   late final TabController _tabController;
 
   int? _alunoId;
@@ -797,7 +796,7 @@ class _CardCheckin extends StatefulWidget {
 }
 
 class _CardCheckinState extends State<_CardCheckin> {
-  final _controlador = GetIt.I<ControladorCheckinAluno>();
+  final _controlador = ControladorCheckinAluno();
 
   @override
   Widget build(BuildContext context) {

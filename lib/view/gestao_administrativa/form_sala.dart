@@ -1,9 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/controlador_sala.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/domain/dominio/dominio_sala.dart';
 import '../../domain/modelo/sala.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -20,7 +19,7 @@ class FormSala extends StatefulWidget {
 
 class _FormSalaState extends State<FormSala> {
   final _formKey = GlobalKey<FormState>();
-  final _controlador = GetIt.I<ControladorSala>();
+  final _controlador = ControladorSala();
 
   final _nomeController = TextEditingController();
   final _filasController = TextEditingController();

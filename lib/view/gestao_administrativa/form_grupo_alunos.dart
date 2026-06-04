@@ -1,6 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
-import 'package:get_it/get_it.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_grupo_alunos.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/domain/dominio/dominio_grupo_alunos.dart';
@@ -22,7 +21,7 @@ class FormGrupoAlunos extends StatefulWidget {
 
 class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
   final _formKey = GlobalKey<FormState>();
-  final _controlador = GetIt.I<ControladorGrupoAlunos>();
+  final _controlador = ControladorGrupoAlunos();
 
   final _nomeController = TextEditingController();
   final _descricaoController = TextEditingController();

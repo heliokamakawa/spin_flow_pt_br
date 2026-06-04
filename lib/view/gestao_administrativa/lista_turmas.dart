@@ -1,6 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:spin_flow/infra/tema/cores_app.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_turma.dart';
 import 'package:spin_flow/domain/modelo/turma.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -15,7 +14,7 @@ class ListaTurmas extends StatefulWidget {
 }
 
 class _ListaTurmasState extends State<ListaTurmas> {
-  final _controlador = GetIt.I<ControladorTurma>();
+  final _controlador = ControladorTurma();
   late Future<List<Turma>> _futuro;
 
   @override
