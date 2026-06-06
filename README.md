@@ -48,7 +48,7 @@ Mais detalhes estao em:
 | Perfil | E-mail | CPF | Senha |
 | --- | --- | --- | --- |
 | Professora | `professora@gmail.com` | `111.222.333-44` | `123` |
-| Aluno | `aluno@gmail.com` | `555.666.777-88` | `123` |
+| Aluno | `aluna@gmail.com` | `555.666.777-88` | `123` |
 
 O login aceita e-mail ou CPF como identificador.
 
