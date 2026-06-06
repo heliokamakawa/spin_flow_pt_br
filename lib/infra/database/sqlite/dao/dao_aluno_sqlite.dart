@@ -8,26 +8,38 @@ class DAOAlunoSQLite implements IDAOAluno {
   @override
   Future<List<Aluno>> buscarTodos() async {
     final db = await ConexaoSQLite.database;
-    final maps = await db.query(_tabela, orderBy: 'nome');
+    final maps = await db.rawQuery('''
+      SELECT a.*, u.nome AS u_nome, u.email AS u_email
+      FROM aluno a
+      LEFT JOIN usuario u ON u.aluno_id = a.id
+      ORDER BY u.nome
+    ''');
     return maps.map(_mapear).toList();
   }
 
   @override
   Future<List<Aluno>> buscarAtivos() async {
     final db = await ConexaoSQLite.database;
-    final maps = await db.query(_tabela, where: 'ativo = 1', orderBy: 'nome');
+    final maps = await db.rawQuery('''
+      SELECT a.*, u.nome AS u_nome, u.email AS u_email
+      FROM aluno a
+      LEFT JOIN usuario u ON u.aluno_id = a.id
+      WHERE a.ativo = 1
+      ORDER BY u.nome
+    ''');
     return maps.map(_mapear).toList();
   }
 
   @override
   Future<Aluno?> buscarPorId(int id) async {
     final db = await ConexaoSQLite.database;
-    final maps = await db.query(
-      _tabela,
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
+    final maps = await db.rawQuery('''
+      SELECT a.*, u.nome AS u_nome, u.email AS u_email
+      FROM aluno a
+      LEFT JOIN usuario u ON u.aluno_id = a.id
+      WHERE a.id = ?
+      LIMIT 1
+    ''', [id]);
     if (maps.isEmpty) return null;
     return _mapear(maps.first);
   }
@@ -35,12 +47,13 @@ class DAOAlunoSQLite implements IDAOAluno {
   @override
   Future<Aluno?> buscarPorEmail(String email) async {
     final db = await ConexaoSQLite.database;
-    final maps = await db.query(
-      _tabela,
-      where: 'LOWER(email) = LOWER(?) AND ativo = 1',
-      whereArgs: [email.trim()],
-      limit: 1,
-    );
+    final maps = await db.rawQuery('''
+      SELECT a.*, u.nome AS u_nome, u.email AS u_email
+      FROM aluno a
+      JOIN usuario u ON u.aluno_id = a.id
+      WHERE LOWER(u.email) = LOWER(?) AND a.ativo = 1
+      LIMIT 1
+    ''', [email.trim()]);
     return maps.isEmpty ? null : _mapear(maps.first);
   }
 
@@ -48,8 +61,6 @@ class DAOAlunoSQLite implements IDAOAluno {
   Future<void> salvar(Aluno aluno) async {
     final db = await ConexaoSQLite.database;
     final dados = {
-      'nome': aluno.nome,
-      'email': aluno.email,
       'data_nascimento': aluno.dataNascimento?.toIso8601String(),
       'genero': aluno.genero,
       'telefone': aluno.telefone,
@@ -63,8 +74,22 @@ class DAOAlunoSQLite implements IDAOAluno {
 
     if (aluno.id != null) {
       await db.update(_tabela, dados, where: 'id = ?', whereArgs: [aluno.id]);
+      await db.execute(
+        'UPDATE usuario SET nome = ?, email = ? WHERE aluno_id = ?',
+        [aluno.nome, aluno.email, aluno.id],
+      );
     } else {
-      await db.insert(_tabela, dados);
+      final novoId = await db.insert(_tabela, dados);
+      // Cria um usuário vinculado para que nome e email tenham origem única
+      final cpf = '${DateTime.now().millisecondsSinceEpoch}'.substring(2, 13);
+      await db.insert('usuario', {
+        'nome': aluno.nome,
+        'email': aluno.email,
+        'cpf': cpf,
+        'senha': '123',
+        'aluno_id': novoId,
+        'ativo': 1,
+      });
     }
   }
 
@@ -77,8 +102,8 @@ class DAOAlunoSQLite implements IDAOAluno {
   Aluno _mapear(Map<String, dynamic> map) {
     return Aluno(
       id: map['id'] as int?,
-      nome: (map['nome'] as String?) ?? '',
-      email: (map['email'] as String?) ?? '',
+      nome: (map['u_nome'] as String?) ?? '',
+      email: (map['u_email'] as String?) ?? '',
       dataNascimento: DateTime.tryParse(
         (map['data_nascimento'] as String?) ?? '',
       ),

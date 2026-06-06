@@ -15,9 +15,10 @@ class DAOCheckinSQLite implements IDAOCheckin {
     final maps = await db.rawQuery(
       '''
       SELECT c.id, c.aluno_id, c.turma_id, c.data, c.fila, c.coluna, c.ativo,
-             a.nome AS aluno_nome, a.instagram AS aluno_instagram
+             u.nome AS aluno_nome, a.instagram AS aluno_instagram
       FROM checkin c
       LEFT JOIN aluno a ON c.aluno_id = a.id
+      LEFT JOIN usuario u ON u.aluno_id = c.aluno_id
       WHERE c.turma_id = ?
         AND c.ativo = 1
         AND substr(c.data, 1, 10) = ?
@@ -92,9 +93,9 @@ class DAOCheckinSQLite implements IDAOCheckin {
     final maps = await db.rawQuery(
       '''
       SELECT c.id, c.aluno_id, c.turma_id, c.data, c.fila, c.coluna, c.ativo,
-             a.nome AS aluno_nome
+             u.nome AS aluno_nome
       FROM checkin c
-      LEFT JOIN aluno a ON c.aluno_id = a.id
+      LEFT JOIN usuario u ON u.aluno_id = c.aluno_id
       WHERE c.aluno_id = ?
         AND c.ativo = 1
         AND substr(c.data, 1, 10) = ?

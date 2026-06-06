@@ -79,7 +79,6 @@ classDiagram
         +DateTime dataSolicitacao
         +String descricao
         +EstadoOperacional estadoOperacional
-        +atualizarBikesDisponiveis()
     }
 
     %% Folhas — Música
@@ -155,17 +154,16 @@ classDiagram
         +List~DiaSemana~ diasSemana
         +String horarioInicio
         +int duracaoMinutos
+        +int? professoraId
         +int? mixId
         +bool ativo
-        +bool horarioSalaEhLivre()
-        +int bikesDisponiveis()
+        +bool sobrepoeHorario(Turma outra)
+        +bool janelAberta(DateTime agora)
     }
 
     %% Alunos
     class Aluno {
         +int id
-        +String nome
-        +String email
         +DateTime dataNascimento
         +Genero genero
         +String telefone
@@ -187,9 +185,9 @@ classDiagram
     class Checkin {
         +int id
         +DateTime data
+        +int fila
+        +int coluna
         +bool ativo
-        +bool bikeEhLivre(int fila, int coluna)
-        +reservar(int fila, int coluna)
     }
 
     class AulaRealizada {
@@ -238,6 +236,7 @@ classDiagram
     Sala "1" *-- "1..*" PosicaoBike
     PosicaoBike "0..*" --> "1..1" Bike
     Turma "0..*" --> "1..1" Sala
+    Turma "0..*" --> "0..1" Professora
     Checkin "0..*" --> "1..1" Turma
     AulaRealizada "0..*" --> "1..1" Turma
 

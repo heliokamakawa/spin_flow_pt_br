@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:spin_flow/infra/config/cores_app.dart';
 import 'package:spin_flow/controller/controlador_recuperacao_senha.dart';
 import 'package:spin_flow/infra/config/erro.dart';
@@ -20,6 +21,7 @@ class _TelaRecuperarSenhaState extends State<TelaRecuperarSenha> {
   final _cpfController = TextEditingController();
   final _novaSenhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
+  final _cpfFormatter = MaskTextInputFormatter(mask: '###.###.###-##');
   final _controlador = ControladorRecuperacaoSenha();
 
   int _etapa = 0;
@@ -251,6 +253,7 @@ class _TelaRecuperarSenhaState extends State<TelaRecuperarSenha> {
       1 => TextFormField(
         controller: _cpfController,
         keyboardType: TextInputType.number,
+        inputFormatters: [_cpfFormatter],
         decoration: const InputDecoration(
           labelText: 'CPF',
           hintText: '000.000.000-00',
