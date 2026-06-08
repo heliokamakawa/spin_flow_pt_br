@@ -107,11 +107,11 @@ class _FormAlunoState extends State<FormAluno> {
       ativo: _ativo,
     );
 
-    final erro = await _controlador.salvar(DominioAluno(aluno));
+    final resultado = await _controlador.salvar(DominioAluno(aluno));
     if (!mounted) return;
-    if (erro != null) {
+    if (!resultado.sucesso) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(erro), backgroundColor: CoresApp.erro),
+        SnackBar(content: Text(resultado.mensagemErro!), backgroundColor: CoresApp.erro),
       );
       return;
     }

@@ -10,7 +10,7 @@ class DominioSala {
 
   String? validarRegras() => null;
 
-  String? validarParaSalvar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarConsistencia() ?? validarRegras();
 
   int bikesDisponiveis(
     List<PosicaoBike> posicoes,

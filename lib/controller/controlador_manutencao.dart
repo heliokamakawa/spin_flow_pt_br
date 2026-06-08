@@ -13,11 +13,18 @@ class ControladorManutencao {
   Future<List<TipoManutencao>> listarTipos() => _repositorio.listarTipos();
 
   Future<ResultadoOperacao> salvar(DominioManutencao dominio) async {
-    final erro = dominio.validarParaSalvar();
+    final erro = dominio.validar();
     if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
     await _repositorio.salvar(dominio.modelo);
     return const ResultadoOperacao.sucesso();
   }
 
-  Future<void> excluir(int id) => _repositorio.excluir(id);
+  Future<ResultadoOperacao> excluir(int id) async {
+    try {
+      await _repositorio.excluir(id);
+      return const ResultadoOperacao.sucesso();
+    } catch (e) {
+      return ResultadoOperacao.falha(mensagemErro: e.toString());
+    }
+  }
 }

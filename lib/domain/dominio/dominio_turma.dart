@@ -9,7 +9,37 @@ class DominioTurma {
 
   String? validarRegras() => null;
 
-  String? validarParaSalvar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarConsistencia() ?? validarRegras();
+
+  String? validarConflito(List<Turma> turmasExistentes) {
+    for (final outra in turmasExistentes) {
+      if (outra.id == modelo.id) continue;
+      if (!outra.ativo) continue;
+      if (outra.salaId != modelo.salaId) continue;
+      final diasComuns = modelo.diasSemana.toSet().intersection(outra.diasSemana.toSet());
+      if (diasComuns.isEmpty) continue;
+      if (_sobrepoeTemporal(outra)) {
+        final dias = diasComuns.map((d) => d.rotulo).join(', ');
+        return 'Conflito de horário com "${outra.nome}" na mesma sala ($dias).';
+      }
+    }
+    return null;
+  }
+
+  bool _sobrepoeTemporal(Turma outra) {
+    final inicioMin = _horarioParaMinutos(modelo.horarioInicio);
+    final fimMin = inicioMin + modelo.duracaoMinutos;
+    final outraInicioMin = _horarioParaMinutos(outra.horarioInicio);
+    final outraFimMin = outraInicioMin + outra.duracaoMinutos;
+    return inicioMin < outraFimMin && outraInicioMin < fimMin;
+  }
+
+  int _horarioParaMinutos(String horario) {
+    final partes = horario.split(':');
+    final hora = int.tryParse(partes[0]) ?? 0;
+    final minuto = partes.length > 1 ? int.tryParse(partes[1]) ?? 0 : 0;
+    return hora * 60 + minuto;
+  }
 
   bool ocorreEm(DiaSemana dia) => modelo.diasSemana.contains(dia);
 

@@ -58,7 +58,14 @@ class _ListaManutencoesState extends State<ListaManutencoes> {
       ),
     );
     if (confirmar == true) {
-      await _controlador.excluir(manutencao.id!);
+      final resultado = await _controlador.excluir(manutencao.id!);
+      if (!mounted) return;
+      if (!resultado.sucesso) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(resultado.mensagemErro!), backgroundColor: CoresApp.erro),
+        );
+        return;
+      }
       _carregar();
     }
   }

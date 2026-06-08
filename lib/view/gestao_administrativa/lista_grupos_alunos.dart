@@ -58,7 +58,14 @@ class _ListaGruposAlunosState extends State<ListaGruposAlunos> {
       ),
     );
     if (confirmar == true) {
-      await _controlador.excluir(grupo.id!);
+      final resultado = await _controlador.excluir(grupo.id!);
+      if (!mounted) return;
+      if (!resultado.sucesso) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(resultado.mensagemErro!), backgroundColor: CoresApp.erro),
+        );
+        return;
+      }
       _carregar();
     }
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/database/repositorio/repositorio_aluno.dart';
+import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/controller/controlador_aluno.dart';
 import 'package:spin_flow/domain/modelo/aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
@@ -13,7 +14,7 @@ class ListaAlunos extends StatefulWidget {
 }
 
 class _ListaAlunosState extends State<ListaAlunos> {
-  final _servico = RepositorioAluno();
+  final _controlador = ControladorAluno();
   late Future<List<Aluno>> _alunosFuture;
 
   @override
@@ -24,7 +25,7 @@ class _ListaAlunosState extends State<ListaAlunos> {
 
   void _carregar() {
     setState(() {
-      _alunosFuture = _servico.buscarTodos();
+      _alunosFuture = _controlador.listar();
     });
   }
 
@@ -35,8 +36,18 @@ class _ListaAlunosState extends State<ListaAlunos> {
     _carregar();
   }
 
-  void _excluir(int id) async {
-    await _servico.remover(id);
+  Future<void> _excluir(int id) async {
+    final resultado = await _controlador.excluir(id);
+    if (!mounted) return;
+    if (!resultado.sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(resultado.mensagemErro!),
+          backgroundColor: CoresApp.erro,
+        ),
+      );
+      return;
+    }
     _carregar();
   }
 
@@ -87,7 +98,7 @@ class _ListaAlunosState extends State<ListaAlunos> {
         onPressed: () async {
           await Navigator.of(
             context,
-          ).push(MaterialPageRoute(builder: (_) => FormAluno()));
+          ).push(MaterialPageRoute(builder: (_) => const FormAluno()));
           _carregar();
         },
         child: const Icon(Icons.add),

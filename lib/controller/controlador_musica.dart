@@ -18,7 +18,7 @@ class ControladorMusica {
       _repositorio.listarCategorias();
 
   Future<ResultadoOperacao> salvar(DominioMusica dominio) async {
-    final erro = dominio.validarParaSalvar();
+    final erro = dominio.validar();
     if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
     await _repositorio.salvar(dominio.modelo);
     return ResultadoOperacao.sucesso();
@@ -28,13 +28,20 @@ class ControladorMusica {
     DominioMusica dominio,
     List<String> nomes,
   ) async {
-    final erro = dominio.validarParaSalvar();
+    final erro = dominio.validar();
     if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
     await _repositorio.salvarComCategorias(dominio.modelo, nomes);
     return ResultadoOperacao.sucesso();
   }
 
-  Future<void> excluir(int id) => _repositorio.excluir(id);
+  Future<ResultadoOperacao> excluir(int id) async {
+    try {
+      await _repositorio.excluir(id);
+      return ResultadoOperacao.sucesso();
+    } catch (e) {
+      return ResultadoOperacao.falha(mensagemErro: e.toString());
+    }
+  }
 
   Future<List<CategoriaMusica>> buscarCategorias(int musicaId) =>
       _repositorio.buscarCategorias(musicaId);

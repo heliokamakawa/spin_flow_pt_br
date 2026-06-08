@@ -28,25 +28,44 @@ class ControladorCheckinAluno {
     required int fila,
     required int coluna,
   }) async {
-    final dominio = DominioCheckin(Checkin(
+    final checkin = Checkin(
       alunoId: alunoId,
       turmaId: turma.id!,
       data: data,
       fila: fila,
       coluna: coluna,
-    ));
-    final erroValidacao = dominio.validarParaSalvar();
-    if (erroValidacao != null) return ResultadoOperacao.falha(mensagemErro: erroValidacao);
-    final erro = await _repositorio.reservar(
-      alunoId: alunoId,
-      turma: turma,
-      data: data,
-      fila: fila,
-      coluna: coluna,
     );
-    return erro == null
-        ? ResultadoOperacao.sucesso()
-        : ResultadoOperacao.falha(mensagemErro: erro);
+    final dominio = DominioCheckin(checkin);
+
+    var erro = dominio.validar();
+    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+
+    erro = dominio.validarJanela(turma);
+    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+
+    final aluno = await _repositorio.buscarAluno(alunoId);
+    if (aluno == null) return ResultadoOperacao.falha(mensagemErro: 'Aluno não encontrado.');
+    erro = dominio.validarAluno(aluno);
+    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+
+    final checkinsDoAluno = await _repositorio.buscarCheckinsAlunoDia(alunoId, data);
+    erro = dominio.validarDuplicata(checkinsDoAluno);
+    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+
+    final turmasPorId = await _repositorio.buscarTurmasPorId();
+    erro = dominio.validarConflito(turma, checkinsDoAluno, turmasPorId);
+    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+
+    final checkinsNaTurma = await _repositorio.buscarCheckinsNaTurma(turma.id!, data);
+    final vagas = await _repositorio.calcularVagas(turma.salaId, checkinsNaTurma);
+    erro = dominio.validarVagas(vagas);
+    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+
+    erro = dominio.validarPosicao(checkinsNaTurma);
+    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+
+    await _repositorio.persistirCheckin(checkin);
+    return const ResultadoOperacao.sucesso();
   }
 
   Future<ResultadoOperacao> cancelarMinha(int checkinId) async {

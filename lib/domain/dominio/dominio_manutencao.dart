@@ -9,5 +9,5 @@ class DominioManutencao {
 
   String? validarRegras() => null;
 
-  String? validarParaSalvar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarConsistencia() ?? validarRegras();
 }

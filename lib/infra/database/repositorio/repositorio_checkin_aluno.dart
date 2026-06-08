@@ -228,58 +228,32 @@ class RepositorioCheckinAluno {
     );
   }
 
-  Future<String?> reservar({
-    required int alunoId,
-    required Turma turma,
-    required DateTime data,
-    required int fila,
-    required int coluna,
-  }) async {
-    final agora = DateTime.now();
-    if (!DominioTurma(turma).janelaAberta(agora)) {
-      return 'Reserva disponível 30 min antes da aula.';
-    }
-    final aluno = await _daoAluno.buscarPorId(alunoId);
-    if (aluno == null || !aluno.ativo) return 'Aluno inativo.';
-    if (await _daoCheckin.existeAtivoPorAluno(alunoId, turma.id!, data)) {
-      return 'Você já tem reserva nesta turma.';
-    }
-    final checkinsHoje = await _daoCheckin.buscarAtivosPorAlunoDia(alunoId, data);
-    final todasTurmas = await _daoTurma.buscarTodos();
-    final turmasPorId = {for (final t in todasTurmas) t.id: t};
-    for (final c in checkinsHoje) {
-      if (c.turmaId == turma.id) continue;
-      final outra = turmasPorId[c.turmaId];
-      if (outra != null && DominioTurma(turma).sobrepoeHorario(outra, data)) {
-        return 'Você já tem check-in em ${outra.nome} neste horário.';
-      }
-    }
-    final sala = await _daoSala.buscarPorId(turma.salaId);
-    if (sala == null) return 'Sala não encontrada.';
+  Future<Aluno?> buscarAluno(int id) => _daoAluno.buscarPorId(id);
+
+  Future<List<Checkin>> buscarCheckinsAlunoDia(int alunoId, DateTime data) =>
+      _daoCheckin.buscarAtivosPorAlunoDia(alunoId, data);
+
+  Future<Map<int, Turma>> buscarTurmasPorId() async {
+    final todas = await _daoTurma.buscarTodos();
+    return {for (final t in todas) if (t.id != null) t.id!: t};
+  }
+
+  Future<List<Checkin>> buscarCheckinsNaTurma(int turmaId, DateTime data) =>
+      _daoCheckin.buscarAtivosPorTurmaData(turmaId, data);
+
+  Future<int> calcularVagas(int salaId, List<Checkin> checkinsNaTurma) async {
+    final sala = await _daoSala.buscarPorId(salaId);
+    if (sala == null) return 0;
     final posicoes = await _daoPosicao.buscarTodos();
     final bikesManu = await _daoManu.buscarBikeIdsEmManutencaoAtiva();
-    final checkinsNaTurma = await _daoCheckin.buscarAtivosPorTurmaData(turma.id!, data);
-    if (DominioSala(sala).estaLotada(
-      checkinsNaTurma.length,
-      posicoes,
-      bikesManu,
-    )) {
-      return 'Turma lotada.';
-    }
-    if (await _daoCheckin.existeAtivoPorPosicao(turma.id!, data, fila, coluna)) {
-      return 'Posição já ocupada.';
-    }
-    await _daoCheckin.salvar(Checkin(
-      alunoId: alunoId,
-      turmaId: turma.id!,
-      data: data,
-      fila: fila,
-      coluna: coluna,
-    ));
-    // Se o aluno estava na fila de espera desta turma, removê-lo
-    final filaId = await _daoFila.buscarIdDoAluno(alunoId, turma.id!, data);
+    final total = DominioSala(sala).bikesDisponiveis(posicoes, bikesManu);
+    return (total - checkinsNaTurma.length).clamp(0, total);
+  }
+
+  Future<void> persistirCheckin(Checkin checkin) async {
+    await _daoCheckin.salvar(checkin);
+    final filaId = await _daoFila.buscarIdDoAluno(checkin.alunoId, checkin.turmaId, checkin.data);
     if (filaId != null) await _daoFila.sairDaFila(filaId);
-    return null;
   }
 
   Future<void> cancelarMinha(int checkinId) => _daoCheckin.cancelar(checkinId);
