@@ -2,8 +2,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:spin_flow/controller/controlador_login.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/infra/navegacao/rotas.dart';
-import 'package:spin_flow/infra/autenticacao/sessao_usuario.dart';
+import 'package:spin_flow/infra/config/rotas.dart';
+import 'package:spin_flow/controller/sessao_usuario.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_usuario.dart';
 import 'package:spin_flow/infra/database/repositorio/repositorio_autenticacao.dart';
 import 'package:spin_flow/domain/modelo/usuario.dart';
@@ -22,6 +22,9 @@ class _FakeDAO implements IDAOUsuario {
 
   @override
   Future<void> atualizarSenha(int id, String novaSenha) async {}
+
+  @override
+  Future<Map<int, String>> buscarNomesProfessoras() async => {};
 }
 
 void main() {

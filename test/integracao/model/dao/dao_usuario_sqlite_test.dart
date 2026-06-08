@@ -101,7 +101,7 @@ void main() {
       final totalAssociacoes = await db.rawQuery(
         'SELECT COUNT(*) AS total FROM aula_realizada',
       );
-      expect(totalAssociacoes.first['total'], 636);
+      expect(totalAssociacoes.first['total'], 666);
 
       final alunosPorAulaMaio = await db.rawQuery('''
         SELECT turma_id, data, COUNT(*) AS total
@@ -111,7 +111,7 @@ void main() {
       ''');
       expect(alunosPorAulaMaio.length, 30);
       expect(
-        alunosPorAulaMaio.every((item) => item['total'] == 20),
+        alunosPorAulaMaio.every((item) => item['total'] == 21),
         isTrue,
       );
 
@@ -125,7 +125,7 @@ void main() {
           item['aluno_id'] as int: item['total'] as int,
       };
 
-      expect(porAluno.length, 20);
+      expect(porAluno.length, 21);
       expect(porAluno[1], 66);
       expect(
         porAluno.entries
@@ -141,7 +141,7 @@ void main() {
         HAVING SUM(CASE WHEN substr(data, 12, 2) < '12' THEN 1 ELSE 0 END) > 0
            AND SUM(CASE WHEN substr(data, 12, 2) >= '12' THEN 1 ELSE 0 END) > 0
       ''');
-      expect(alunosManhaTarde.length, 20);
+      expect(alunosManhaTarde.length, 21);
     });
 
     test('seed cria avaliacoes de musicas para dois mixes', () async {

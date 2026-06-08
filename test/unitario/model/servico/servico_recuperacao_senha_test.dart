@@ -20,6 +20,9 @@ class _FakeDAO implements IDAOUsuario {
     idAtualizado = id;
     senhaAtualizada = novaSenha;
   }
+
+  @override
+  Future<Map<int, String>> buscarNomesProfessoras() async => {};
 }
 
 const _professora = Usuario(

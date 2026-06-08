@@ -15,6 +15,9 @@ class _FakeDAO implements IDAOUsuario {
 
   @override
   Future<void> atualizarSenha(int id, String novaSenha) async {}
+
+  @override
+  Future<Map<int, String>> buscarNomesProfessoras() async => {};
 }
 
 void main() {
