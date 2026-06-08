@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_recuperacao_senha.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/infra/config/rotas.dart';

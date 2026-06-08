@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_manutencao.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/domain/dominio/dominio_manutencao.dart';

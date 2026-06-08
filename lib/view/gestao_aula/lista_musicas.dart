@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
-import 'package:spin_flow/controller/controlador_sala.dart';
-import '../../domain/modelo/sala.dart';
+import 'package:spin_flow/controller/controlador_musica.dart';
+import 'package:spin_flow/domain/modelo/musica.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/campo_busca.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
-import 'form_sala.dart';
+import 'form_musica.dart';
 
-class ListaSalas extends StatefulWidget {
-  const ListaSalas({super.key});
+class ListaMusicas extends StatefulWidget {
+  const ListaMusicas({super.key});
 
   @override
-  State<ListaSalas> createState() => _ListaSalasState();
+  State<ListaMusicas> createState() => _ListaMusicasState();
 }
 
-class _ListaSalasState extends State<ListaSalas> {
-  final _controlador = ControladorSala();
+class _ListaMusicasState extends State<ListaMusicas> {
+  final _controlador = ControladorMusica();
   final _buscaController = TextEditingController();
-  late Future<List<Sala>> _futuro;
+  late Future<List<Musica>> _futuro;
 
   @override
   void initState() {
@@ -38,22 +38,22 @@ class _ListaSalasState extends State<ListaSalas> {
     });
   }
 
-  Future<void> _abrirForm([Sala? sala]) async {
-    final atualizado = await Navigator.of(
-      context,
-    ).push<bool>(MaterialPageRoute(builder: (_) => FormSala(sala: sala)));
+  Future<void> _abrirForm([Musica? musica]) async {
+    final atualizado = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => FormMusica(musica: musica)),
+    );
     if (atualizado == true) _carregar();
   }
 
-  List<Sala> _filtrar(List<Sala> todas) =>
-      filtrarComPrioridade(todas, _buscaController.text, (s) => [s.nome]);
+  List<Musica> _filtrar(List<Musica> todos) =>
+      filtrarComPrioridade(todos, _buscaController.text, (m) => [m.nome, m.nomeArtista]);
 
-  Future<void> _excluir(Sala sala) async {
+  Future<void> _excluir(Musica musica) async {
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Excluir sala'),
-        content: Text('Deseja desativar "${sala.nome}"?'),
+        title: const Text('Excluir música'),
+        content: Text('Deseja excluir "${musica.nome}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -61,25 +61,24 @@ class _ListaSalasState extends State<ListaSalas> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              'Excluir',
-              style: TextStyle(color: CoresApp.erro),
-            ),
+            child: const Text('Excluir', style: TextStyle(color: CoresApp.erro)),
           ),
         ],
       ),
     );
-    if (confirmar == true) {
-      final resultado = await _controlador.excluir(sala.id!);
-      if (!mounted) return;
-      if (!resultado.sucesso) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(resultado.mensagemErro!), backgroundColor: CoresApp.erro),
-        );
-        return;
-      }
-      _carregar();
+    if (confirmar != true) return;
+    final resultado = await _controlador.excluir(musica.id!);
+    if (!mounted) return;
+    if (!resultado.sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(resultado.mensagemErro!),
+          backgroundColor: CoresApp.erro,
+        ),
+      );
+      return;
     }
+    _carregar();
   }
 
   @override
@@ -88,7 +87,7 @@ class _ListaSalasState extends State<ListaSalas> {
     return Scaffold(
       appBar: AppBar(
         title: const TituloAppBarSpinFlow(),
-        actions: [const AcaoSairAppBar()],
+        actions: const [AcaoSairAppBar()],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _abrirForm(),
@@ -98,42 +97,38 @@ class _ListaSalasState extends State<ListaSalas> {
       ),
       body: Column(
         children: [
-          CampoBusca(controlador: _buscaController, dica: 'Buscar sala...'),
+          CampoBusca(controlador: _buscaController, dica: 'Buscar música ou artista...'),
           Expanded(
-            child: FutureBuilder<List<Sala>>(
+            child: FutureBuilder<List<Musica>>(
               future: _futuro,
               builder: (_, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final todas = snapshot.data ?? [];
-                if (todas.isEmpty) {
+                final todos = snapshot.data ?? [];
+                if (todos.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.meeting_room_outlined,
-                          size: 64,
-                          color: Colors.grey.shade400,
-                        ),
+                        Icon(Icons.music_note, size: 64, color: Colors.grey.shade400),
                         const SizedBox(height: 12),
                         Text(
-                          'Nenhuma sala cadastrada',
+                          'Nenhuma música cadastrada',
                           style: TextStyle(color: Colors.grey.shade600),
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton.icon(
                           onPressed: () => _abrirForm(),
                           icon: const Icon(Icons.add),
-                          label: const Text('Nova sala'),
+                          label: const Text('Nova música'),
                         ),
                       ],
                     ),
                   );
                 }
-                final salas = _filtrar(todas);
-                if (salas.isEmpty) {
+                final musicas = _filtrar(todos);
+                if (musicas.isEmpty) {
                   return Center(
                     child: Text(
                       'Nenhum resultado para "${_buscaController.text}"',
@@ -143,11 +138,11 @@ class _ListaSalasState extends State<ListaSalas> {
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.all(12),
-                  itemCount: salas.length,
-                  itemBuilder: (_, i) => _CardSala(
-                    sala: salas[i],
-                    onEditar: () => _abrirForm(salas[i]),
-                    onExcluir: () => _excluir(salas[i]),
+                  itemCount: musicas.length,
+                  itemBuilder: (_, i) => _CardMusica(
+                    musica: musicas[i],
+                    onEditar: () => _abrirForm(musicas[i]),
+                    onExcluir: () => _excluir(musicas[i]),
                   ),
                 );
               },
@@ -159,13 +154,13 @@ class _ListaSalasState extends State<ListaSalas> {
   }
 }
 
-class _CardSala extends StatelessWidget {
-  final Sala sala;
+class _CardMusica extends StatelessWidget {
+  final Musica musica;
   final VoidCallback onEditar;
   final VoidCallback onExcluir;
 
-  const _CardSala({
-    required this.sala,
+  const _CardMusica({
+    required this.musica,
     required this.onEditar,
     required this.onExcluir,
   });
@@ -176,13 +171,11 @@ class _CardSala extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: sala.ativa ? CoresApp.sucesso : CoresApp.textoFraco,
-          child: const Icon(Icons.meeting_room, color: Colors.white),
+          backgroundColor: musica.ativo ? CoresApp.sucesso : CoresApp.textoFraco,
+          child: const Icon(Icons.music_note, color: Colors.white),
         ),
-        title: Text(sala.nome),
-        subtitle: Text(
-          '${sala.numeroFilas} filas × ${sala.numeroColunas} colunas · ${sala.ativa ? "Ativa" : "Inativa"}',
-        ),
+        title: Text(musica.nome),
+        subtitle: musica.nomeArtista.isNotEmpty ? Text(musica.nomeArtista) : null,
         onTap: onEditar,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

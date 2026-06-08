@@ -4,6 +4,10 @@ import 'form_artista_banda.dart';
 import 'form_mix.dart';
 import 'form_musica.dart';
 import 'form_videoaulas_musica.dart';
+import 'lista_artistas_bandas.dart';
+import 'lista_mixes.dart';
+import 'lista_musicas.dart';
+import 'lista_videoaulas_musica.dart';
 
 class TelaRepertorio extends StatelessWidget {
   const TelaRepertorio({super.key});
@@ -17,33 +21,41 @@ class TelaRepertorio extends StatelessWidget {
         _ItemRepertorio(
           icone: Icons.mic,
           titulo: 'Artista ou banda',
-          subtitulo: 'Cadastro base dos responsáveis pelas músicas',
-          aoTocar: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const FormArtistaBanda())),
+          onCadastro: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const FormArtistaBanda()),
+          ),
+          onLista: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ListaArtistasBandas()),
+          ),
         ),
         _ItemRepertorio(
           icone: Icons.music_note,
           titulo: 'Música',
-          subtitulo: 'Música com artista e categorias',
-          aoTocar: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const FormMusica())),
+          onCadastro: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const FormMusica()),
+          ),
+          onLista: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ListaMusicas()),
+          ),
         ),
         _ItemRepertorio(
           icone: Icons.play_circle_outline,
           titulo: 'Videoaula da música',
-          subtitulo: 'Associa um link de videoaula a uma música',
-          aoTocar: () => Navigator.of(context).push(
+          onCadastro: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const FormVideoaulaMusica()),
+          ),
+          onLista: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ListaVideoaulasMusica()),
           ),
         ),
         _ItemRepertorio(
           icone: Icons.queue_music,
           titulo: 'Mix',
-          subtitulo: 'Sequência de músicas da aula',
-          aoTocar: () => Navigator.of(context).push(
+          onCadastro: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const FormMix()),
+          ),
+          onLista: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ListaMixes()),
           ),
         ),
       ],
@@ -54,14 +66,14 @@ class TelaRepertorio extends StatelessWidget {
 class _ItemRepertorio extends StatelessWidget {
   final IconData icone;
   final String titulo;
-  final String subtitulo;
-  final VoidCallback aoTocar;
+  final VoidCallback onCadastro;
+  final VoidCallback onLista;
 
   const _ItemRepertorio({
     required this.icone,
     required this.titulo,
-    required this.subtitulo,
-    required this.aoTocar,
+    required this.onCadastro,
+    required this.onLista,
   });
 
   @override
@@ -74,9 +86,22 @@ class _ItemRepertorio extends StatelessWidget {
           titulo,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
-        subtitle: Text(subtitulo),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: aoTocar,
+        onTap: onCadastro,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.list_alt),
+              tooltip: 'Ver lista',
+              onPressed: onLista,
+            ),
+            IconButton(
+              icon: const Icon(Icons.add_circle_outline),
+              tooltip: 'Novo cadastro',
+              onPressed: onCadastro,
+            ),
+          ],
+        ),
       ),
     );
   }

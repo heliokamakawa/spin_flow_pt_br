@@ -2,7 +2,7 @@
 import 'package:flutter/services.dart';
 import 'package:spin_flow/controller/controlador_sala.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/domain/dominio/dominio_sala.dart';
 import '../../domain/modelo/sala.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';

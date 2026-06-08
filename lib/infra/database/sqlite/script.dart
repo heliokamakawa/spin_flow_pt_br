@@ -476,8 +476,26 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesVideoAula = [
+    // id 1
     "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Aquecimento Base', 'https://www.youtube.com/watch?v=4NRXx6U8ABQ', 1)",
+    // id 2
     "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Sprint em Pe', 'https://www.youtube.com/watch?v=TUVcZfQe-Kw', 1)",
+    // id 3
+    "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Cadencia e Postura', 'https://www.youtube.com/watch?v=pRxEfLhmPkU', 1)",
+    // id 4
+    "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Subida Progressiva', 'https://www.youtube.com/watch?v=W9TqFMSdflU', 1)",
+    // id 5
+    "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Tecnica de Sprint', 'https://www.youtube.com/watch?v=MN3x-kAbgFU', 1)",
+    // id 6
+    "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Forca em Carga Alta', 'https://www.youtube.com/watch?v=CevxZvSJLk8', 1)",
+    // id 7
+    "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Aquecimento Dinamico', 'https://www.youtube.com/watch?v=9bZkp7q19f0', 1)",
+    // id 8
+    "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Recuperacao Ativa', 'https://www.youtube.com/watch?v=kJQP7kiw5Fk', 1)",
+    // id 9
+    "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Ritmo Constante', 'https://www.youtube.com/watch?v=OPf0YbXqDm0', 1)",
+    // id 10
+    "INSERT INTO video_aula (nome, link_video, ativo) VALUES ('Relaxamento Final', 'https://www.youtube.com/watch?v=GIs9pk9eFj4', 1)",
   ];
 
   static const List<String> _insercoesMusica = [
@@ -586,48 +604,106 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesMusicaVideoAula = [
+    // 1 Warm Wheels — aquecimento (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (1, 1)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (1, 7)",
+    // 2 Ride the Fire — cadencia (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (2, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (2, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (3, 2)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (2, 3)",
+    // 3 Climb Higher — subida (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (3, 4)",
+    // 4 Pulse Sprint — sprint (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (4, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (5, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (6, 1)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (4, 5)",
+    // 5 Deep Resistance — forca (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (5, 6)",
+    // 6 Beat Control — cadencia (2 vídeos)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (6, 3)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (6, 9)",
+    // 7 Out of Saddle — em pe (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (7, 2)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (7, 5)",
+    // 8 Final Push — performance final (3 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (8, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (9, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (10, 1)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (8, 5)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (8, 6)",
+    // 9 Slow Burn — recuperacao (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (9, 8)",
+    // 10 Cool Down Flow — relaxamento (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (10, 10)",
+    // 11 Morning Cadence — aquecimento (1 vídeo)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (11, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (12, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (13, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (14, 1)",
+    // 12 Gear Shift — forca (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (12, 6)",
+    // 13 Neon Climb — subida (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (13, 4)",
+    // 14 Tempo Rider — cadencia (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (14, 3)",
+    // 15 Power Surge — em pe / forca (3 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (15, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (16, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (17, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (18, 1)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (15, 5)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (15, 6)",
+    // 16 Recovery Spin — recuperacao (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (16, 8)",
+    // 17 Hill Attack — subida (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (17, 4)",
+    // 18 Rhythm Pulse — ritmo (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (18, 9)",
+    // 19 Sprint Signal — sprint (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (19, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (20, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (21, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (22, 1)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (19, 5)",
+    // 20 Steady Road — cadencia / ritmo (2 vídeos)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (20, 3)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (20, 9)",
+    // 21 Torque Zone — forca (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (21, 6)",
+    // 22 Breath Line — recuperacao (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (22, 8)",
+    // 23 Peak Minute — em pe / sprint (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (23, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (24, 1)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (23, 5)",
+    // 24 Base Builder — aquecimento (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (24, 7)",
+    // 25 Fast Lane — sprint (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (25, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (26, 2)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (25, 5)",
+    // 26 Climb Control — subida (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (26, 4)",
+    // 27 Heat Wave Ride — aquecimento intenso (3 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (27, 1)",
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (27, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (28, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (29, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (30, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (31, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (32, 1)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (27, 7)",
+    // 28 Silent Coast — relaxamento (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (28, 10)",
+    // 29 Resistance Loop — subida / forca (2 vídeos)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (29, 4)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (29, 6)",
+    // 30 Cadence Lock — cadencia / ritmo (2 vídeos)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (30, 3)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (30, 9)",
+    // 31 Fuel the Pack — em pe (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (31, 5)",
+    // 32 Low Gear Flow — recuperacao (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (32, 8)",
+    // 33 Breakaway Beat — sprint (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (33, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (34, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (35, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (36, 2)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (33, 5)",
+    // 34 Standing Drive — em pe (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (34, 5)",
+    // 35 Soft Landing — relaxamento (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (35, 10)",
+    // 36 Endurance Rail — subida (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (36, 4)",
+    // 37 Pulse Ladder — sprint (1 vídeo)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (37, 2)",
+    // 38 Warm Horizon — aquecimento (2 vídeos)
     "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (38, 1)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (39, 2)",
-    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (40, 1)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (38, 7)",
+    // 39 Summit Hold — subida / forca (2 vídeos)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (39, 4)",
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (39, 6)",
+    // 40 Final Breath — relaxamento (1 vídeo)
+    "INSERT INTO musica_video_aula (musica_id, video_aula_id) VALUES (40, 10)",
   ];
 
   static const List<String> _insercoesMix = [

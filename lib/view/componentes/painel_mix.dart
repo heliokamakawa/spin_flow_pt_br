@@ -1,8 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:spin_flow/domain/modelo/mix_checkin.dart';
 import 'package:spin_flow/domain/modelo/musica_checkin.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
-import 'package:spin_flow/infra/config/tema_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
+import 'package:spin_flow/view/componentes/tema_app.dart';
 
 /// Botão que abre o mix da aula em um modal sobre a tela.
 class PainelMix extends StatelessWidget {

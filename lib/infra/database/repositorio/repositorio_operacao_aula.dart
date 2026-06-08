@@ -1,22 +1,25 @@
 import 'package:get_it/get_it.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_checkin.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_manutencao.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_mix.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_posicao_bike.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_sala.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_tipo_manutencao.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_turma.dart';
 import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
 import 'package:spin_flow/domain/modelo/manutencao.dart';
+import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
 import 'package:spin_flow/domain/modelo/turma.dart';
 
 class RepositorioOperacaoAula {
-  IDAOTurma        get _daoTurma    => GetIt.I<IDAOTurma>();
-  IDAOSala         get _daoSala     => GetIt.I<IDAOSala>();
-  IDAOPosicaoBike  get _daoPosicao  => GetIt.I<IDAOPosicaoBike>();
-  IDAOCheckin      get _daoCheckin  => GetIt.I<IDAOCheckin>();
-  IDAOManutencao   get _daoManu     => GetIt.I<IDAOManutencao>();
-  IDAOTipoManutencao get _daoTipo   => GetIt.I<IDAOTipoManutencao>();
+  IDAOTurma          get _daoTurma    => GetIt.I<IDAOTurma>();
+  IDAOSala           get _daoSala     => GetIt.I<IDAOSala>();
+  IDAOPosicaoBike    get _daoPosicao  => GetIt.I<IDAOPosicaoBike>();
+  IDAOCheckin        get _daoCheckin  => GetIt.I<IDAOCheckin>();
+  IDAOManutencao     get _daoManu     => GetIt.I<IDAOManutencao>();
+  IDAOTipoManutencao get _daoTipo     => GetIt.I<IDAOTipoManutencao>();
+  IDAOMix            get _daoMix      => GetIt.I<IDAOMix>();
 
   Future<List<ResumoTurmaHoje>> listarTurmasHoje() async {
     final hoje = _diaSemanaHoje();
@@ -52,6 +55,27 @@ class RepositorioOperacaoAula {
 
   Future<List<TipoManutencao>> listarTiposManutencao() =>
       _daoTipo.buscarTodos();
+
+  Future<List<Mix>> listarMixes() async {
+    final todos = await _daoMix.buscarTodos();
+    return todos.where((m) => m.ativo).toList();
+  }
+
+  Future<void> alterarMixTurma(int turmaId, int? mixId) async {
+    final turma = await _daoTurma.buscarPorId(turmaId);
+    if (turma == null) throw Exception('Turma não encontrada.');
+    await _daoTurma.salvar(Turma(
+      id: turma.id,
+      nome: turma.nome,
+      horarioInicio: turma.horarioInicio,
+      duracaoMinutos: turma.duracaoMinutos,
+      diasSemana: turma.diasSemana,
+      salaId: turma.salaId,
+      professoraId: turma.professoraId,
+      mixId: mixId,
+      ativo: turma.ativo,
+    ));
+  }
 
   Future<void> cancelarCheckin(int checkinId) =>
       _daoCheckin.cancelar(checkinId);

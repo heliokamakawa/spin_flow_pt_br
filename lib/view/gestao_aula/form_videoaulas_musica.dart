@@ -1,12 +1,13 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_musica.dart';
 import 'package:spin_flow/domain/modelo/musica.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormVideoaulaMusica extends StatefulWidget {
-  const FormVideoaulaMusica({super.key});
+  final Musica? musica;
+  const FormVideoaulaMusica({super.key, this.musica});
 
   @override
   State<FormVideoaulaMusica> createState() => _FormVideoaulaMusicaState();
@@ -25,6 +26,7 @@ class _FormVideoaulaMusicaState extends State<FormVideoaulaMusica> {
   @override
   void initState() {
     super.initState();
+    _musicaId = widget.musica?.id;
     _carregarMusicas();
   }
 

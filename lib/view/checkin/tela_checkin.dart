@@ -2,8 +2,8 @@
 import 'package:spin_flow/controller/controlador_checkin_aluno.dart';
 import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
 import 'package:spin_flow/domain/modelo/posicao_bike.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
-import 'package:spin_flow/infra/config/tema_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
+import 'package:spin_flow/view/componentes/tema_app.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/painel_mix.dart';

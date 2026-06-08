@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 
 class LogoSpinFlow extends StatelessWidget {
   final double larguraIcone;

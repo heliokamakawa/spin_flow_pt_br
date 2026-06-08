@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
-import 'package:spin_flow/controller/controlador_sala.dart';
-import '../../domain/modelo/sala.dart';
+import 'package:spin_flow/controller/controlador_mix.dart';
+import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/campo_busca.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
-import 'form_sala.dart';
+import 'form_mix.dart';
 
-class ListaSalas extends StatefulWidget {
-  const ListaSalas({super.key});
+class ListaMixes extends StatefulWidget {
+  const ListaMixes({super.key});
 
   @override
-  State<ListaSalas> createState() => _ListaSalasState();
+  State<ListaMixes> createState() => _ListaMixesState();
 }
 
-class _ListaSalasState extends State<ListaSalas> {
-  final _controlador = ControladorSala();
+class _ListaMixesState extends State<ListaMixes> {
+  final _controlador = ControladorMix();
   final _buscaController = TextEditingController();
-  late Future<List<Sala>> _futuro;
+  late Future<List<Mix>> _futuro;
 
   @override
   void initState() {
@@ -38,22 +38,22 @@ class _ListaSalasState extends State<ListaSalas> {
     });
   }
 
-  Future<void> _abrirForm([Sala? sala]) async {
-    final atualizado = await Navigator.of(
-      context,
-    ).push<bool>(MaterialPageRoute(builder: (_) => FormSala(sala: sala)));
+  Future<void> _abrirForm([Mix? mix]) async {
+    final atualizado = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => FormMix(mix: mix)),
+    );
     if (atualizado == true) _carregar();
   }
 
-  List<Sala> _filtrar(List<Sala> todas) =>
-      filtrarComPrioridade(todas, _buscaController.text, (s) => [s.nome]);
+  List<Mix> _filtrar(List<Mix> todos) =>
+      filtrarComPrioridade(todos, _buscaController.text, (m) => [m.nome]);
 
-  Future<void> _excluir(Sala sala) async {
+  Future<void> _excluir(Mix mix) async {
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Excluir sala'),
-        content: Text('Deseja desativar "${sala.nome}"?'),
+        title: const Text('Excluir mix'),
+        content: Text('Deseja excluir "${mix.nome}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -61,25 +61,24 @@ class _ListaSalasState extends State<ListaSalas> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              'Excluir',
-              style: TextStyle(color: CoresApp.erro),
-            ),
+            child: const Text('Excluir', style: TextStyle(color: CoresApp.erro)),
           ),
         ],
       ),
     );
-    if (confirmar == true) {
-      final resultado = await _controlador.excluir(sala.id!);
-      if (!mounted) return;
-      if (!resultado.sucesso) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(resultado.mensagemErro!), backgroundColor: CoresApp.erro),
-        );
-        return;
-      }
-      _carregar();
+    if (confirmar != true) return;
+    final resultado = await _controlador.excluir(mix.id!);
+    if (!mounted) return;
+    if (!resultado.sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(resultado.mensagemErro!),
+          backgroundColor: CoresApp.erro,
+        ),
+      );
+      return;
     }
+    _carregar();
   }
 
   @override
@@ -88,7 +87,7 @@ class _ListaSalasState extends State<ListaSalas> {
     return Scaffold(
       appBar: AppBar(
         title: const TituloAppBarSpinFlow(),
-        actions: [const AcaoSairAppBar()],
+        actions: const [AcaoSairAppBar()],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _abrirForm(),
@@ -98,42 +97,38 @@ class _ListaSalasState extends State<ListaSalas> {
       ),
       body: Column(
         children: [
-          CampoBusca(controlador: _buscaController, dica: 'Buscar sala...'),
+          CampoBusca(controlador: _buscaController, dica: 'Buscar mix...'),
           Expanded(
-            child: FutureBuilder<List<Sala>>(
+            child: FutureBuilder<List<Mix>>(
               future: _futuro,
               builder: (_, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final todas = snapshot.data ?? [];
-                if (todas.isEmpty) {
+                final todos = snapshot.data ?? [];
+                if (todos.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.meeting_room_outlined,
-                          size: 64,
-                          color: Colors.grey.shade400,
-                        ),
+                        Icon(Icons.queue_music, size: 64, color: Colors.grey.shade400),
                         const SizedBox(height: 12),
                         Text(
-                          'Nenhuma sala cadastrada',
+                          'Nenhum mix cadastrado',
                           style: TextStyle(color: Colors.grey.shade600),
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton.icon(
                           onPressed: () => _abrirForm(),
                           icon: const Icon(Icons.add),
-                          label: const Text('Nova sala'),
+                          label: const Text('Novo mix'),
                         ),
                       ],
                     ),
                   );
                 }
-                final salas = _filtrar(todas);
-                if (salas.isEmpty) {
+                final mixes = _filtrar(todos);
+                if (mixes.isEmpty) {
                   return Center(
                     child: Text(
                       'Nenhum resultado para "${_buscaController.text}"',
@@ -143,11 +138,11 @@ class _ListaSalasState extends State<ListaSalas> {
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.all(12),
-                  itemCount: salas.length,
-                  itemBuilder: (_, i) => _CardSala(
-                    sala: salas[i],
-                    onEditar: () => _abrirForm(salas[i]),
-                    onExcluir: () => _excluir(salas[i]),
+                  itemCount: mixes.length,
+                  itemBuilder: (_, i) => _CardMix(
+                    mix: mixes[i],
+                    onEditar: () => _abrirForm(mixes[i]),
+                    onExcluir: () => _excluir(mixes[i]),
                   ),
                 );
               },
@@ -159,13 +154,13 @@ class _ListaSalasState extends State<ListaSalas> {
   }
 }
 
-class _CardSala extends StatelessWidget {
-  final Sala sala;
+class _CardMix extends StatelessWidget {
+  final Mix mix;
   final VoidCallback onEditar;
   final VoidCallback onExcluir;
 
-  const _CardSala({
-    required this.sala,
+  const _CardMix({
+    required this.mix,
     required this.onEditar,
     required this.onExcluir,
   });
@@ -176,12 +171,12 @@ class _CardSala extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: sala.ativa ? CoresApp.sucesso : CoresApp.textoFraco,
-          child: const Icon(Icons.meeting_room, color: Colors.white),
+          backgroundColor: mix.ativo ? CoresApp.sucesso : CoresApp.textoFraco,
+          child: const Icon(Icons.queue_music, color: Colors.white),
         ),
-        title: Text(sala.nome),
+        title: Text(mix.nome),
         subtitle: Text(
-          '${sala.numeroFilas} filas × ${sala.numeroColunas} colunas · ${sala.ativa ? "Ativa" : "Inativa"}',
+          '${mix.musicasPreenchidas}/${Mix.totalSlots} músicas · ${mix.ativo ? "Ativo" : "Inativo"}',
         ),
         onTap: onEditar,
         trailing: Row(

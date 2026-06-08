@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_musica.dart';
 import 'package:spin_flow/domain/modelo/categoria_musica.dart';
 import 'package:spin_flow/domain/modelo/musica.dart';

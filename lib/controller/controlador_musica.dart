@@ -62,4 +62,18 @@ class ControladorMusica {
 
   Future<void> atualizarVideos(int musicaId, List<String> links) =>
       _repositorio.atualizarVideos(musicaId, links);
+
+  Future<ResultadoOperacao> removerVideoAula(int musicaId, int videoId) async {
+    try {
+      final videos = await _repositorio.buscarVideos(musicaId);
+      final links = videos
+          .where((v) => v.id != videoId)
+          .map((v) => v.linkVideo)
+          .toList();
+      await _repositorio.atualizarVideos(musicaId, links);
+      return ResultadoOperacao.sucesso();
+    } catch (e) {
+      return ResultadoOperacao.falha(mensagemErro: e.toString());
+    }
+  }
 }

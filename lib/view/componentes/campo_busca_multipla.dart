@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 
 class CampoBuscaMultipla<T> extends StatefulWidget {
   final List<T> opcoes;

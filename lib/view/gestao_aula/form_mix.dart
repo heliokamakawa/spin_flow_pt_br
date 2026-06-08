@@ -3,7 +3,7 @@ import 'package:spin_flow/controller/controlador_mix.dart';
 import 'package:spin_flow/domain/dominio/dominio_mix.dart';
 import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/musica.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/campo_ativo.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';

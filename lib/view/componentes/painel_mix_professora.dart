@@ -3,8 +3,8 @@ import 'package:spin_flow/controller/controlador_mix.dart';
 import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/mix_repertorio_professora.dart';
 import 'package:spin_flow/domain/modelo/musica_repertorio_professora.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
-import 'package:spin_flow/infra/config/tema_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
+import 'package:spin_flow/view/componentes/tema_app.dart';
 
 /// Abre o painel de avaliações do mix no dashboard da professora.
 class PainelMixProfessora extends StatelessWidget {

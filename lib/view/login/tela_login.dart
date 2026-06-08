@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/infra/config/rotas.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_login.dart';
 import 'package:spin_flow/view/componentes/campo_identificador_login.dart';
 import 'package:spin_flow/view/componentes/campo_senha.dart';

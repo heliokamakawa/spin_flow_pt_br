@@ -1,5 +1,6 @@
 import 'package:spin_flow/controller/resultado_operacao.dart';
 import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
+import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
 import 'package:spin_flow/infra/database/repositorio/repositorio_operacao_aula.dart';
 
@@ -9,6 +10,16 @@ class ControladorOperacaoAula {
   Future<List<ResumoTurmaHoje>> listarTurmasHoje() => _repositorio.listarTurmasHoje();
   Future<EstadoMapaAula> carregarMapa(int turmaId) => _repositorio.carregarMapa(turmaId);
   Future<List<TipoManutencao>> listarTiposManutencao() => _repositorio.listarTiposManutencao();
+  Future<List<Mix>> listarMixes() => _repositorio.listarMixes();
+
+  Future<ResultadoOperacao> alterarMixTurma(int turmaId, int? mixId) async {
+    try {
+      await _repositorio.alterarMixTurma(turmaId, mixId);
+      return const ResultadoOperacao.sucesso();
+    } catch (e) {
+      return ResultadoOperacao.falha(mensagemErro: e.toString());
+    }
+  }
 
   Future<ResultadoOperacao> resolverManutencao(int bikeId) async {
     try {

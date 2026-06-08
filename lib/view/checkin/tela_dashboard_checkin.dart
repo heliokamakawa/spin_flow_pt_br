@@ -5,13 +5,13 @@ import 'package:spin_flow/domain/modelo/mix_checkin.dart';
 import 'package:spin_flow/domain/modelo/musica_checkin.dart';
 import 'package:spin_flow/domain/modelo/painel_aluno.dart';
 import 'package:spin_flow/controller/sessao_usuario.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
-import 'package:spin_flow/infra/config/tema_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
+import 'package:spin_flow/view/componentes/tema_app.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/painel_mix.dart';
 import 'package:spin_flow/domain/modelo/situacao_checkin_aluno.dart';
-import 'package:spin_flow/view/tela_checkin.dart';
+import 'package:spin_flow/view/checkin/tela_checkin.dart';
 
 class TelaDashboardCheckin extends StatefulWidget {
   const TelaDashboardCheckin({super.key});

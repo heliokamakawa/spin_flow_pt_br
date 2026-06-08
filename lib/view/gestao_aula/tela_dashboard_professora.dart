@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/config/configuracao_abas.dart';
+import 'package:spin_flow/view/componentes/configuracao_abas.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/controller/sessao_usuario.dart';

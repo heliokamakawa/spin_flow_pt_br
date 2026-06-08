@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:spin_flow/infra/config/cores_app.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:flutter/services.dart';
 import 'package:spin_flow/controller/controlador_turma.dart';
 import 'package:spin_flow/infra/config/erro.dart';
