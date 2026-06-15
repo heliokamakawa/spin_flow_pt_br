@@ -139,12 +139,25 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     if (resultado.sucesso) await _carregar();
   }
 
-  Future<void> _resolverManutencao(PosicaoBike posicao) async {
+  Future<void> _resolverManutencao(PosicaoBike posicao, {String? motivo}) async {
     final confirma = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(posicao.bikeNome),
-        content: const Text('Marcar como boa?'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (motivo != null && motivo.isNotEmpty) ...[
+              Text(
+                motivo,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+            ],
+            const Text('Marcar como boa?'),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -294,16 +307,39 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     );
   }
 
-  Widget _buildIdadeMedia() {
+  Widget _buildCardIdadeMedia() {
+    final primaria = Theme.of(context).extension<CoresSemanticasApp>()!.primaria;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Row(
         children: [
-          const Icon(Icons.people_outline, size: 16, color: Colors.grey),
-          const SizedBox(width: 6),
-          Text(
-            'Idade média: ${_idadeMedia!.round()} anos',
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${_idadeMedia!.round()}',
+                    style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.w800,
+                      color: primaria,
+                      height: 1,
+                    ),
+                  ),
+                  const Text(
+                    'anos',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  const SizedBox(height: 2),
+                  const Text(
+                    'Idade média',
+                    style: TextStyle(fontSize: 11, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -320,7 +356,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
       children: [
         _buildLegenda(),
         _buildSeletorMix(),
-        if (_idadeMedia != null) _buildIdadeMedia(),
+        if (_idadeMedia != null) _buildCardIdadeMedia(),
         Expanded(
           child: GridView.builder(
             padding: const EdgeInsets.all(12),
@@ -365,11 +401,12 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     }
 
     if (estado.emManutencao(fila, coluna)) {
+      final motivo = estado.motivoManutencaoEm(fila, coluna);
       return _Celula(
         cor: cores.bikeManutencao,
         label: 'Manut',
-        subLabel: posicao.bikeNome,
-        onTap: () => _resolverManutencao(posicao),
+        subLabel: posicao.numeroDisplay,
+        onTap: () => _resolverManutencao(posicao, motivo: motivo),
       );
     }
 
@@ -378,14 +415,14 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
       return _Celula(
         cor: cores.bikeOcupada,
         label: checkin.nomeAluno,
-        subLabel: posicao.bikeNome,
+        subLabel: posicao.numeroDisplay,
         onTap: () => _confirmarCancelamento(checkin),
       );
     }
 
     return _Celula(
       cor: cores.bikeLivre,
-      label: posicao.bikeNome,
+      label: posicao.numeroDisplay,
       subLabel: '',
       onTap: () => _abrirModalManutencao(posicao),
       textEscuro: true,
