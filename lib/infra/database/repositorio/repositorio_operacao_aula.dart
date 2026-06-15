@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_aluno.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_checkin.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_manutencao.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_mix.dart';
@@ -6,11 +7,14 @@ import 'package:spin_flow/infra/database/dao/i_dao_posicao_bike.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_sala.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_tipo_manutencao.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_turma.dart';
+import 'package:spin_flow/domain/modelo/aluno.dart';
 import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
+import 'package:spin_flow/domain/modelo/frequencia_aluno.dart';
 import 'package:spin_flow/domain/modelo/manutencao.dart';
 import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
 import 'package:spin_flow/domain/modelo/turma.dart';
+import 'package:spin_flow/domain/modelo/turma_aluno.dart';
 
 class RepositorioOperacaoAula {
   IDAOTurma          get _daoTurma    => GetIt.I<IDAOTurma>();
@@ -20,6 +24,7 @@ class RepositorioOperacaoAula {
   IDAOManutencao     get _daoManu     => GetIt.I<IDAOManutencao>();
   IDAOTipoManutencao get _daoTipo     => GetIt.I<IDAOTipoManutencao>();
   IDAOMix            get _daoMix      => GetIt.I<IDAOMix>();
+  IDAOAluno          get _daoAluno    => GetIt.I<IDAOAluno>();
 
   Future<List<ResumoTurmaHoje>> listarTurmasHoje() async {
     final hoje = _diaSemanaHoje();
@@ -104,6 +109,32 @@ class RepositorioOperacaoAula {
         dataSolicitacao: DateTime.now(),
         descricao: descricao,
       ));
+
+  Future<List<FrequenciaAluno>> buscarFrequencia(
+    int turmaId,
+    DateTime inicio,
+    DateTime fim,
+  ) => _daoCheckin.buscarFrequenciaPorTurma(turmaId, inicio, fim);
+
+  Future<List<FrequenciaAluno>> buscarAlunosPorProfessora(int professoraId) =>
+      _daoCheckin.buscarAlunosPorProfessora(professoraId);
+
+  Future<List<TurmaAluno>> buscarTurmasFrequentadasPorAluno(
+    int alunoId,
+    int professoraId,
+  ) => _daoCheckin.buscarTurmasFrequentadasPorAluno(alunoId, professoraId);
+
+  Future<Aluno?> buscarAlunoPorId(int id) => _daoAluno.buscarPorId(id);
+
+  Future<double?> calcularIdadeMediaTurma(int turmaId, DateTime data) =>
+      _daoCheckin.calcularIdadeMediaTurma(turmaId, data);
+
+  Future<List<Turma>> listarTurmasAtivas() async {
+    final todas = await _daoTurma.buscarTodos();
+    final ativas = todas.where((t) => t.ativo).toList()
+      ..sort((a, b) => a.nome.compareTo(b.nome));
+    return ativas;
+  }
 
   DiaSemana _diaSemanaHoje() {
     switch (DateTime.now().weekday) {

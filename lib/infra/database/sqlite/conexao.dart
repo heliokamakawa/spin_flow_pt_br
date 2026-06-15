@@ -52,6 +52,9 @@ class ConexaoSQLite {
         await db.execute(comando);
       }
     }
+    for (final comando in ScriptSQLite.insercoesCheckinHistorico) {
+      await db.execute(comando);
+    }
     for (final comando in ScriptDinamicasSQLite.comandosInsercoes(
       DateTime.now(),
     )) {

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_aluno.dart';
@@ -9,7 +9,7 @@ import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 
 class FormAluno extends StatefulWidget {
   final Aluno? aluno;
-  const FormAluno({Key? key, this.aluno}) : super(key: key);
+  const FormAluno({super.key, this.aluno});
 
   @override
   State<FormAluno> createState() => _FormAlunoState();
@@ -20,6 +20,7 @@ class _FormAlunoState extends State<FormAluno> {
   final _controlador = ControladorAluno();
 
   final _nomeController = TextEditingController();
+  final _cpfController = TextEditingController();
   final _emailController = TextEditingController();
   final _telefoneController = TextEditingController();
   final _dataController = TextEditingController();
@@ -39,6 +40,7 @@ class _FormAlunoState extends State<FormAluno> {
     final a = widget.aluno;
     if (a != null) {
       _nomeController.text = a.nome;
+      _cpfController.text = _formatarCpf(a.cpf);
       _emailController.text = a.email;
       _telefoneController.text = a.telefone;
       _dataController.text = _formatarData(a.dataNascimento);
@@ -56,6 +58,7 @@ class _FormAlunoState extends State<FormAluno> {
   @override
   void dispose() {
     _nomeController.dispose();
+    _cpfController.dispose();
     _emailController.dispose();
     _telefoneController.dispose();
     _dataController.dispose();
@@ -72,6 +75,12 @@ class _FormAlunoState extends State<FormAluno> {
     return '${data.day.toString().padLeft(2, '0')}/'
         '${data.month.toString().padLeft(2, '0')}/'
         '${data.year}';
+  }
+
+  String _formatarCpf(String raw) {
+    final d = raw.replaceAll(RegExp(r'\D'), '');
+    if (d.length != 11) return raw;
+    return '${d.substring(0, 3)}.${d.substring(3, 6)}.${d.substring(6, 9)}-${d.substring(9)}';
   }
 
   Future<void> _selecionarData() async {
@@ -95,6 +104,7 @@ class _FormAlunoState extends State<FormAluno> {
     final aluno = Aluno(
       id: widget.aluno?.id,
       nome: _nomeController.text.trim(),
+      cpf: _cpfController.text.replaceAll(RegExp(r'\D'), ''),
       email: _emailController.text.trim(),
       telefone: _telefoneController.text.trim(),
       dataNascimento: _dataNascimento,
@@ -111,7 +121,10 @@ class _FormAlunoState extends State<FormAluno> {
     if (!mounted) return;
     if (!resultado.sucesso) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(resultado.mensagemErro!), backgroundColor: CoresApp.erro),
+        SnackBar(
+          content: Text(resultado.mensagemErro!),
+          backgroundColor: CoresApp.erro,
+        ),
       );
       return;
     }
@@ -143,6 +156,30 @@ class _FormAlunoState extends State<FormAluno> {
             ),
             const SizedBox(height: 12),
             TextFormField(
+              controller: _cpfController,
+              keyboardType: TextInputType.number,
+              inputFormatters: [_MascaraCpf()],
+              readOnly: widget.aluno != null,
+              decoration: const InputDecoration(
+                labelText: 'CPF *',
+                hintText: '000.000.000-00',
+              ),
+              validator: (v) {
+                if (v == null || v.trim().isEmpty) return 'CPF obrigatório.';
+                final d = v.replaceAll(RegExp(r'\D'), '');
+                if (d.length != 11) return 'CPF incompleto.';
+                return null;
+              },
+            ),
+            if (widget.aluno == null) ...[
+              const SizedBox(height: 4),
+              Text(
+                'A senha inicial de acesso do aluno será o próprio CPF.',
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+            ],
+            const SizedBox(height: 12),
+            TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
@@ -154,22 +191,6 @@ class _FormAlunoState extends State<FormAluno> {
                 if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(v.trim())) {
                   return 'E-mail inválido.';
                 }
-                return null;
-              },
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _telefoneController,
-              keyboardType: TextInputType.phone,
-              inputFormatters: [_MascaraTelefone()],
-              decoration: const InputDecoration(
-                labelText: 'Telefone *',
-                hintText: '(11) 99999-9999',
-              ),
-              validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Telefone obrigatório.';
-                final digitos = v.replaceAll(RegExp(r'\D'), '');
-                if (digitos.length < 10) return 'Telefone incompleto — informe DDD + número.';
                 return null;
               },
             ),
@@ -207,12 +228,40 @@ class _FormAlunoState extends State<FormAluno> {
             // ── Dados opcionais ───────────────────────────────────────────
             const SizedBox(height: 20),
             TextFormField(
+              controller: _telefoneController,
+              keyboardType: TextInputType.phone,
+              inputFormatters: [_MascaraTelefone()],
+              decoration: const InputDecoration(
+                labelText: 'Telefone',
+                hintText: '(11) 99999-9999',
+              ),
+              validator: (v) {
+                if (v == null || v.trim().isEmpty) return null;
+                final digitos = v.replaceAll(RegExp(r'\D'), '');
+                if (digitos.length < 10) {
+                  return 'Telefone incompleto — informe DDD + número.';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
               controller: _urlFotoController,
               keyboardType: TextInputType.url,
               decoration: const InputDecoration(
                 labelText: 'URL da foto',
                 hintText: 'https://...',
               ),
+              validator: (v) {
+                if (v == null || v.trim().isEmpty) return null;
+                final uri = Uri.tryParse(v.trim());
+                if (uri == null ||
+                    (!uri.scheme.startsWith('http')) ||
+                    uri.host.isEmpty) {
+                  return 'URL inválida — deve começar com http:// ou https://.';
+                }
+                return null;
+              },
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -280,7 +329,26 @@ class _FormAlunoState extends State<FormAluno> {
   }
 }
 
-// ── Máscara de telefone ────────────────────────────────────────────────────────
+class _MascaraCpf extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digitos = newValue.text.replaceAll(RegExp(r'\D'), '');
+    final buf = StringBuffer();
+    for (int i = 0; i < digitos.length && i < 11; i++) {
+      if (i == 3 || i == 6) buf.write('.');
+      if (i == 9) buf.write('-');
+      buf.write(digitos[i]);
+    }
+    final texto = buf.toString();
+    return TextEditingValue(
+      text: texto,
+      selection: TextSelection.collapsed(offset: texto.length),
+    );
+  }
+}
 
 class _MascaraTelefone extends TextInputFormatter {
   @override
@@ -293,7 +361,6 @@ class _MascaraTelefone extends TextInputFormatter {
     for (int i = 0; i < digitos.length && i < 11; i++) {
       if (i == 0) buf.write('(');
       if (i == 2) buf.write(') ');
-      // celular: X dígitos no prefixo; fixo: 4 dígitos
       if (i == (digitos.length == 11 ? 7 : 6)) buf.write('-');
       buf.write(digitos[i]);
     }

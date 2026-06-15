@@ -11,6 +11,7 @@ import 'package:spin_flow/infra/database/dao/i_dao_mix.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_musica.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_posicao_bike.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_sala.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_fabricante.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_tipo_manutencao.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_turma.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_aula_realizada.dart';
@@ -30,6 +31,7 @@ import 'package:spin_flow/infra/database/sqlite/dao/dao_manutencao_sqlite.dart';
 import 'package:spin_flow/infra/database/sqlite/dao/dao_mix_sqlite.dart';
 import 'package:spin_flow/infra/database/sqlite/dao/dao_musica_sqlite.dart';
 import 'package:spin_flow/infra/database/sqlite/dao/dao_posicao_bike_sqlite.dart';
+import 'package:spin_flow/infra/database/sqlite/dao/dao_fabricante_sqlite.dart';
 import 'package:spin_flow/infra/database/sqlite/dao/dao_sala_sqlite.dart';
 import 'package:spin_flow/infra/database/sqlite/dao/dao_tipo_manutencao_sqlite.dart';
 import 'package:spin_flow/infra/database/sqlite/dao/dao_turma_sqlite.dart';
@@ -53,6 +55,7 @@ void configurarDependencias() {
   getIt.registerLazySingleton<IDAOMix>(() => DAOMixSQLite());
 
   // DAOs — gestao administrativa
+  getIt.registerLazySingleton<IDAOFabricante>(() => DAOFabricanteSQLite());
   getIt.registerLazySingleton<IDAOSala>(() => DAOSalaSQLite());
   getIt.registerLazySingleton<IDAOBike>(() => DAOBikeSQLite());
   getIt.registerLazySingleton<IDAOManutencao>(() => DAOManutencaoSQLite());

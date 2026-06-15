@@ -33,6 +33,10 @@ class _TelaCheckinState extends State<TelaCheckin> {
   String? _tituloPainel;
   String? _subPainel;
 
+  bool _filaExpandida = false;
+  List<String>? _nomesNaFila;
+  bool _carregandoFila = false;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +49,9 @@ class _TelaCheckinState extends State<TelaCheckin> {
       _posicaoEscolhida = null;
       _tituloPainel = null;
       _subPainel = null;
+      _filaExpandida = false;
+      _nomesNaFila = null;
+      _carregandoFila = false;
     });
     try {
       final dados = await _controlador.carregarMapa(
@@ -255,6 +262,25 @@ class _TelaCheckinState extends State<TelaCheckin> {
     if (resultado.sucesso) await _carregar();
   }
 
+  Future<void> _toggleFila() async {
+    if (_filaExpandida) {
+      setState(() => _filaExpandida = false);
+      return;
+    }
+    setState(() {
+      _filaExpandida = true;
+      _carregandoFila = _nomesNaFila == null;
+    });
+    if (_nomesNaFila == null) {
+      final nomes = await _controlador.buscarNomesNaFila(widget.turmaId);
+      if (!mounted) return;
+      setState(() {
+        _nomesNaFila = nomes;
+        _carregandoFila = false;
+      });
+    }
+  }
+
   void _snack(String msg, {bool erro = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -341,6 +367,16 @@ class _TelaCheckinState extends State<TelaCheckin> {
                   onEntrarFila: _entrarFilaEspera,
                   onSairFila: _sairDaFila,
                 ),
+                if (dados.lotada && dados.totalNaFila > 0) ...[
+                  const SizedBox(height: 8),
+                  _PainelFilaEspera(
+                    total: dados.totalNaFila,
+                    expandido: _filaExpandida,
+                    carregando: _carregandoFila,
+                    nomes: _nomesNaFila,
+                    onToggle: _toggleFila,
+                  ),
+                ],
               ],
             ),
           );
@@ -566,7 +602,7 @@ class _GradeBikes extends StatelessWidget {
 
     return _Celula(
       cor: selecionada ? cores.bikeMinhaReserva : cores.bikeLivre,
-      numero: posicao.bikeNome,
+      numero: posicao.numeroDisplay,
       textoEscuro: !selecionada,
       borda: !selecionada,
       selecionada: selecionada,
@@ -827,6 +863,103 @@ class _BotaoAcao extends StatelessWidget {
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
         child: Text(label),
+      ),
+    );
+  }
+}
+
+// -- Painel fila de espera ---------------------------------------------------
+
+class _PainelFilaEspera extends StatelessWidget {
+  final int total;
+  final bool expandido;
+  final bool carregando;
+  final List<String>? nomes;
+  final VoidCallback onToggle;
+
+  const _PainelFilaEspera({
+    required this.total,
+    required this.expandido,
+    required this.carregando,
+    required this.nomes,
+    required this.onToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: InkWell(
+        onTap: onToggle,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.people_outline, size: 18, color: cores.alerta),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Fila de espera · $total ${total == 1 ? 'pessoa' : 'pessoas'}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: cores.alerta,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    expandido ? Icons.expand_less : Icons.expand_more,
+                    size: 18,
+                    color: cores.textoSuave,
+                  ),
+                ],
+              ),
+              if (expandido) ...[
+                const SizedBox(height: 8),
+                if (carregando)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  )
+                else if (nomes != null)
+                  ...nomes!.asMap().entries.map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 24,
+                            child: Text(
+                              '${e.key + 1}.',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: cores.textoSuave,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              e.value,
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

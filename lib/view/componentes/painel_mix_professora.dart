@@ -197,75 +197,123 @@ class _LinhaMusica extends StatelessWidget {
 
   const _LinhaMusica({required this.musica});
 
+  void _mostrarDetalhes(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(musica.nome),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: musica.videos.map((v) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    v.nome,
+                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    v.linkVideo,
+                    style: const TextStyle(fontSize: 12, color: Colors.blue),
+                  ),
+                ],
+              ),
+            )).toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Fechar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
     final media = musica.mediaAvaliacao;
     final estrelasPreenchidas = media != null ? media.round() : 0;
+    final temVideos = musica.videos.isNotEmpty;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 24,
-            child: Text(
-              '${musica.posicao}.',
-              style: TextStyle(
-                fontSize: 12,
-                color: cores.textoFraco,
-                fontWeight: FontWeight.w600,
+    return InkWell(
+      onTap: temVideos ? () => _mostrarDetalhes(context) : null,
+      borderRadius: BorderRadius.circular(4),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 24,
+              child: Text(
+                '${musica.posicao}.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: cores.textoFraco,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 4),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        musica.nome,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+            const SizedBox(width: 4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          musica.nome,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                    ),
-                    if (musica.totalAvaliadores > 0)
-                      Text(
-                        '(${musica.totalAvaliadores})',
-                        style: TextStyle(fontSize: 11, color: cores.textoFraco),
-                      ),
-                  ],
-                ),
-                if (musica.nomeArtista.isNotEmpty)
-                  Text(
-                    musica.nomeArtista,
-                    style: TextStyle(fontSize: 12, color: cores.textoFraco),
+                      if (musica.totalAvaliadores > 0)
+                        Text(
+                          '(${musica.totalAvaliadores})',
+                          style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                        ),
+                    ],
                   ),
-              ],
+                  if (musica.nomeArtista.isNotEmpty)
+                    Text(
+                      musica.nomeArtista,
+                      style: TextStyle(fontSize: 12, color: cores.textoFraco),
+                    ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(5, (i) {
-              final preenchida = i < estrelasPreenchidas;
-              return Icon(
-                preenchida ? Icons.star : Icons.star_border,
-                size: 18,
-                color: media == null
-                    ? cores.textoFraco.withValues(alpha: 0.4)
-                    : preenchida
-                        ? Colors.amber
-                        : cores.textoFraco,
-              );
-            }),
-          ),
-        ],
+            const SizedBox(width: 8),
+            if (temVideos)
+              Padding(
+                padding: const EdgeInsets.only(right: 4),
+                child: Icon(Icons.play_circle_outline, size: 18, color: cores.textoFraco),
+              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(5, (i) {
+                final preenchida = i < estrelasPreenchidas;
+                return Icon(
+                  preenchida ? Icons.star : Icons.star_border,
+                  size: 18,
+                  color: media == null
+                      ? cores.textoFraco.withValues(alpha: 0.4)
+                      : preenchida
+                          ? Colors.amber
+                          : cores.textoFraco,
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

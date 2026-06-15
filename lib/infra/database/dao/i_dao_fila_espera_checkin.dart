@@ -10,4 +10,5 @@ abstract class IDAOFilaEsperaCheckin {
   );
   Future<void> sairDaFila(int id);
   Future<int> contarNaFila(int turmaId, DateTime data);
+  Future<List<String>> buscarNomesNaFila(int turmaId, DateTime data);
 }

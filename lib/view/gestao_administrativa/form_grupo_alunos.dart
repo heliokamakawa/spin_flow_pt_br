@@ -199,13 +199,39 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
       builder: (state) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Alunos do grupo *',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: state.hasError
-                  ? Theme.of(context).colorScheme.error
-                  : Theme.of(context).hintColor,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Alunos do grupo *',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: state.hasError
+                        ? Theme.of(context).colorScheme.error
+                        : Theme.of(context).hintColor,
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: _carregarAlunos,
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.refresh, size: 14, color: Theme.of(context).hintColor),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Recarregar',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).hintColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 4),
           CampoBuscaMultipla<Aluno>(

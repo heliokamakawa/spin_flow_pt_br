@@ -91,6 +91,22 @@ class DAOFilaEsperaCheckinSQLite implements IDAOFilaEsperaCheckin {
     return (result.first['total'] as int?) ?? 0;
   }
 
+  @override
+  Future<List<String>> buscarNomesNaFila(int turmaId, DateTime data) async {
+    final db = await ConexaoSQLite.database;
+    final maps = await db.rawQuery(
+      '''
+      SELECT u.nome
+      FROM fila_espera_checkin f
+      LEFT JOIN usuario u ON u.aluno_id = f.aluno_id
+      WHERE f.turma_id = ? AND f.ativo = 1 AND substr(f.data, 1, 10) = ?
+      ORDER BY f.criado_em ASC
+      ''',
+      [turmaId, _chave(data)],
+    );
+    return maps.map((m) => (m['nome'] as String?) ?? '—').toList();
+  }
+
   FilaEsperaCheckin _mapear(Map<String, dynamic> m) =>
       FilaEsperaCheckin(
         id: m['id'] as int?,

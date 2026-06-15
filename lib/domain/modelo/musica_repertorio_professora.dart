@@ -1,10 +1,13 @@
+import 'package:spin_flow/domain/modelo/video_aula.dart';
+
 class MusicaRepertorioProfessora {
   final int musicaId;
   final int posicao;
   final String nome;
   final String nomeArtista;
-  final double? mediaAvaliacao; // null = nenhuma avaliação ainda
+  final double? mediaAvaliacao;
   final int totalAvaliadores;
+  final List<VideoAula> videos;
 
   const MusicaRepertorioProfessora({
     required this.musicaId,
@@ -13,5 +16,6 @@ class MusicaRepertorioProfessora {
     required this.nomeArtista,
     this.mediaAvaliacao,
     this.totalAvaliadores = 0,
+    this.videos = const [],
   });
 }

@@ -194,6 +194,9 @@ class RepositorioCheckinAluno {
     final meuCheckin  = checkins.where((c) => c.alunoId == alunoId).firstOrNull;
     final posicaoFila = await _daoFila.buscarPosicaoNaFila(alunoId, turmaId, dataHoje);
     final filaId      = await _daoFila.buscarIdDoAluno(alunoId, turmaId, dataHoje);
+    final totalNaFila = mapa.lotada
+        ? await _daoFila.contarNaFila(turmaId, dataHoje)
+        : 0;
 
     MixCheckin? mix = await _daoMix.buscarMixDaTurma(turmaId);
     if (mix != null && mix.musicas.isNotEmpty) {
@@ -225,6 +228,7 @@ class RepositorioCheckinAluno {
           ? nomesProfessoras[turma.professoraId]
           : null,
       mix: mix,
+      totalNaFila: totalNaFila,
     );
   }
 
@@ -271,6 +275,12 @@ class RepositorioCheckinAluno {
   }
 
   Future<void> sairDaFila(int filaId) => _daoFila.sairDaFila(filaId);
+
+  Future<List<String>> buscarNomesNaFila(int turmaId) {
+    final agora = DateTime.now();
+    final hoje = DateTime(agora.year, agora.month, agora.day);
+    return _daoFila.buscarNomesNaFila(turmaId, hoje);
+  }
 
   Future<void> avaliarMusica(int alunoId, int musicaId, int nota) =>
       _daoAvaliacao.salvar(alunoId, musicaId, nota);

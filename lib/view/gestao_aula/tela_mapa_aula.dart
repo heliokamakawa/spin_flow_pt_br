@@ -31,6 +31,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
   EstadoMapaAula? _estado;
   List<TipoManutencao> _tipos = [];
   List<Mix> _mixes = [];
+  double? _idadeMedia;
   bool _carregando = true;
   String? _erro;
 
@@ -46,16 +47,20 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
       _erro = null;
     });
     try {
+      final hoje = DateTime.now();
+      final data = DateTime(hoje.year, hoje.month, hoje.day);
       final results = await Future.wait([
         _controlador.carregarMapa(widget.turmaId),
         _controlador.listarTiposManutencao(),
         _controlador.listarMixes(),
+        _controlador.calcularIdadeMediaTurma(widget.turmaId, data),
       ]);
       if (!mounted) return;
       setState(() {
-        _estado = results[0] as EstadoMapaAula;
-        _tipos  = results[1] as List<TipoManutencao>;
-        _mixes  = results[2] as List<Mix>;
+        _estado     = results[0] as EstadoMapaAula;
+        _tipos      = results[1] as List<TipoManutencao>;
+        _mixes      = results[2] as List<Mix>;
+        _idadeMedia = results[3] as double?;
         _carregando = false;
       });
     } catch (e) {
@@ -289,6 +294,22 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     );
   }
 
+  Widget _buildIdadeMedia() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      child: Row(
+        children: [
+          const Icon(Icons.people_outline, size: 16, color: Colors.grey),
+          const SizedBox(width: 6),
+          Text(
+            'Idade média: ${_idadeMedia!.round()} anos',
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildConteudo() {
     final estado = _estado!;
     final sala = estado.sala;
@@ -299,6 +320,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
       children: [
         _buildLegenda(),
         _buildSeletorMix(),
+        if (_idadeMedia != null) _buildIdadeMedia(),
         Expanded(
           child: GridView.builder(
             padding: const EdgeInsets.all(12),
@@ -326,7 +348,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
       return _Celula(
         cor: cores.bikeProfessora,
         label: 'Profa',
-        subLabel: 'F${fila + 1}C${coluna + 1}',
+        subLabel: '',
         onTap: null,
       );
     }
@@ -336,7 +358,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
       return _Celula(
         cor: cores.textoFraco.withValues(alpha: 0.18),
         label: '—',
-        subLabel: 'F${fila + 1}C${coluna + 1}',
+        subLabel: '',
         onTap: null,
         textEscuro: true,
       );
@@ -356,7 +378,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
       return _Celula(
         cor: cores.bikeOcupada,
         label: checkin.nomeAluno,
-        subLabel: 'F${fila + 1}C${coluna + 1}',
+        subLabel: posicao.bikeNome,
         onTap: () => _confirmarCancelamento(checkin),
       );
     }
@@ -364,7 +386,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
     return _Celula(
       cor: cores.bikeLivre,
       label: posicao.bikeNome,
-      subLabel: 'F${fila + 1}C${coluna + 1}',
+      subLabel: '',
       onTap: () => _abrirModalManutencao(posicao),
       textEscuro: true,
       borda: true,
@@ -429,15 +451,17 @@ class _Celula extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              subLabel,
-              style: TextStyle(
-                color: corTexto,
-                fontSize: 9,
-                fontWeight: FontWeight.w600,
+            if (subLabel.isNotEmpty) ...[
+              Text(
+                subLabel,
+                style: TextStyle(
+                  color: corTexto,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
+              const SizedBox(height: 2),
+            ],
             Text(
               label,
               maxLines: 2,

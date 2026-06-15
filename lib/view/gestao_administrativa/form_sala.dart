@@ -255,7 +255,7 @@ class _FormSalaState extends State<FormSala> {
         Row(
           children: [
             Expanded(
-              child: _buildCampoNumero(_filaProf, 'Fila *', min: 1, max: 99),
+              child: _buildCampoNumero(_filaProf, 'Fila *', min: 1, max: _filas),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -263,7 +263,7 @@ class _FormSalaState extends State<FormSala> {
                 _colunaProf,
                 'Coluna *',
                 min: 1,
-                max: 99,
+                max: _colunas,
               ),
             ),
           ],

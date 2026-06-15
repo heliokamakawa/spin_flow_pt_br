@@ -67,6 +67,19 @@ Exibido abaixo da grade. Atualiza ao tocar uma bike.
 
 ---
 
+## Painel de fila de espera
+
+Exibido **abaixo do botão de ação**, somente quando a turma está `lotada` e `totalNaFila > 0`.
+
+- Cabeçalho: ícone `people_outline` + "Fila de espera · N pessoa(s)" em cor `alerta`
+- Seta `expand_more` / `expand_less` indica estado de expansão
+- Ao tocar: expande e carrega os nomes da fila sob demanda (lazy load)
+- Lista exibida com posição (1, 2, 3…) + nome do aluno, ordenada por ordem de entrada
+- Enquanto carrega: `CircularProgressIndicator` compacto
+- Nomes são cacheados localmente — recarregar o mapa limpa o cache
+
+---
+
 ## Botão de ação principal (largura total, abaixo do mix)
 
 | Condição (prioridade)          | Texto do botão                  | Ativo? | Cor     |

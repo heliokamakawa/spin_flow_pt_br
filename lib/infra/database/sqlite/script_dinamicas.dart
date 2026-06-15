@@ -1,7 +1,6 @@
 class ScriptDinamicasSQLite {
   static List<String> comandosInsercoes(DateTime agora) {
     final hoje = DateTime(agora.year, agora.month, agora.day);
-    final ontem = hoje.subtract(const Duration(days: 1));
     final amanha = hoje.add(const Duration(days: 1));
 
     // Cenario 1: janela ainda nao abriu, pois a aula inicia em 31 minutos.
@@ -16,7 +15,6 @@ class ScriptDinamicasSQLite {
     final horarioLotada = _formatarHora(horaAulaLotada);
 
     final hojeIso = hoje.toIso8601String();
-    final ontemIso = ontem.toIso8601String();
     final criadoFila = agora
         .subtract(const Duration(minutes: 5))
         .toIso8601String();
@@ -39,7 +37,7 @@ class ScriptDinamicasSQLite {
       "INSERT INTO turma_dia_semana (turma_id, dia_semana) VALUES ((SELECT id FROM turma WHERE nome = '$nomeTurmaLotada' ORDER BY id DESC LIMIT 1), '$diaAmanha')",
 
       // Power Ride Check-in Hoje: varios alunos com check-in feito e vagas restantes.
-      "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (1, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$ontemIso', 1, 0, 1)",
+      // aluna@gmail.com (aluno_id=1) nao tem check-in aqui e aparece como disponivel.
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (2, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 0, 0, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (3, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 2, 2, 1)",
       "INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) VALUES (4, (SELECT id FROM turma WHERE nome = '$nomeTurmaCheckin' ORDER BY id DESC LIMIT 1), '$hojeIso', 1, 0, 1)",

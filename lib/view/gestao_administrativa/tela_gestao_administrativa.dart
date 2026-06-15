@@ -1,13 +1,19 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
+import 'form_bike.dart';
+import 'form_fabricante.dart';
 import 'form_manutencao.dart';
+import 'form_tipo_manutencao.dart';
 import 'form_grupo_alunos.dart';
 import 'form_sala.dart';
 import 'form_turma.dart';
+import 'lista_bikes.dart';
+import 'lista_fabricantes.dart';
 import 'lista_grupos_alunos.dart';
 import 'lista_manutencoes.dart';
 import 'lista_salas.dart';
+import 'lista_tipo_manutencao.dart';
 import 'lista_turmas.dart';
 import '../gestao_aula/form_aluno.dart';
 import 'package:spin_flow/view/gestao_aula/lista_alunos.dart';
@@ -30,6 +36,26 @@ class TelaGestaoAdministrativa extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           _ItemGestao(
+            icone: Icons.directions_bike,
+            titulo: 'Bikes',
+            onCadastro: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const FormBike())),
+            onLista: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const ListaBikes())),
+          ),
+          _ItemGestao(
+            icone: Icons.precision_manufacturing,
+            titulo: 'Fabricantes',
+            onCadastro: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const FormFabricante())),
+            onLista: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const ListaFabricantes())),
+          ),
+          _ItemGestao(
             icone: Icons.person,
             titulo: 'Alunos',
             onCadastro: () => Navigator.of(
@@ -48,6 +74,16 @@ class TelaGestaoAdministrativa extends StatelessWidget {
             onLista: () => Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const ListaManutencoes())),
+          ),
+          _ItemGestao(
+            icone: Icons.category,
+            titulo: 'Tipos de Manutenção',
+            onCadastro: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const FormTipoManutencao()),
+            ),
+            onLista: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ListaTipoManutencao()),
+            ),
           ),
           _ItemGestao(
             icone: Icons.meeting_room,

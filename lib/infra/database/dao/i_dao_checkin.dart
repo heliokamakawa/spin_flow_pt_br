@@ -1,4 +1,6 @@
 import 'package:spin_flow/domain/modelo/checkin.dart';
+import 'package:spin_flow/domain/modelo/frequencia_aluno.dart';
+import 'package:spin_flow/domain/modelo/turma_aluno.dart';
 
 abstract class IDAOCheckin {
   Future<List<Checkin>> buscarAtivosPorTurmaData(
@@ -18,4 +20,15 @@ abstract class IDAOCheckin {
     DateTime data,
   );
   Future<void> cancelar(int id);
+  Future<List<FrequenciaAluno>> buscarFrequenciaPorTurma(
+    int turmaId,
+    DateTime inicio,
+    DateTime fim,
+  );
+  Future<List<FrequenciaAluno>> buscarAlunosPorProfessora(int professoraId);
+  Future<List<TurmaAluno>> buscarTurmasFrequentadasPorAluno(
+    int alunoId,
+    int professoraId,
+  );
+  Future<double?> calcularIdadeMediaTurma(int turmaId, DateTime data);
 }

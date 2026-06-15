@@ -110,6 +110,7 @@ class MapaCheckinAluno {
   final int? filaId;
   final String? nomeProfessora;
   final MixCheckin? mix;
+  final int totalNaFila;
 
   const MapaCheckinAluno({
     required this.mapa,
@@ -120,6 +121,7 @@ class MapaCheckinAluno {
     this.filaId,
     this.nomeProfessora,
     this.mix,
+    this.totalNaFila = 0,
   });
 
   bool get lotada => mapa.lotada;

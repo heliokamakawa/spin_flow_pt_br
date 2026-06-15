@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:spin_flow/controller/controlador_operacao_aula.dart';
 import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
+import 'package:spin_flow/view/componentes/cores_app.dart';
+import 'painel_frequencia_professora.dart';
 import 'tela_mapa_aula.dart';
 
 class TelaOperacaoAula extends StatefulWidget {
@@ -43,8 +45,25 @@ class _TelaOperacaoAulaState extends State<TelaOperacaoAula> {
     }
   }
 
+  void _abrirPainelFrequencia() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const TelaPainelFrequenciaProfessora(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(child: _buildConteudo()),
+        _buildPainelBotoes(),
+      ],
+    );
+  }
+
+  Widget _buildConteudo() {
     if (_carregando) return const Center(child: CircularProgressIndicator());
 
     if (_erro != null) {
@@ -103,6 +122,28 @@ class _TelaOperacaoAulaState extends State<TelaOperacaoAula> {
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPainelBotoes() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: CoresApp.superficie,
+        border: Border(top: BorderSide(color: CoresApp.borda)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: _abrirPainelFrequencia,
+          icon: const Icon(Icons.bar_chart),
+          label: const Text('Painel de Frequência'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: CoresApp.primaria,
+            side: const BorderSide(color: CoresApp.primaria),
+          ),
         ),
       ),
     );

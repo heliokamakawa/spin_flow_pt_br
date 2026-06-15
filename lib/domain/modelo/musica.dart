@@ -19,7 +19,6 @@ class Musica {
 
   String? validar() {
     if (nome.trim().isEmpty) return 'Nome é obrigatório.';
-    if (descricao.trim().isEmpty) return 'Descrição é obrigatória.';
     if (artistaId == null) return 'Artista é obrigatório.';
     return null;
   }

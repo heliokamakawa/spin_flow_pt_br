@@ -13,6 +13,14 @@ class DAOTipoManutencaoSQLite implements IDAOTipoManutencao {
   }
 
   @override
+  Future<TipoManutencao?> buscarPorId(int id) async {
+    final db = await ConexaoSQLite.database;
+    final maps = await db.query(_tabela, where: 'id = ?', whereArgs: [id], limit: 1);
+    if (maps.isEmpty) return null;
+    return _mapear(maps.first);
+  }
+
+  @override
   Future<void> salvar(TipoManutencao tipo) async {
     final db = await ConexaoSQLite.database;
     final dados = {

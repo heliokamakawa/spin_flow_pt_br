@@ -5,6 +5,7 @@ import 'package:spin_flow/domain/modelo/mix_checkin.dart';
 import 'package:spin_flow/domain/modelo/mix_repertorio_professora.dart';
 import 'package:spin_flow/domain/modelo/musica_checkin.dart';
 import 'package:spin_flow/domain/modelo/musica_repertorio_professora.dart';
+import 'package:spin_flow/domain/modelo/video_aula.dart';
 
 class DAOMixSQLite implements IDAOMix {
   static const _tabela = 'mix';
@@ -131,15 +132,38 @@ class DAOMixSQLite implements IDAOMix {
       [mixId],
     );
 
+    final videoRows = await db.rawQuery(
+      '''
+      SELECT mva.musica_id, va.id AS va_id, va.nome AS va_nome, va.link_video
+      FROM musica_video_aula mva
+      JOIN video_aula va ON va.id = mva.video_aula_id AND va.ativo = 1
+      WHERE mva.musica_id IN (SELECT musica_id FROM mix_musica WHERE mix_id = ?)
+        AND (va.link_video LIKE 'http://%' OR va.link_video LIKE 'https://%')
+      ORDER BY mva.musica_id, va.nome
+      ''',
+      [mixId],
+    );
+    final Map<int, List<VideoAula>> videosPorMusica = {};
+    for (final vr in videoRows) {
+      final mId = vr['musica_id'] as int;
+      videosPorMusica.putIfAbsent(mId, () => []).add(VideoAula(
+        id: vr['va_id'] as int?,
+        nome: vr['va_nome'] as String,
+        linkVideo: vr['link_video'] as String,
+      ));
+    }
+
     final musicas = musicaRows.map((r) {
       final media = r['media_avaliacao'];
+      final musicaId = r['musica_id'] as int;
       return MusicaRepertorioProfessora(
-        musicaId: r['musica_id'] as int,
+        musicaId: musicaId,
         posicao: r['posicao'] as int,
         nome: r['musica_nome'] as String,
         nomeArtista: r['artista_nome'] as String,
         mediaAvaliacao: media != null ? (media as num).toDouble() : null,
         totalAvaliadores: (r['total_avaliadores'] as int?) ?? 0,
+        videos: videosPorMusica[musicaId] ?? [],
       );
     }).toList();
 

@@ -11,8 +11,34 @@ class ControladorAluno {
   Future<ResultadoOperacao> salvar(DominioAluno dominio) async {
     final erro = dominio.validar();
     if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    await _repositorio.salvar(dominio.modelo);
-    return const ResultadoOperacao.sucesso();
+
+    final existenteCpf = await _repositorio.buscarPorCpf(dominio.modelo.cpf);
+    if (existenteCpf != null && existenteCpf.id != dominio.modelo.id) {
+      return const ResultadoOperacao.falha(
+        mensagemErro: 'CPF já cadastrado para outro aluno.',
+      );
+    }
+
+    final existenteEmail =
+        await _repositorio.buscarPorEmail(dominio.modelo.email);
+    if (existenteEmail != null && existenteEmail.id != dominio.modelo.id) {
+      return const ResultadoOperacao.falha(
+        mensagemErro: 'E-mail já cadastrado para outro aluno.',
+      );
+    }
+
+    try {
+      await _repositorio.salvar(dominio.modelo);
+      return const ResultadoOperacao.sucesso();
+    } catch (e) {
+      final msg = e.toString();
+      if (msg.contains('UNIQUE') || msg.contains('unique')) {
+        return const ResultadoOperacao.falha(
+          mensagemErro: 'CPF ou e-mail já cadastrado.',
+        );
+      }
+      return ResultadoOperacao.falha(mensagemErro: msg);
+    }
   }
 
   Future<ResultadoOperacao> excluir(int id) async {

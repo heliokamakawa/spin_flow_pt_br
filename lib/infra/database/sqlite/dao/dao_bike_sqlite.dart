@@ -26,7 +26,18 @@ class DAOBikeSQLite implements IDAOBike {
   }
 
   @override
-  Future<void> salvar(Bike bike) async {
+  Future<Bike?> buscarPorNome(String nome) async {
+    final db = await ConexaoSQLite.database;
+    final maps = await db.rawQuery(
+      'SELECT * FROM $_tabela WHERE LOWER(nome) = LOWER(?) LIMIT 1',
+      [nome.trim()],
+    );
+    if (maps.isEmpty) return null;
+    return _mapear(maps.first);
+  }
+
+  @override
+  Future<int> salvar(Bike bike) async {
     final db = await ConexaoSQLite.database;
     final dados = {
       'nome': bike.nome,
@@ -37,8 +48,9 @@ class DAOBikeSQLite implements IDAOBike {
     };
     if (bike.id != null) {
       await db.update(_tabela, dados, where: 'id = ?', whereArgs: [bike.id]);
+      return bike.id!;
     } else {
-      await db.insert(_tabela, dados);
+      return await db.insert(_tabela, dados);
     }
   }
 
@@ -49,13 +61,13 @@ class DAOBikeSQLite implements IDAOBike {
   }
 
   Bike _mapear(Map<String, dynamic> map) => Bike(
-    id: map['id'] as int?,
-    nome: (map['nome'] as String?) ?? '',
-    numeroSerie: (map['numero_serie'] as String?) ?? '',
-    fabricanteId: (map['fabricante_id'] as int?) ?? 0,
-    dataCadastro:
-        DateTime.tryParse((map['data_cadastro'] as String?) ?? '') ??
-        DateTime.now(),
-    ativa: ((map['ativa'] as int?) ?? 1) == 1,
-  );
+        id: map['id'] as int?,
+        nome: (map['nome'] as String?) ?? '',
+        numeroSerie: (map['numero_serie'] as String?) ?? '',
+        fabricanteId: (map['fabricante_id'] as int?) ?? 0,
+        dataCadastro:
+            DateTime.tryParse((map['data_cadastro'] as String?) ?? '') ??
+                DateTime.now(),
+        ativa: ((map['ativa'] as int?) ?? 1) == 1,
+      );
 }

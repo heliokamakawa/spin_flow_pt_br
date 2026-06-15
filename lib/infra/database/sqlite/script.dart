@@ -45,7 +45,7 @@ class ScriptSQLite {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       data_nascimento TEXT NOT NULL,
       genero TEXT NOT NULL,
-      telefone TEXT NOT NULL,
+      telefone TEXT,
       url_foto TEXT,
       instagram TEXT,
       facebook TEXT,
@@ -404,30 +404,30 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesUsuario = [
-    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Ana Beatriz', 'professora@gmail.com', '11122233344', '123', 1, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Marina Torres', 'marina.torres@pulsestudio.com.br', '22233344455', '123', 2, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Paula Nogueira', 'paula.nogueira@pulsestudio.com.br', '33344455566', '123', 3, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Ricardo Mendes', 'ricardo.mendes@pulsestudio.com.br', '44455566677', '123', 4, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Ana Clara Almeida', 'aluna@gmail.com', '55566677788', '123', 1, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Fernanda Lima', 'fernanda.lima@email.com', '55566677789', '123', 2, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Roberto Gomes', 'roberto.gomes@email.com', '55566677790', '123', 3, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Juliana Martins', 'juliana.martins@email.com', '55566677791', '123', 4, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Patricia Souza', 'patricia.souza@email.com', '55566677792', '123', 5, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Lucas Oliveira', 'lucas.oliveira@email.com', '55566677793', '123', 6, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Mariana Costa', 'mariana.costa@email.com', '55566677794', '123', 7, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Diego Matos', 'diego.matos@email.com', '55566677795', '123', 8, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Camila Teixeira', 'camila.teixeira@email.com', '55566677796', '123', 9, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Rafael Monteiro', 'rafael.monteiro@email.com', '55566677797', '123', 10, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Joao Santos', 'joao.santos@email.com', '55566677798', '123', 11, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Bruna Andrade', 'bruna.andrade@email.com', '55566677799', '123', 12, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Elaine Cardoso', 'elaine.cardoso@email.com', '55566677800', '123', 13, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Igor Pacheco', 'igor.pacheco@email.com', '55566677801', '123', 14, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Larissa Melo', 'larissa.melo@email.com', '55566677802', '123', 15, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Maria Costa', 'maria.costa@email.com', '55566677803', '123', 16, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Carlos Pereira', 'carlos.pereira@email.com', '55566677804', '123', 17, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Ana Ribeiro', 'ana.ribeiro@email.com', '55566677805', '123', 18, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Pedro Lima', 'pedro.lima@email.com', '55566677806', '123', 19, 1)",
-    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Sabrina Duarte', 'sabrina.duarte@email.com', '55566677807', '123', 20, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, aluno_id, ativo) VALUES ('Ana Beatriz', 'professora@gmail.com', '52998224725', '123', 1, 21, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Marina Torres', 'marina.torres@pulsestudio.com.br', '11144477735', '123', 2, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Paula Nogueira', 'paula.nogueira@pulsestudio.com.br', '12345678909', '123', 3, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, professora_id, ativo) VALUES ('Ricardo Mendes', 'ricardo.mendes@pulsestudio.com.br', '10010010017', '123', 4, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Ana Clara Almeida', 'aluna@gmail.com', '20020020023', '123', 1, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Fernanda Lima', 'fernanda.lima@email.com', '30030030030', '123', 2, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Roberto Gomes', 'roberto.gomes@email.com', '40040040046', '123', 3, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Juliana Martins', 'juliana.martins@email.com', '50050050052', '123', 4, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Patricia Souza', 'patricia.souza@email.com', '60060060069', '123', 5, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Lucas Oliveira', 'lucas.oliveira@email.com', '70070070075', '123', 6, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Mariana Costa', 'mariana.costa@email.com', '80080080081', '123', 7, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Diego Matos', 'diego.matos@email.com', '90090090098', '123', 8, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Camila Teixeira', 'camila.teixeira@email.com', '12012012094', '123', 9, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Rafael Monteiro', 'rafael.monteiro@email.com', '23023023034', '123', 10, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Joao Santos', 'joao.santos@email.com', '34034034084', '123', 11, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Bruna Andrade', 'bruna.andrade@email.com', '45045045024', '123', 12, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Elaine Cardoso', 'elaine.cardoso@email.com', '56056056074', '123', 13, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Igor Pacheco', 'igor.pacheco@email.com', '67067067014', '123', 14, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Larissa Melo', 'larissa.melo@email.com', '78078078064', '123', 15, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Maria Costa', 'maria.costa@email.com', '89089089004', '123', 16, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Carlos Pereira', 'carlos.pereira@email.com', '11223344517', '123', 17, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Ana Ribeiro', 'ana.ribeiro@email.com', '22334455628', '123', 18, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Pedro Lima', 'pedro.lima@email.com', '33445566739', '123', 19, 1)",
+    "INSERT INTO usuario (nome, email, cpf, senha, aluno_id, ativo) VALUES ('Sabrina Duarte', 'sabrina.duarte@email.com', '44556677840', '123', 20, 1)",
   ];
 
   static const List<String> _insercoesSala = [
@@ -806,10 +806,10 @@ class ScriptSQLite {
   ];
 
   static const List<String> _insercoesTurma = [
-    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, mix_id, ativo) VALUES ('Power Ride Manha 07h', '07:00', 50, 1, 1, 1)",
-    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, mix_id, ativo) VALUES ('Cadencia Manha 09h', '09:00', 50, 1, 4, 1)",
-    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, mix_id, ativo) VALUES ('Endurance Tarde 15h', '15:00', 50, 2, 3, 1)",
-    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, mix_id, ativo) VALUES ('Sprint Tarde 18h30', '18:30', 45, 2, 2, 1)",
+    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, professora_id, mix_id, ativo) VALUES ('Power Ride Manha 07h', '07:00', 50, 1, (SELECT professora_id FROM usuario WHERE LOWER(email) = 'professora@gmail.com' LIMIT 1), 1, 1)",
+    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, professora_id, mix_id, ativo) VALUES ('Cadencia Manha 09h', '09:00', 50, 1, (SELECT professora_id FROM usuario WHERE LOWER(email) = 'marina.torres@pulsestudio.com.br' LIMIT 1), 4, 1)",
+    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, professora_id, mix_id, ativo) VALUES ('Endurance Tarde 15h', '15:00', 50, 2, (SELECT professora_id FROM usuario WHERE LOWER(email) = 'marina.torres@pulsestudio.com.br' LIMIT 1), 3, 1)",
+    "INSERT INTO turma (nome, horario_inicio, duracao_minutos, sala_id, professora_id, mix_id, ativo) VALUES ('Sprint Tarde 18h30', '18:30', 45, 2, (SELECT professora_id FROM usuario WHERE LOWER(email) = 'professora@gmail.com' LIMIT 1), 2, 1)",
   ];
 
   static const List<String> _insercoesTurmaDiaSemana = [
@@ -962,6 +962,63 @@ class ScriptSQLite {
   static const List<String> _insercoesCheckin = [];
 
   static const List<String> _insercoesFilaEspera = [];
+
+  // Mapeamento fixo de aluno_id → posição na sala (3x6).
+  // Posição (0,2) é da professora; as 17 restantes são dos alunos.
+  // Alunos 1–5  → fila 0 (cols 0,1,3,4,5)
+  // Alunos 6–11 → fila 1 (cols 0–5)
+  // Alunos 12–17→ fila 2 (cols 0–5)
+  static const _casoFila =
+      'CASE id '
+      'WHEN 1 THEN 0 WHEN 2 THEN 0 WHEN 3 THEN 0 WHEN 4 THEN 0 WHEN 5 THEN 0 '
+      'WHEN 6 THEN 1 WHEN 7 THEN 1 WHEN 8 THEN 1 WHEN 9 THEN 1 WHEN 10 THEN 1 WHEN 11 THEN 1 '
+      'ELSE 2 END';
+
+  static const _casoColuna =
+      'CASE id '
+      'WHEN 1 THEN 0 WHEN 2 THEN 1 WHEN 3 THEN 3 WHEN 4 THEN 4 WHEN 5 THEN 5 '
+      'WHEN 6 THEN 0 WHEN 7 THEN 1 WHEN 8 THEN 2 WHEN 9 THEN 3 WHEN 10 THEN 4 WHEN 11 THEN 5 '
+      'WHEN 12 THEN 0 WHEN 13 THEN 1 WHEN 14 THEN 2 WHEN 15 THEN 3 WHEN 16 THEN 4 ELSE 5 END';
+
+  // Gera checkins históricos para as turmas estáticas (maio 2026).
+  // Cobre os mesmos períodos dos registros de aula_realizada do seed.
+  // professora@gmail.com   → Power Ride Manha 07h, Sprint Tarde 18h30
+  // marina.torres          → Cadencia Manha 09h, Endurance Tarde 15h
+  static List<String> get insercoesCheckinHistorico {
+    String ci(String turma, String dataIso) =>
+        'INSERT INTO checkin (aluno_id, turma_id, data, fila, coluna, ativo) '
+        "SELECT id, (SELECT id FROM turma WHERE nome = '$turma' LIMIT 1), "
+        "'$dataIso', $_casoFila, $_casoColuna, 1 "
+        'FROM aluno WHERE id BETWEEN 1 AND 17';
+
+    const pr = 'Power Ride Manha 07h';
+    const ca = 'Cadencia Manha 09h';
+    const en = 'Endurance Tarde 15h';
+    const sp = 'Sprint Tarde 18h30';
+
+    return [
+      // Power Ride — 13 aulas (Seg/Qua/Sex de maio 2026)
+      ci(pr, '2026-05-01T07:00:00'), ci(pr, '2026-05-04T07:00:00'),
+      ci(pr, '2026-05-06T07:00:00'), ci(pr, '2026-05-08T07:00:00'),
+      ci(pr, '2026-05-11T07:00:00'), ci(pr, '2026-05-13T07:00:00'),
+      ci(pr, '2026-05-15T07:00:00'), ci(pr, '2026-05-18T07:00:00'),
+      ci(pr, '2026-05-20T07:00:00'), ci(pr, '2026-05-22T07:00:00'),
+      ci(pr, '2026-05-25T07:00:00'), ci(pr, '2026-05-27T07:00:00'),
+      ci(pr, '2026-05-29T07:00:00'),
+      // Cadencia — 2 aulas (Ter/Qui de maio 2026)
+      ci(ca, '2026-05-02T09:00:00'), ci(ca, '2026-05-09T09:00:00'),
+      // Endurance — 8 aulas (Ter/Qui de maio 2026)
+      ci(en, '2026-05-05T15:00:00'), ci(en, '2026-05-07T15:00:00'),
+      ci(en, '2026-05-12T15:00:00'), ci(en, '2026-05-14T15:00:00'),
+      ci(en, '2026-05-19T15:00:00'), ci(en, '2026-05-21T15:00:00'),
+      ci(en, '2026-05-26T15:00:00'), ci(en, '2026-05-28T15:00:00'),
+      // Sprint — 7 aulas (Seg/Qua/Sex de maio 2026)
+      ci(sp, '2026-05-01T18:30:00'), ci(sp, '2026-05-04T18:30:00'),
+      ci(sp, '2026-05-06T18:30:00'), ci(sp, '2026-05-08T18:30:00'),
+      ci(sp, '2026-05-11T18:30:00'), ci(sp, '2026-05-13T18:30:00'),
+      ci(sp, '2026-05-15T18:30:00'),
+    ];
+  }
 
   static const List<String> comandosGarantirMixDezMusicas = [
     ..._insercoesMixMusicaPowerRide,

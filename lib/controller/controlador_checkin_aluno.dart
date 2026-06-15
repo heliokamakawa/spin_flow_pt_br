@@ -107,4 +107,7 @@ class ControladorCheckinAluno {
 
   Future<MixCheckin?> buscarMixComAvaliacoes(int mixId, int alunoId) =>
       _repositorio.buscarMixComAvaliacoes(mixId, alunoId);
+
+  Future<List<String>> buscarNomesNaFila(int turmaId) =>
+      _repositorio.buscarNomesNaFila(turmaId);
 }
