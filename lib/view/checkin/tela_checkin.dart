@@ -413,12 +413,12 @@ class _CabecalhoAula extends StatelessWidget {
                 if (dados.nomeProfessora != null) dados.nomeProfessora!,
                 '${turma.horarioInicio} · ${turma.duracaoMinutos} min',
               ].join(' · '),
-              style: TextStyle(fontSize: 13, color: cores.textoSuave),
+              style: TextStyle(fontSize: 14, color: cores.textoSuave),
             ),
             if (dias.isNotEmpty)
               Text(
                 dias,
-                style: TextStyle(fontSize: 12, color: cores.textoFraco),
+                style: TextStyle(fontSize: 13, color: cores.textoFraco),
               ),
             const SizedBox(height: 6),
             _ResumoBikes(dados: dados),
@@ -450,7 +450,7 @@ class _ResumoBikes extends StatelessWidget {
 
     return Text(
       partes.join(' · '),
-      style: TextStyle(fontSize: 12, color: cores.textoFraco),
+      style: TextStyle(fontSize: 13, color: cores.textoFraco),
     );
   }
 }
@@ -502,7 +502,7 @@ class _ItemLegenda extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4),
-        Text(texto, style: const TextStyle(fontSize: 10)),
+        Text(texto, style: const TextStyle(fontSize: 12)),
       ],
     );
   }
@@ -730,14 +730,14 @@ class _PainelInfo extends StatelessWidget {
                           Text(
                             textoTitulo,
                             style: const TextStyle(
-                              fontSize: 13,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
                             textoSub,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 13,
                               color: cores.textoSuave,
                             ),
                           ),
@@ -746,7 +746,7 @@ class _PainelInfo extends StatelessWidget {
                     : Text(
                         textoTitulo,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 14,
                           color: titulo == null ? cores.textoFraco : null,
                           fontStyle: titulo == null ? FontStyle.italic : null,
                         ),
@@ -797,7 +797,7 @@ class _BotaoAcao extends StatelessWidget {
             'Você está na fila · posição ${dados.posicaoNaFila}',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 14,
               color: Theme.of(context).extension<CoresSemanticasApp>()!.alerta,
               fontWeight: FontWeight.w600,
             ),
@@ -907,7 +907,7 @@ class _PainelFilaEspera extends StatelessWidget {
                     child: Text(
                       'Fila de espera · $total ${total == 1 ? 'pessoa' : 'pessoas'}',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: cores.alerta,
                       ),
@@ -940,7 +940,7 @@ class _PainelFilaEspera extends StatelessWidget {
                             child: Text(
                               '${e.key + 1}.',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 13,
                                 color: cores.textoSuave,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -949,7 +949,7 @@ class _PainelFilaEspera extends StatelessWidget {
                           Expanded(
                             child: Text(
                               e.value,
-                              style: const TextStyle(fontSize: 13),
+                              style: const TextStyle(fontSize: 14),
                             ),
                           ),
                         ],

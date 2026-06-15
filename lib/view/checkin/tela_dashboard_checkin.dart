@@ -428,7 +428,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: Text(
               'Nenhum mix encontrado nas suas aulas.',
-              style: TextStyle(color: cores.textoFraco, fontSize: 13),
+              style: TextStyle(color: cores.textoFraco, fontSize: 14),
             ),
           )
         else ...[
@@ -510,7 +510,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
             padding: const EdgeInsets.only(top: 12),
             child: Text(
               'Nenhum mix encontrado nas suas aulas.',
-              style: TextStyle(color: cores.textoFraco, fontSize: 13),
+              style: TextStyle(color: cores.textoFraco, fontSize: 14),
             ),
           )
         else ...[
@@ -536,13 +536,13 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
                   m.nome,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: 14,
                   ),
                 ),
                 if (m.nomeArtista.isNotEmpty)
                   Text(
                     m.nomeArtista,
-                    style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                    style: TextStyle(fontSize: 13, color: cores.textoFraco),
                   ),
               ],
             ),
@@ -584,7 +584,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(
           'Nenhuma música avaliada neste mix ainda.',
-          style: TextStyle(color: cores.textoFraco, fontSize: 13),
+          style: TextStyle(color: cores.textoFraco, fontSize: 14),
         ),
       );
     }
@@ -599,7 +599,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(
           'Nenhuma música preferida ainda. Use a aba Avaliação para avaliar.',
-          style: TextStyle(color: cores.textoFraco, fontSize: 13),
+          style: TextStyle(color: cores.textoFraco, fontSize: 14),
         ),
       );
     }
@@ -625,13 +625,13 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
                   m.nome,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: 14,
                   ),
                 ),
                 if (m.nomeArtista.isNotEmpty)
                   Text(
                     m.nomeArtista,
-                    style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                    style: TextStyle(fontSize: 13, color: cores.textoFraco),
                   ),
               ],
             ),
@@ -673,13 +673,13 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
                   m.nome,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: 14,
                   ),
                 ),
                 if (m.nomeArtista.isNotEmpty)
                   Text(
                     m.nomeArtista,
-                    style: TextStyle(fontSize: 11, color: cores.textoFraco),
+                    style: TextStyle(fontSize: 13, color: cores.textoFraco),
                   ),
               ],
             ),
@@ -768,7 +768,7 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
           '$valor',
           style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
         ),
-        Text(label, style: TextStyle(fontSize: 12, color: cores.textoSuave)),
+        Text(label, style: TextStyle(fontSize: 13, color: cores.textoSuave)),
       ],
     );
   }
@@ -829,13 +829,13 @@ class _CardCheckinState extends State<_CardCheckin> {
                       Text(
                         '${turma.horarioInicio} · ${turma.duracaoMinutos} min',
                         style:
-                            TextStyle(fontSize: 13, color: cores.textoSuave),
+                            TextStyle(fontSize: 14, color: cores.textoSuave),
                       ),
                       if (s.nomeProfessora != null)
                         Text(
                           s.nomeProfessora!,
                           style: TextStyle(
-                              fontSize: 12, color: cores.textoFraco),
+                              fontSize: 13, color: cores.textoFraco),
                         ),
                     ],
                   ),
@@ -862,7 +862,7 @@ class _CardCheckinState extends State<_CardCheckin> {
                         child: Text(
                           '${s.bikesEmManutencao} em manut.',
                           style: TextStyle(
-                              fontSize: 11, color: cores.textoFraco),
+                              fontSize: 12, color: cores.textoFraco),
                         ),
                       ),
                     if ((s.totalNaFila ?? 0) > 0)
@@ -871,7 +871,7 @@ class _CardCheckinState extends State<_CardCheckin> {
                         child: Text(
                           '${s.totalNaFila} na fila',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 13,
                             color: cores.alerta,
                             fontWeight: FontWeight.w600,
                           ),

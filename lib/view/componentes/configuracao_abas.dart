@@ -8,12 +8,12 @@ abstract final class ConfiguracaoAbas {
     indicatorSize: TabBarIndicatorSize.label,
     dividerColor: Colors.transparent,
     labelStyle: TextStyle(
-      fontSize: 13,
+      fontSize: 15,
       fontWeight: FontWeight.w800,
       height: 1.15,
     ),
     unselectedLabelStyle: TextStyle(
-      fontSize: 13,
+      fontSize: 15,
       fontWeight: FontWeight.w500,
       height: 1.15,
     ),

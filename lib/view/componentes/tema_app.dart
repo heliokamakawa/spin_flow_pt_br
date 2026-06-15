@@ -26,7 +26,25 @@ abstract final class TemaApp {
       outlineVariant: CoresApp.bordaForte,
     );
 
-    final textoBase = GoogleFonts.interTextTheme().apply(
+    final textoBase = GoogleFonts.interTextTheme(
+      const TextTheme(
+        displayLarge:   TextStyle(fontSize: 57),
+        displayMedium:  TextStyle(fontSize: 45),
+        displaySmall:   TextStyle(fontSize: 36),
+        headlineLarge:  TextStyle(fontSize: 32),
+        headlineMedium: TextStyle(fontSize: 28),
+        headlineSmall:  TextStyle(fontSize: 24),
+        titleLarge:     TextStyle(fontSize: 22),
+        titleMedium:    TextStyle(fontSize: 17),
+        titleSmall:     TextStyle(fontSize: 15),
+        labelLarge:     TextStyle(fontSize: 15),
+        labelMedium:    TextStyle(fontSize: 13),
+        labelSmall:     TextStyle(fontSize: 12),
+        bodyLarge:      TextStyle(fontSize: 17),
+        bodyMedium:     TextStyle(fontSize: 15),
+        bodySmall:      TextStyle(fontSize: 13),
+      ),
+    ).apply(
       bodyColor: CoresApp.textoPrincipal,
       displayColor: CoresApp.textoPrincipal,
     );

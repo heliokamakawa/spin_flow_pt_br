@@ -456,7 +456,7 @@ class _Celula extends StatelessWidget {
                 subLabel,
                 style: TextStyle(
                   color: corTexto,
-                  fontSize: 9,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -467,7 +467,7 @@ class _Celula extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
-              style: TextStyle(color: corTexto, fontSize: 11),
+              style: TextStyle(color: corTexto, fontSize: 13),
             ),
           ],
         ),
@@ -503,7 +503,7 @@ class _ItemLegenda extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4),
-        Text(texto, style: const TextStyle(fontSize: 11)),
+        Text(texto, style: const TextStyle(fontSize: 13)),
       ],
     );
   }
