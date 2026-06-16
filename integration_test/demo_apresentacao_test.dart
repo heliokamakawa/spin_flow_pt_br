@@ -92,11 +92,24 @@ Future<void> _toque(WidgetTester tester, Finder alvo) async {
   }
 }
 
-/// Volta uma tela (botão de voltar da AppBar).
+/// Volta uma tela.
+///
+/// Não usa `tester.pageBack()` porque ele procura o tooltip "Back" (em inglês),
+/// mas o app está localizado em pt-BR (tooltip "Voltar"). Toca no [BackButton]
+/// padrão da AppBar e, se não houver, faz `pop` programático no Navigator.
 Future<void> _voltar(WidgetTester tester) async {
   try {
-    await tester.pageBack();
-    await _assentar(tester);
+    final botaoVoltar = find.byType(BackButton);
+    if (botaoVoltar.evaluate().isNotEmpty) {
+      await tester.tap(botaoVoltar.first, warnIfMissed: false);
+      await _assentar(tester);
+      return;
+    }
+    final navegador = tester.state<NavigatorState>(find.byType(Navigator).first);
+    if (navegador.canPop()) {
+      navegador.pop();
+      await _assentar(tester);
+    }
   } catch (e) {
     debugPrint('demo: voltar ignorado ($e)');
   }
