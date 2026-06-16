@@ -6,10 +6,9 @@
 
 ## Descrição geral
 
-Dashboard principal do aluno após o login. Organizado em três abas:
+Dashboard principal do aluno após o login. Organizado em duas abas:
 - **Aba 1 — Check-in**: visualizar aulas do dia e gerenciar check-in.
-- **Aba 2 — Meu Painel**: informações pessoais, histórico de participação e avaliações de mix.
-- **Aba 3 — Histórico**: histórico de aulas realizadas (presenças) com filtro por período.
+- **Aba 2 — Meu Painel**: nível, participação, indicadores e avaliações de mix.
 
 ---
 
@@ -18,11 +17,9 @@ Dashboard principal do aluno após o login. Organizado em três abas:
 | Índice | Ícone | Label | Conteúdo |
 |--------|-------|-------|----------|
 | 0 | `directions_bike` | Check-in | Lista de turmas do dia |
-| 1 | `person` | Meu Painel | Perfil + participação + avaliações |
-| 2 | `history` | Histórico | Aulas realizadas com filtro de período |
+| 1 | `person` | Meu Painel | Nível + participação + indicadores + avaliações |
 
-As abas Check-in e Painel são carregadas na inicialização (`Future.wait`).
-A aba Histórico é carregada **sob demanda** (lazy) na primeira vez que é aberta.
+Ambas as abas são carregadas na inicialização (`Future.wait`).
 
 ---
 
@@ -97,6 +94,28 @@ Exibido somente quando `totalNaFila > 0`, separado por `Divider`:
 - Instagram, TikTok, Facebook (se preenchidos)
 - Observações em itálico (se preenchidas)
 
+### Cartão de Nível (topo da aba)
+Primeiro elemento da aba Meu Painel. Cartão com **fundo em gradiente** conforme o
+nível do aluno e uma **timeline de 3 pontos** (Prata → Ouro → Diamante).
+
+**Regra de nível** (`NivelAluno.fromSemanasSeguidas`, base = `IndicadoresAluno.semanasSeguidas`):
+
+| Nível    | Semanas seguidas | Gradiente        |
+|----------|------------------|------------------|
+| Iniciante| 0                | cinza neutro     |
+| Prata    | ≥ 1              | prata            |
+| Ouro     | ≥ 3              | ouro             |
+| Diamante | ≥ 5              | azul diamante    |
+
+- **Semanas seguidas:** semanas de calendário consecutivas (segunda como âncora) com ao
+  menos 1 aula, terminando na semana da aula mais recente (`_calcularSemanasSeguidas`).
+- **Cabeçalho:** ícone do nível + "Nível X" + subtítulo com semanas seguidas e quanto
+  falta para o próximo nível (ou "nível máximo" no Diamante).
+- **Timeline:** 3 pontos fixos. Pontos alcançados ficam preenchidos (círculo branco com
+  ícone na cor do nível); o ponto atual recebe destaque (maior, com anel branco); os
+  conectores até o nível atual ficam sólidos. Texto/contraste escuro em Prata/Ouro e
+  branco em Diamante/Iniciante.
+
 ### Seção Aulas Realizadas
 Três contadores lado a lado com `VerticalDivider`:
 
@@ -107,6 +126,33 @@ Três contadores lado a lado com `VerticalDivider`:
 | Ano      | `EstatisticasParticipacao.ano`    | primeiro dia do ano até hoje |
 
 Fonte: tabela `aula_realizada` via `IDAOAulaRealizada.contarPorAlunoNoPeriodo`.
+
+### Seção Indicadores
+Quatro indicadores de engajamento (modelo `IndicadoresAluno`), abaixo de "Aulas Realizadas".
+
+Dois contadores grandes lado a lado (com `VerticalDivider`):
+
+| Indicador        | Dado | Regra |
+|------------------|------|-------|
+| Aulas este mês          | `IndicadoresAluno.aulasMes`      | aulas do primeiro dia do mês até hoje (mesmo valor de "Mês") |
+| Semanas ativas (3 meses)| `IndicadoresAluno.semanasAtivas` | semanas distintas (segunda como início) com ≥1 aula nos últimos 3 meses |
+
+> O rótulo deixa explícito o recorte de 3 meses para não ser confundido com as
+> **semanas seguidas** do cartão de nível (que contam a sequência no histórico todo).
+
+Dois cartões informativos (título + detalhe):
+
+| Cartão           | Dado | Texto |
+|------------------|------|-------|
+| Total de aulas   | `IndicadoresAluno.totalTresMeses` | `N nos últimos 3 meses` |
+| Sequência atual  | `IndicadoresAluno.sequenciaAtual` | `N dias consecutivos` (ou "Nenhuma aula recente" se 0) |
+
+Regras de cálculo (em `RepositorioCheckinAluno.buscarPainelAluno`):
+- Janela de 3 meses = `DateTime(ano, mês − 2, 1)` até hoje (mês atual + 2 anteriores).
+- **Semanas ativas:** conta chaves distintas da segunda-feira da semana de cada data com aula, dentro da janela de 3 meses (`_contarSemanasAtivas`).
+- **Sequência atual:** dias de calendário consecutivos com aula, terminando na aula mais recente (`_calcularSequenciaDias`); datas distintas no nível de dia. Hoje a base só registra presenças.
+
+Fonte adicional: `IDAOAulaRealizada.listarDatasRealizadas` (datas distintas, dia, desc).
 
 ### Seção Avaliação de Mix
 Seletor de modo com `SegmentedButton` (3 opções):
@@ -129,46 +175,6 @@ Seletor de modo com `SegmentedButton` (3 opções):
 | Erro       | Mensagem + botão "Tentar novamente" |
 | Sem dados  | "Nenhum dado disponível." |
 | Normal     | `ListView` com `RefreshIndicator` e as 3 seções |
-
----
-
-## Aba 2 — Histórico
-
-Lista as aulas **realizadas** (presenças) do aluno, da mais recente para a mais antiga.
-
-### Fonte de dados
-- Tabela `aula_realizada` (apenas registros com `ativo = 1`) com JOIN em `turma` para
-  obter nome e horário.
-- Caminho: `IDAOAulaRealizada.listarPorAluno` → `RepositorioCheckinAluno.listarHistoricoAluno`
-  → `ControladorCheckinAluno.listarHistoricoAluno`.
-- Modelo de domínio: `RegistroHistoricoAula` (`nomeTurma`, `data`, `horarioInicio`, `presente`).
-
-> **Status Presente/Falta:** hoje a base registra somente presenças, portanto todos os
-> itens aparecem como **Presente**. O campo `presente` no modelo já existe para permitir
-> a distinção Presente/Falta caso a regra evolua.
-
-### Filtros de período (linha superior)
-Três botões; o selecionado fica em destaque (negrito, cor primária). Filtragem **em memória**
-sobre a lista já carregada — não refaz consulta ao banco.
-
-| Filtro     | Regra |
-|------------|-------|
-| Todas      | Todos os registros |
-| Este mês   | `data >= primeiro dia do mês atual` |
-| 3 meses    | `data >= primeiro dia do mês, dois meses atrás` (mês atual + 2 anteriores) |
-
-### Card de aula
-- **Nome da turma** — negrito.
-- Linha: `DD/MM/AAAA - HH:MM` + rótulo de status (**Presente** em cor sucesso / **Falta** em cor erro).
-- Data formatada com `DateFormat('dd/MM/yyyy', 'pt_BR')`; horário vem de `turma.horarioInicio`.
-
-### Estados da aba
-| Estado      | Exibição |
-|-------------|----------|
-| Carregando  | `CircularProgressIndicator` centralizado |
-| Erro        | Mensagem + botão "Tentar novamente" |
-| Lista vazia | Ícone `event_busy` + "Nenhuma aula no período." |
-| Lista normal| `ListView` com `RefreshIndicator` (puxar para atualizar) |
 
 ---
 

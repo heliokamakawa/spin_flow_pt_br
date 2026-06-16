@@ -1,11 +1,10 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:spin_flow/controller/controlador_checkin_aluno.dart';
 import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/mix_checkin.dart';
 import 'package:spin_flow/domain/modelo/musica_checkin.dart';
+import 'package:spin_flow/domain/modelo/nivel_aluno.dart';
 import 'package:spin_flow/domain/modelo/painel_aluno.dart';
-import 'package:spin_flow/domain/modelo/registro_historico_aula.dart';
 import 'package:spin_flow/controller/sessao_usuario.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/view/componentes/tema_app.dart';
@@ -39,17 +38,10 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
   bool _carregandoPainel = true;
   String? _erroPainel;
 
-  // ── Aba Histórico ─────────────────────────────────────────────────────────
-  List<RegistroHistoricoAula> _historico = [];
-  bool _carregandoHistorico = false;
-  bool _historicoCarregado = false;
-  String? _erroHistorico;
-  _FiltroHistorico _filtroHistorico = _FiltroHistorico.todas;
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_aoMudarAba);
     _inicializar();
   }
@@ -66,9 +58,6 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
     if (!_tabController.indexIsChanging) return;
     if (_tabController.index == 1 && _painel == null && _erroPainel == null) {
       _carregarPainel();
-    }
-    if (_tabController.index == 2 && !_historicoCarregado) {
-      _carregarHistorico();
     }
   }
 
@@ -129,45 +118,6 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
         _erroPainel = 'Erro ao carregar painel: $e';
         _carregandoPainel = false;
       });
-    }
-  }
-
-  Future<void> _carregarHistorico() async {
-    final alunoId = _alunoId;
-    if (alunoId == null) return;
-    setState(() {
-      _carregandoHistorico = true;
-      _erroHistorico = null;
-    });
-    try {
-      final lista = await _controlador.listarHistoricoAluno(alunoId);
-      if (!mounted) return;
-      setState(() {
-        _historico = lista;
-        _historicoCarregado = true;
-        _carregandoHistorico = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _erroHistorico = 'Erro ao carregar histórico: $e';
-        _carregandoHistorico = false;
-      });
-    }
-  }
-
-  List<RegistroHistoricoAula> get _historicoFiltrado {
-    final agora = DateTime.now();
-    switch (_filtroHistorico) {
-      case _FiltroHistorico.todas:
-        return _historico;
-      case _FiltroHistorico.mes:
-        final inicio = DateTime(agora.year, agora.month, 1);
-        return _historico.where((h) => !h.data.isBefore(inicio)).toList();
-      case _FiltroHistorico.tresMeses:
-        // Mês atual + dois meses anteriores.
-        final inicio = DateTime(agora.year, agora.month - 2, 1);
-        return _historico.where((h) => !h.data.isBefore(inicio)).toList();
     }
   }
 
@@ -278,11 +228,9 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
         actions: const [AcaoSairAppBar()],
         bottom: TabBar(
           controller: _tabController,
-          isScrollable: false,
           tabs: const [
             Tab(icon: Icon(Icons.directions_bike), text: 'Check-in'),
             Tab(icon: Icon(Icons.person), text: 'Meu Painel'),
-            Tab(icon: Icon(Icons.history), text: 'Histórico'),
           ],
         ),
       ),
@@ -291,7 +239,6 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
         children: [
           _buildAbaCheckin(context),
           _buildAbaPainel(context),
-          _buildAbaHistorico(context),
         ],
       ),
     );
@@ -393,96 +340,6 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
     );
   }
 
-  // ── Aba Histórico ───────────────────────────────────────────────────────────
-
-  Widget _buildAbaHistorico(BuildContext context) {
-    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-
-    Widget conteudo;
-    if (_carregandoHistorico) {
-      conteudo = const Center(child: CircularProgressIndicator());
-    } else if (_erroHistorico != null) {
-      conteudo = Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(_erroHistorico!, textAlign: TextAlign.center),
-            const SizedBox(height: 12),
-            TextButton.icon(
-              onPressed: _carregarHistorico,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Tentar novamente'),
-            ),
-          ],
-        ),
-      );
-    } else {
-      final lista = _historicoFiltrado;
-      if (lista.isEmpty) {
-        conteudo = Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.event_busy, size: 48, color: cores.textoFraco),
-              const SizedBox(height: 12),
-              Text('Nenhuma aula no período.',
-                  style: TextStyle(color: cores.textoSuave)),
-            ],
-          ),
-        );
-      } else {
-        conteudo = RefreshIndicator(
-          onRefresh: _carregarHistorico,
-          child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-            itemCount: lista.length,
-            itemBuilder: (_, i) => _CardHistorico(registro: lista[i]),
-          ),
-        );
-      }
-    }
-
-    return Column(
-      children: [
-        _buildFiltrosHistorico(cores),
-        Expanded(child: conteudo),
-      ],
-    );
-  }
-
-  Widget _buildFiltrosHistorico(CoresSemanticasApp cores) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: _FiltroHistorico.values.map((f) {
-          final selecionado = f == _filtroHistorico;
-          return TextButton(
-            onPressed: () => setState(() => _filtroHistorico = f),
-            style: TextButton.styleFrom(
-              foregroundColor: selecionado ? CoresApp.primaria : cores.textoSuave,
-              textStyle: TextStyle(
-                fontSize: 16,
-                fontWeight: selecionado ? FontWeight.w800 : FontWeight.w600,
-              ),
-            ),
-            child: Text(f.rotulo),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-// ── Aba Histórico — filtros e modelos auxiliares ─────────────────────────────
-
-enum _FiltroHistorico {
-  todas('Todas'),
-  mes('Este mês'),
-  tresMeses('3 meses');
-
-  final String rotulo;
-  const _FiltroHistorico(this.rotulo);
 }
 
 // ── Aba Painel — conteúdo ────────────────────────────────────────────────────
@@ -538,6 +395,10 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // ── Nível do aluno ────────────────────────────────────────────────
+        _CartaoNivel(semanasSeguidas: painel.indicadores.semanasSeguidas),
+        const SizedBox(height: 12),
+
         // ── Participação ──────────────────────────────────────────────────
         _secao(
           context,
@@ -551,6 +412,44 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
               _contadorParticipacao('Mês', painel.estatisticas.mes, cores),
               _divisorVertical(),
               _contadorParticipacao('Ano', painel.estatisticas.ano, cores),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // ── Indicadores ───────────────────────────────────────────────────
+        _secao(
+          context,
+          icone: Icons.insights,
+          titulo: 'Indicadores',
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _contadorParticipacao(
+                        'Aulas este mês', painel.indicadores.aulasMes, cores),
+                  ),
+                  _divisorVertical(),
+                  Expanded(
+                    child: _contadorParticipacao('Semanas ativas (3 meses)',
+                        painel.indicadores.semanasAtivas, cores),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              _linhaIndicador(
+                cores,
+                titulo: 'Total de aulas',
+                detalhe:
+                    '${painel.indicadores.totalTresMeses} nos últimos 3 meses',
+              ),
+              const SizedBox(height: 8),
+              _linhaIndicador(
+                cores,
+                titulo: 'Sequência atual',
+                detalhe: _detalheSequencia(painel.indicadores.sequenciaAtual),
+              ),
             ],
           ),
         ),
@@ -949,13 +848,51 @@ class _AbaPainelAlunoState extends State<_AbaPainelAluno> {
           '$valor',
           style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
         ),
-        Text(label, style: TextStyle(fontSize: 13, color: cores.textoSuave)),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 13, color: cores.textoSuave),
+        ),
       ],
     );
   }
 
   Widget _divisorVertical() =>
       const SizedBox(height: 40, child: VerticalDivider());
+
+  Widget _linhaIndicador(
+    CoresSemanticasApp cores, {
+    required String titulo,
+    required String detalhe,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: cores.textoFraco.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            titulo,
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            detalhe,
+            style: TextStyle(fontSize: 14, color: cores.textoSuave),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _detalheSequencia(int dias) {
+    if (dias == 0) return 'Nenhuma aula recente';
+    return '$dias ${dias == 1 ? 'dia consecutivo' : 'dias consecutivos'}';
+  }
 
 }
 
@@ -1235,54 +1172,248 @@ class _CardCheckinState extends State<_CardCheckin> {
       cores.textoFraco;
 }
 
-// ── Card do histórico de aulas ───────────────────────────────────────────────
+// ── Cartão de nível do aluno (gradiente + timeline) ──────────────────────────
 
-class _CardHistorico extends StatelessWidget {
-  final RegistroHistoricoAula registro;
+class _CartaoNivel extends StatelessWidget {
+  final int semanasSeguidas;
 
-  static final _fmtData = DateFormat('dd/MM/yyyy', 'pt_BR');
+  const _CartaoNivel({required this.semanasSeguidas});
 
-  const _CardHistorico({required this.registro});
+  NivelAluno get _nivel => NivelAluno.fromSemanasSeguidas(semanasSeguidas);
+
+  int get _indiceAtual {
+    switch (_nivel) {
+      case NivelAluno.diamante:
+        return 2;
+      case NivelAluno.ouro:
+        return 1;
+      case NivelAluno.prata:
+        return 0;
+      case NivelAluno.nenhum:
+        return -1;
+    }
+  }
+
+  List<Color> _gradiente(NivelAluno nivel) {
+    switch (nivel) {
+      case NivelAluno.prata:
+        return const [Color(0xFFCBD2D9), Color(0xFF9AA3AD)];
+      case NivelAluno.ouro:
+        return const [Color(0xFFF6CB49), Color(0xFFCB9214)];
+      case NivelAluno.diamante:
+        return const [Color(0xFF7FD0F5), Color(0xFF2B73C4)];
+      case NivelAluno.nenhum:
+        return const [Color(0xFF6B7280), Color(0xFF4B5563)];
+    }
+  }
+
+  /// Cor sólida de cada nível (usada nos ícones da timeline).
+  Color _corNivel(NivelAluno nivel) {
+    switch (nivel) {
+      case NivelAluno.prata:
+        return const Color(0xFF8A929C);
+      case NivelAluno.ouro:
+        return const Color(0xFFC9971B);
+      case NivelAluno.diamante:
+        return const Color(0xFF2B73C4);
+      case NivelAluno.nenhum:
+        return const Color(0xFF6B7280);
+    }
+  }
+
+  IconData _iconeNivel(NivelAluno nivel) {
+    switch (nivel) {
+      case NivelAluno.prata:
+        return Icons.workspace_premium;
+      case NivelAluno.ouro:
+        return Icons.military_tech;
+      case NivelAluno.diamante:
+        return Icons.diamond;
+      case NivelAluno.nenhum:
+        return Icons.lock_outline;
+    }
+  }
+
+  /// Cor do texto sobre o gradiente — escura nos níveis claros (prata/ouro).
+  Color get _corTexto =>
+      (_nivel == NivelAluno.prata || _nivel == NivelAluno.ouro)
+          ? const Color(0xFF2A2A2A)
+          : Colors.white;
+
+  String get _subtitulo {
+    if (semanasSeguidas <= 0) return 'Comece uma sequência semanal';
+    final s = semanasSeguidas == 1
+        ? '1 semana seguida'
+        : '$semanasSeguidas semanas seguidas';
+    // Progresso até o próximo nível.
+    final proximo = _proximoNivel();
+    if (proximo == null) return '$s · nível máximo';
+    final faltam = proximo.semanasMinimas - semanasSeguidas;
+    final txtFaltam = faltam == 1 ? '1 semana' : '$faltam semanas';
+    return '$s · faltam $txtFaltam para ${proximo.rotulo}';
+  }
+
+  NivelAluno? _proximoNivel() {
+    switch (_nivel) {
+      case NivelAluno.nenhum:
+        return NivelAluno.prata;
+      case NivelAluno.prata:
+        return NivelAluno.ouro;
+      case NivelAluno.ouro:
+        return NivelAluno.diamante;
+      case NivelAluno.diamante:
+        return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
-    final corStatus = registro.presente ? cores.sucesso : cores.erro;
+    final corTexto = _corTexto;
+    final tituloNivel =
+        _nivel == NivelAluno.nenhum ? 'Iniciante' : 'Nível ${_nivel.rotulo}';
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              registro.nomeTurma,
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 17,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: _gradiente(_nivel),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: _gradiente(_nivel).last.withValues(alpha: 0.35),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(_iconeNivel(_nivel), color: corTexto, size: 30),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tituloNivel,
+                      style: TextStyle(
+                        color: corTexto,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _subtitulo,
+                      style: TextStyle(
+                        color: corTexto.withValues(alpha: 0.85),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                Text(
-                  '${_fmtData.format(registro.data)} - ${registro.horarioInicio}',
-                  style: TextStyle(fontSize: 15, color: cores.textoSuave),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  registro.rotuloStatus,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: corStatus,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          _buildTimeline(corTexto),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimeline(Color corTexto) {
+    final niveis = NivelAluno.niveisTimeline;
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _ponto(niveis[0], 0),
+            _conector(ativo: _indiceAtual >= 1),
+            _ponto(niveis[1], 1),
+            _conector(ativo: _indiceAtual >= 2),
+            _ponto(niveis[2], 2),
           ],
         ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(child: _rotuloPonto(niveis[0], 0, corTexto, TextAlign.left)),
+            Expanded(
+                child: _rotuloPonto(niveis[1], 1, corTexto, TextAlign.center)),
+            Expanded(
+                child: _rotuloPonto(niveis[2], 2, corTexto, TextAlign.right)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _conector({required bool ativo}) {
+    return Expanded(
+      child: Container(
+        height: 3,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: ativo ? Colors.white : Colors.white.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(2),
+        ),
+      ),
+    );
+  }
+
+  Widget _ponto(NivelAluno nivel, int indice) {
+    final alcancado = indice <= _indiceAtual;
+    final atual = indice == _indiceAtual;
+    final corIcone = alcancado ? _corNivel(nivel) : Colors.white;
+    // Preenchimento em tom bem suave da cor do nível quando alcançado.
+    final corPreenchimento = alcancado
+        ? Color.lerp(_corNivel(nivel), Colors.white, 0.85)!
+        : Colors.white.withValues(alpha: 0.25);
+
+    return Container(
+      width: atual ? 44 : 38,
+      height: atual ? 44 : 38,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: corPreenchimento,
+        border: atual ? Border.all(color: Colors.white, width: 3) : null,
+        boxShadow: atual
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
+      ),
+      child: Icon(
+        _iconeNivel(nivel),
+        size: atual ? 24 : 20,
+        color: alcancado ? corIcone : Colors.white.withValues(alpha: 0.7),
+      ),
+    );
+  }
+
+  Widget _rotuloPonto(
+      NivelAluno nivel, int indice, Color corTexto, TextAlign alinhamento) {
+    final atual = indice == _indiceAtual;
+    return Text(
+      nivel.rotulo,
+      textAlign: alinhamento,
+      style: TextStyle(
+        color: corTexto.withValues(alpha: atual ? 1 : 0.75),
+        fontSize: 13,
+        fontWeight: atual ? FontWeight.w800 : FontWeight.w600,
       ),
     );
   }

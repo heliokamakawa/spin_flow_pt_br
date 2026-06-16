@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
 import 'package:spin_flow/domain/modelo/painel_aluno.dart';
-import 'package:spin_flow/domain/modelo/registro_historico_aula.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_aluno.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_aula_realizada.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_avaliacao_musica.dart';
@@ -307,18 +306,28 @@ class RepositorioCheckinAluno {
     final inicioSemana = hoje.subtract(Duration(days: hoje.weekday - 1));
     final inicioMes = DateTime(agora.year, agora.month, 1);
     final inicioAno = DateTime(agora.year, 1, 1);
+    // Janela de 3 meses: mês atual + dois meses anteriores.
+    final inicioTresMeses = DateTime(agora.year, agora.month - 2, 1);
 
     final semanaFt = _daoAulaRealizada.contarPorAlunoNoPeriodo(alunoId, inicioSemana, hoje);
     final mesFt    = _daoAulaRealizada.contarPorAlunoNoPeriodo(alunoId, inicioMes, hoje);
     final anoFt    = _daoAulaRealizada.contarPorAlunoNoPeriodo(alunoId, inicioAno, hoje);
+    final tresMesesFt = _daoAulaRealizada.contarPorAlunoNoPeriodo(alunoId, inicioTresMeses, hoje);
+    final datasFt  = _daoAulaRealizada.listarDatasRealizadas(alunoId);
     final ultimaAulaFt   = _daoAulaRealizada.buscarUltima(alunoId);
     final mixesDisponiveisFt = _daoMix.buscarTodos();
 
     final semana           = await semanaFt;
     final mes              = await mesFt;
     final ano              = await anoFt;
+    final totalTresMeses   = await tresMesesFt;
+    final datas            = await datasFt;
     final ultimaAula       = await ultimaAulaFt;
     final mixesDisponiveis = (await mixesDisponiveisFt).where((m) => m.ativo).toList();
+
+    final semanasAtivas = _contarSemanasAtivas(datas, inicioTresMeses);
+    final sequenciaAtual = _calcularSequenciaDias(datas);
+    final semanasSeguidas = _calcularSemanasSeguidas(datas);
 
     MixCheckin? ultimoMix;
     if (ultimaAula != null) {
@@ -345,9 +354,77 @@ class RepositorioCheckinAluno {
     return PainelAluno(
       aluno: aluno,
       estatisticas: EstatisticasParticipacao(semana: semana, mes: mes, ano: ano),
+      indicadores: IndicadoresAluno(
+        aulasMes: mes,
+        semanasAtivas: semanasAtivas,
+        totalTresMeses: totalTresMeses,
+        sequenciaAtual: sequenciaAtual,
+        semanasSeguidas: semanasSeguidas,
+      ),
       ultimoMix: ultimoMix,
       mixesDisponiveis: mixesDisponiveis,
     );
+  }
+
+  /// Conta semanas distintas do calendário (segunda como início) com ao menos
+  /// uma aula, considerando apenas datas a partir de [aPartirDe].
+  int _contarSemanasAtivas(List<DateTime> datas, DateTime aPartirDe) {
+    final corte = DateTime(aPartirDe.year, aPartirDe.month, aPartirDe.day);
+    final chaves = <String>{};
+    for (final d in datas) {
+      final dia = DateTime(d.year, d.month, d.day);
+      if (dia.isBefore(corte)) continue;
+      final segunda = dia.subtract(Duration(days: dia.weekday - 1));
+      chaves.add('${segunda.year}-${segunda.month}-${segunda.day}');
+    }
+    return chaves.length;
+  }
+
+  /// Maior sequência de dias consecutivos com aula, terminando na aula mais
+  /// recente. [datas] vem ordenada da mais recente para a mais antiga.
+  int _calcularSequenciaDias(List<DateTime> datas) {
+    if (datas.isEmpty) return 0;
+    final dias = datas
+        .map((d) => DateTime(d.year, d.month, d.day))
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    var sequencia = 1;
+    for (var i = 0; i < dias.length - 1; i++) {
+      final diff = dias[i].difference(dias[i + 1]).inDays;
+      if (diff == 1) {
+        sequencia++;
+      } else {
+        break;
+      }
+    }
+    return sequencia;
+  }
+
+  /// Semanas seguidas (consecutivas) com ao menos uma aula, terminando na
+  /// semana da aula mais recente. Usa a segunda-feira como âncora da semana.
+  int _calcularSemanasSeguidas(List<DateTime> datas) {
+    if (datas.isEmpty) return 0;
+    final segundas = datas
+        .map((d) {
+          final dia = DateTime(d.year, d.month, d.day);
+          return dia.subtract(Duration(days: dia.weekday - 1));
+        })
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    var sequencia = 1;
+    for (var i = 0; i < segundas.length - 1; i++) {
+      final diff = segundas[i].difference(segundas[i + 1]).inDays;
+      if (diff == 7) {
+        sequencia++;
+      } else {
+        break;
+      }
+    }
+    return sequencia;
   }
 
   Future<MixCheckin?> buscarMixComAvaliacoes(int mixId, int alunoId) async {
@@ -369,10 +446,4 @@ class RepositorioCheckinAluno {
           .toList(),
     );
   }
-
-  Future<List<RegistroHistoricoAula>> listarHistoricoAluno(
-    int alunoId, {
-    DateTime? aPartirDe,
-  }) =>
-      _daoAulaRealizada.listarPorAluno(alunoId, aPartirDe: aPartirDe);
 }
