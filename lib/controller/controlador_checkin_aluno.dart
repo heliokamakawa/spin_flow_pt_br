@@ -5,6 +5,7 @@ import 'package:spin_flow/domain/modelo/estado_mapa_aula.dart';
 import 'package:spin_flow/domain/modelo/aluno.dart';
 import 'package:spin_flow/domain/modelo/mix_checkin.dart';
 import 'package:spin_flow/domain/modelo/painel_aluno.dart';
+import 'package:spin_flow/domain/modelo/registro_historico_aula.dart';
 import 'package:spin_flow/domain/modelo/turma.dart';
 import 'package:spin_flow/domain/modelo/situacao_checkin_aluno.dart';
 import 'package:spin_flow/infra/database/repositorio/repositorio_checkin_aluno.dart';
@@ -113,4 +114,10 @@ class ControladorCheckinAluno {
 
   Future<List<String>> buscarNomesNaFila(int turmaId) =>
       _repositorio.buscarNomesNaFila(turmaId);
+
+  Future<List<RegistroHistoricoAula>> listarHistoricoAluno(
+    int alunoId, {
+    DateTime? aPartirDe,
+  }) =>
+      _repositorio.listarHistoricoAluno(alunoId, aPartirDe: aPartirDe);
 }

@@ -1,4 +1,5 @@
 import 'package:spin_flow/domain/modelo/aula_realizada.dart';
+import 'package:spin_flow/domain/modelo/registro_historico_aula.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_aula_realizada.dart';
 import 'package:spin_flow/infra/database/sqlite/conexao.dart';
 
@@ -67,6 +68,41 @@ class DAOAulaRealizadaSQLite implements IDAOAulaRealizada {
         aula.ativo ? 1 : 0,
       ],
     );
+  }
+
+  @override
+  Future<List<RegistroHistoricoAula>> listarPorAluno(
+    int alunoId, {
+    DateTime? aPartirDe,
+  }) async {
+    final db = await ConexaoSQLite.database;
+
+    final where = StringBuffer('ar.aluno_id = ? AND ar.ativo = 1');
+    final args = <Object?>[alunoId];
+    if (aPartirDe != null) {
+      where.write(' AND substr(ar.data, 1, 10) >= ?');
+      args.add(_chaveData(aPartirDe));
+    }
+
+    final rows = await db.rawQuery(
+      '''
+      SELECT ar.data AS data, t.nome AS nome_turma, t.horario_inicio AS horario
+      FROM $_tabela ar
+      JOIN turma t ON t.id = ar.turma_id
+      WHERE $where
+      ORDER BY ar.data DESC
+      ''',
+      args,
+    );
+
+    return rows.map((r) {
+      return RegistroHistoricoAula(
+        nomeTurma: (r['nome_turma'] as String?) ?? '',
+        data: DateTime.tryParse((r['data'] as String?) ?? '') ?? DateTime.now(),
+        horarioInicio: (r['horario'] as String?) ?? '',
+        presente: true,
+      );
+    }).toList();
   }
 
   String _chaveData(DateTime data) =>

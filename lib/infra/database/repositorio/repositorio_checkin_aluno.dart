@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:spin_flow/domain/modelo/painel_aluno.dart';
+import 'package:spin_flow/domain/modelo/registro_historico_aula.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_aluno.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_aula_realizada.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_avaliacao_musica.dart';
@@ -368,4 +369,10 @@ class RepositorioCheckinAluno {
           .toList(),
     );
   }
+
+  Future<List<RegistroHistoricoAula>> listarHistoricoAluno(
+    int alunoId, {
+    DateTime? aPartirDe,
+  }) =>
+      _daoAulaRealizada.listarPorAluno(alunoId, aPartirDe: aPartirDe);
 }

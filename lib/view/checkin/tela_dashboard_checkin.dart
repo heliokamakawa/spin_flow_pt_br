@@ -1,9 +1,11 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:spin_flow/controller/controlador_checkin_aluno.dart';
 import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/mix_checkin.dart';
 import 'package:spin_flow/domain/modelo/musica_checkin.dart';
 import 'package:spin_flow/domain/modelo/painel_aluno.dart';
+import 'package:spin_flow/domain/modelo/registro_historico_aula.dart';
 import 'package:spin_flow/controller/sessao_usuario.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/view/componentes/tema_app.dart';
@@ -37,10 +39,17 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
   bool _carregandoPainel = true;
   String? _erroPainel;
 
+  // ── Aba Histórico ─────────────────────────────────────────────────────────
+  List<RegistroHistoricoAula> _historico = [];
+  bool _carregandoHistorico = false;
+  bool _historicoCarregado = false;
+  String? _erroHistorico;
+  _FiltroHistorico _filtroHistorico = _FiltroHistorico.todas;
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_aoMudarAba);
     _inicializar();
   }
@@ -57,6 +66,9 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
     if (!_tabController.indexIsChanging) return;
     if (_tabController.index == 1 && _painel == null && _erroPainel == null) {
       _carregarPainel();
+    }
+    if (_tabController.index == 2 && !_historicoCarregado) {
+      _carregarHistorico();
     }
   }
 
@@ -117,6 +129,45 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
         _erroPainel = 'Erro ao carregar painel: $e';
         _carregandoPainel = false;
       });
+    }
+  }
+
+  Future<void> _carregarHistorico() async {
+    final alunoId = _alunoId;
+    if (alunoId == null) return;
+    setState(() {
+      _carregandoHistorico = true;
+      _erroHistorico = null;
+    });
+    try {
+      final lista = await _controlador.listarHistoricoAluno(alunoId);
+      if (!mounted) return;
+      setState(() {
+        _historico = lista;
+        _historicoCarregado = true;
+        _carregandoHistorico = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _erroHistorico = 'Erro ao carregar histórico: $e';
+        _carregandoHistorico = false;
+      });
+    }
+  }
+
+  List<RegistroHistoricoAula> get _historicoFiltrado {
+    final agora = DateTime.now();
+    switch (_filtroHistorico) {
+      case _FiltroHistorico.todas:
+        return _historico;
+      case _FiltroHistorico.mes:
+        final inicio = DateTime(agora.year, agora.month, 1);
+        return _historico.where((h) => !h.data.isBefore(inicio)).toList();
+      case _FiltroHistorico.tresMeses:
+        // Mês atual + dois meses anteriores.
+        final inicio = DateTime(agora.year, agora.month - 2, 1);
+        return _historico.where((h) => !h.data.isBefore(inicio)).toList();
     }
   }
 
@@ -227,9 +278,11 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
         actions: const [AcaoSairAppBar()],
         bottom: TabBar(
           controller: _tabController,
+          isScrollable: false,
           tabs: const [
             Tab(icon: Icon(Icons.directions_bike), text: 'Check-in'),
             Tab(icon: Icon(Icons.person), text: 'Meu Painel'),
+            Tab(icon: Icon(Icons.history), text: 'Histórico'),
           ],
         ),
       ),
@@ -238,6 +291,7 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
         children: [
           _buildAbaCheckin(context),
           _buildAbaPainel(context),
+          _buildAbaHistorico(context),
         ],
       ),
     );
@@ -338,6 +392,97 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
       ),
     );
   }
+
+  // ── Aba Histórico ───────────────────────────────────────────────────────────
+
+  Widget _buildAbaHistorico(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+
+    Widget conteudo;
+    if (_carregandoHistorico) {
+      conteudo = const Center(child: CircularProgressIndicator());
+    } else if (_erroHistorico != null) {
+      conteudo = Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_erroHistorico!, textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: _carregarHistorico,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Tentar novamente'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      final lista = _historicoFiltrado;
+      if (lista.isEmpty) {
+        conteudo = Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.event_busy, size: 48, color: cores.textoFraco),
+              const SizedBox(height: 12),
+              Text('Nenhuma aula no período.',
+                  style: TextStyle(color: cores.textoSuave)),
+            ],
+          ),
+        );
+      } else {
+        conteudo = RefreshIndicator(
+          onRefresh: _carregarHistorico,
+          child: ListView.builder(
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+            itemCount: lista.length,
+            itemBuilder: (_, i) => _CardHistorico(registro: lista[i]),
+          ),
+        );
+      }
+    }
+
+    return Column(
+      children: [
+        _buildFiltrosHistorico(cores),
+        Expanded(child: conteudo),
+      ],
+    );
+  }
+
+  Widget _buildFiltrosHistorico(CoresSemanticasApp cores) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: _FiltroHistorico.values.map((f) {
+          final selecionado = f == _filtroHistorico;
+          return TextButton(
+            onPressed: () => setState(() => _filtroHistorico = f),
+            style: TextButton.styleFrom(
+              foregroundColor: selecionado ? CoresApp.primaria : cores.textoSuave,
+              textStyle: TextStyle(
+                fontSize: 16,
+                fontWeight: selecionado ? FontWeight.w800 : FontWeight.w600,
+              ),
+            ),
+            child: Text(f.rotulo),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+// ── Aba Histórico — filtros e modelos auxiliares ─────────────────────────────
+
+enum _FiltroHistorico {
+  todas('Todas'),
+  mes('Este mês'),
+  tresMeses('3 meses');
+
+  final String rotulo;
+  const _FiltroHistorico(this.rotulo);
 }
 
 // ── Aba Painel — conteúdo ────────────────────────────────────────────────────
@@ -1088,6 +1233,59 @@ class _CardCheckinState extends State<_CardCheckin> {
   Color _corTextoBotaoDesabilitado(
           StatusCheckinAluno status, CoresSemanticasApp cores) =>
       cores.textoFraco;
+}
+
+// ── Card do histórico de aulas ───────────────────────────────────────────────
+
+class _CardHistorico extends StatelessWidget {
+  final RegistroHistoricoAula registro;
+
+  static final _fmtData = DateFormat('dd/MM/yyyy', 'pt_BR');
+
+  const _CardHistorico({required this.registro});
+
+  @override
+  Widget build(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+    final corStatus = registro.presente ? cores.sucesso : cores.erro;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              registro.nomeTurma,
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 17,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Text(
+                  '${_fmtData.format(registro.data)} - ${registro.horarioInicio}',
+                  style: TextStyle(fontSize: 15, color: cores.textoSuave),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  registro.rotuloStatus,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: corStatus,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // ── Botão fila de espera no card do aluno ────────────────────────────────────
