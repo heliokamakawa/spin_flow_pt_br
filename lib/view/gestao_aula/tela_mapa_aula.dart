@@ -487,6 +487,7 @@ class _Celula extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (subLabel.isNotEmpty) ...[
               Text(
@@ -499,12 +500,14 @@ class _Celula extends StatelessWidget {
               ),
               const SizedBox(height: 2),
             ],
-            Text(
-              label,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: corTexto, fontSize: 13),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: corTexto, fontSize: 13),
+              ),
             ),
           ],
         ),
