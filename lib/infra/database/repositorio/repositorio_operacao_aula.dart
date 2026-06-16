@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_aluno.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_checkin.dart';
+import 'package:spin_flow/infra/database/dao/i_dao_fila_espera_checkin.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_manutencao.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_mix.dart';
 import 'package:spin_flow/infra/database/dao/i_dao_posicao_bike.dart';
@@ -17,16 +18,19 @@ import 'package:spin_flow/domain/modelo/turma.dart';
 import 'package:spin_flow/domain/modelo/turma_aluno.dart';
 
 class RepositorioOperacaoAula {
-  IDAOTurma          get _daoTurma    => GetIt.I<IDAOTurma>();
-  IDAOSala           get _daoSala     => GetIt.I<IDAOSala>();
-  IDAOPosicaoBike    get _daoPosicao  => GetIt.I<IDAOPosicaoBike>();
-  IDAOCheckin        get _daoCheckin  => GetIt.I<IDAOCheckin>();
-  IDAOManutencao     get _daoManu     => GetIt.I<IDAOManutencao>();
-  IDAOTipoManutencao get _daoTipo     => GetIt.I<IDAOTipoManutencao>();
-  IDAOMix            get _daoMix      => GetIt.I<IDAOMix>();
-  IDAOAluno          get _daoAluno    => GetIt.I<IDAOAluno>();
+  IDAOTurma             get _daoTurma    => GetIt.I<IDAOTurma>();
+  IDAOSala              get _daoSala     => GetIt.I<IDAOSala>();
+  IDAOPosicaoBike       get _daoPosicao  => GetIt.I<IDAOPosicaoBike>();
+  IDAOCheckin           get _daoCheckin  => GetIt.I<IDAOCheckin>();
+  IDAOManutencao        get _daoManu     => GetIt.I<IDAOManutencao>();
+  IDAOTipoManutencao    get _daoTipo     => GetIt.I<IDAOTipoManutencao>();
+  IDAOMix               get _daoMix      => GetIt.I<IDAOMix>();
+  IDAOAluno             get _daoAluno    => GetIt.I<IDAOAluno>();
+  IDAOFilaEsperaCheckin get _daoFila     => GetIt.I<IDAOFilaEsperaCheckin>();
 
   Future<List<ResumoTurmaHoje>> listarTurmasHoje() async {
+    final agora = DateTime.now();
+    final dataHoje = DateTime(agora.year, agora.month, agora.day);
     final hoje = _diaSemanaHoje();
     final salas = await _daoSala.buscarTodos();
     final salasPorId = {for (final s in salas) s.id: s.nome};
@@ -34,9 +38,22 @@ class RepositorioOperacaoAula {
     final turmasHoje =
         turmas.where((t) => t.ativo && t.diasSemana.contains(hoje)).toList()
           ..sort((a, b) => a.horarioInicio.compareTo(b.horarioInicio));
-    return turmasHoje
-        .map((t) => ResumoTurmaHoje(turma: t, nomeSala: salasPorId[t.salaId] ?? ''))
-        .toList();
+    final resultado = <ResumoTurmaHoje>[];
+    for (final t in turmasHoje) {
+      final totalNaFila = await _daoFila.contarNaFila(t.id!, dataHoje);
+      resultado.add(ResumoTurmaHoje(
+        turma: t,
+        nomeSala: salasPorId[t.salaId] ?? '',
+        totalNaFila: totalNaFila,
+      ));
+    }
+    return resultado;
+  }
+
+  Future<List<String>> buscarNomesNaFila(int turmaId) {
+    final agora = DateTime.now();
+    final hoje = DateTime(agora.year, agora.month, agora.day);
+    return _daoFila.buscarNomesNaFila(turmaId, hoje);
   }
 
   Future<EstadoMapaAula> carregarMapa(int turmaId) async {

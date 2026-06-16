@@ -149,6 +149,41 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
     }
   }
 
+  Future<void> _sairDaFilaDaLista(SituacaoCheckinAluno s) async {
+    final filaId = s.filaId;
+    if (filaId == null) return;
+
+    final confirma = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.turma.nome),
+        content: const Text('Sair da fila de espera desta aula?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Não'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: CoresApp.alerta),
+            child: const Text('Sair da Fila'),
+          ),
+        ],
+      ),
+    );
+    if (confirma != true || !mounted) return;
+
+    final resultado = await _controlador.sairDaFila(filaId);
+    if (!mounted) return;
+    if (resultado.sucesso) {
+      await _carregarCheckin();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(resultado.mensagemErro!)),
+      );
+    }
+  }
+
   Future<void> _cancelarCheckinDaLista(SituacaoCheckinAluno s) async {
     final id = s.checkinId;
     if (id == null) return;
@@ -259,6 +294,7 @@ class _TelaDashboardCheckinState extends State<TelaDashboardCheckin>
           situacao: _situacoes[i],
           alunoId: _alunoId!,
           onTap: () => _aoTocarCard(_situacoes[i]),
+          onSairFila: () => _sairDaFilaDaLista(_situacoes[i]),
         ),
       ),
     );
@@ -784,11 +820,13 @@ class _CardCheckin extends StatefulWidget {
   final SituacaoCheckinAluno situacao;
   final int alunoId;
   final VoidCallback onTap;
+  final VoidCallback onSairFila;
 
   const _CardCheckin({
     required this.situacao,
     required this.alunoId,
     required this.onTap,
+    required this.onSairFila,
   });
 
   @override
@@ -797,6 +835,93 @@ class _CardCheckin extends StatefulWidget {
 
 class _CardCheckinState extends State<_CardCheckin> {
   final _controlador = ControladorCheckinAluno();
+
+  void _mostrarFilaModal(BuildContext context) {
+    final s = widget.situacao;
+    final nomesFuture = _controlador.buscarNomesNaFila(s.turma.id!);
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        final cores = Theme.of(ctx).extension<CoresSemanticasApp>()!;
+        return FutureBuilder<List<String>>(
+          future: nomesFuture,
+          builder: (ctx, snap) => Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.people_outline, color: cores.alerta),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Fila de espera · ${s.totalNaFila} '
+                        '${s.totalNaFila == 1 ? 'pessoa' : 'pessoas'}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  s.turma.nome,
+                  style: TextStyle(fontSize: 13, color: cores.textoSuave),
+                ),
+                const SizedBox(height: 12),
+                if (snap.connectionState != ConnectionState.done)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  )
+                else if (snap.hasData && snap.data!.isNotEmpty)
+                  ...snap.data!.asMap().entries.map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 28,
+                            child: Text(
+                              '${e.key + 1}.',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: cores.textoSuave,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              e.value,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  Text(
+                    'Nenhum aluno na fila.',
+                    style: TextStyle(color: cores.textoFraco),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -883,7 +1008,10 @@ class _CardCheckinState extends State<_CardCheckin> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+            padding: EdgeInsets.fromLTRB(
+              14, 0, 14,
+              s.status == StatusCheckinAluno.emFila ? 6 : 14,
+            ),
             child: SizedBox(
               width: double.infinity,
               height: 48,
@@ -908,11 +1036,39 @@ class _CardCheckinState extends State<_CardCheckin> {
               ),
             ),
           ),
+          if (s.status == StatusCheckinAluno.emFila)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+              child: SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: OutlinedButton(
+                  onPressed: widget.onSairFila,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: CoresApp.alerta,
+                    side: BorderSide(color: CoresApp.alerta),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  child: const Text('Sair da Fila'),
+                ),
+              ),
+            ),
           if (mix != null)
             PainelMix(
               mix: mix,
               onAvaliar: (musicaId, nota) =>
                   _controlador.avaliarMusica(widget.alunoId, musicaId, nota),
+            ),
+          if ((s.totalNaFila ?? 0) > 0)
+            _BotaoFilaEspera(
+              total: s.totalNaFila!,
+              onTap: () => _mostrarFilaModal(context),
             ),
         ],
       ),
@@ -932,4 +1088,47 @@ class _CardCheckinState extends State<_CardCheckin> {
   Color _corTextoBotaoDesabilitado(
           StatusCheckinAluno status, CoresSemanticasApp cores) =>
       cores.textoFraco;
+}
+
+// ── Botão fila de espera no card do aluno ────────────────────────────────────
+
+class _BotaoFilaEspera extends StatelessWidget {
+  final int total;
+  final VoidCallback onTap;
+
+  const _BotaoFilaEspera({required this.total, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final cores = Theme.of(context).extension<CoresSemanticasApp>()!;
+    return Column(
+      children: [
+        const Divider(height: 1),
+        InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Row(
+              children: [
+                Icon(Icons.people_outline, size: 18, color: cores.alerta),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Fila de espera · $total '
+                    '${total == 1 ? 'pessoa' : 'pessoas'}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: cores.alerta,
+                    ),
+                  ),
+                ),
+                Icon(Icons.chevron_right, size: 18, color: cores.textoSuave),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

@@ -74,8 +74,13 @@ class EstadoMapaAula {
 class ResumoTurmaHoje {
   final Turma turma;
   final String nomeSala;
+  final int totalNaFila;
 
-  const ResumoTurmaHoje({required this.turma, required this.nomeSala});
+  const ResumoTurmaHoje({
+    required this.turma,
+    required this.nomeSala,
+    this.totalNaFila = 0,
+  });
 }
 
 class ResumoTurmaCheckin {

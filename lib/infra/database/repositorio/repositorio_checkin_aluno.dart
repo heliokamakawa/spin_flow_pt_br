@@ -81,6 +81,8 @@ class RepositorioCheckinAluno {
       String? nomeTurmaConflito;
       int? posicaoNaFila;
       int? checkinId;
+      int? filaId;
+      int? totalNaFila;
 
       final meuCheckinNaTurma =
           checkinsNaTurma.where((c) => c.alunoId == alunoId).firstOrNull;
@@ -91,6 +93,7 @@ class RepositorioCheckinAluno {
         posicaoNaFila = await _daoFila.buscarPosicaoNaFila(alunoId, turma.id!, dataHoje);
         if (posicaoNaFila != null) {
           status = StatusCheckinAluno.emFila;
+          filaId = await _daoFila.buscarIdDoAluno(alunoId, turma.id!, dataHoje);
         } else {
           Checkin? conflito;
           for (final c in checkinsAluno) {
@@ -110,7 +113,15 @@ class RepositorioCheckinAluno {
           } else if (!DominioTurma(turma).janelaAberta(agora)) {
             status = StatusCheckinAluno.janelaFechada;
           } else {
-            status = StatusCheckinAluno.disponivel;
+            // Vagas disponíveis, mas verifica se há fila: lotada com fila
+            // permanece bloqueada mesmo após cancelamentos.
+            final naFila = await _daoFila.contarNaFila(turma.id!, dataHoje);
+            if (naFila > 0) {
+              totalNaFila = naFila;
+              status = StatusCheckinAluno.lotada;
+            } else {
+              status = StatusCheckinAluno.disponivel;
+            }
           }
         }
       }
@@ -135,9 +146,9 @@ class RepositorioCheckinAluno {
         );
       }
 
-      int? totalNaFila;
-      if (status == StatusCheckinAluno.lotada ||
-          status == StatusCheckinAluno.emFila) {
+      if (totalNaFila == null &&
+          (status == StatusCheckinAluno.lotada ||
+              status == StatusCheckinAluno.emFila)) {
         totalNaFila = await _daoFila.contarNaFila(turma.id!, dataHoje);
       }
 
@@ -155,6 +166,7 @@ class RepositorioCheckinAluno {
         nomeTurmaConflito: nomeTurmaConflito,
         totalNaFila: totalNaFila,
         checkinId: checkinId,
+        filaId: filaId,
         bikesEmManutencao: nManutencao,
       ));
     }

@@ -22,6 +22,7 @@ class SituacaoCheckinAluno {
   final String? nomeTurmaConflito;
   final int? totalNaFila;
   final int? checkinId;
+  final int? filaId; // ID do registro na fila, preenchido quando emFila
   // Bikes fisicamente presentes mas em manutenção ativa (indisponíveis temporariamente)
   final int bikesEmManutencao;
 
@@ -37,6 +38,7 @@ class SituacaoCheckinAluno {
     this.nomeTurmaConflito,
     this.totalNaFila,
     this.checkinId,
+    this.filaId,
     this.bikesEmManutencao = 0,
   });
 

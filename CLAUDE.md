@@ -68,9 +68,12 @@ Ordem de avaliação no repositório (maior prioridade primeiro):
 1. `confirmado` — aluno já tem check-in nesta turma.
 2. `emFila` — aluno está na fila de espera.
 3. `conflito` — tem check-in ativo em turma **sobreponente** (não adjacente).
-4. `lotada` — vagas == 0.
+4. `lotada` — vagas == 0 **ou** vagas > 0 mas há alunos na fila de espera.
 5. `janelaFechada` — janela abre 30 min antes.
-6. `disponivel` — tudo OK.
+6. `disponivel` — vagas > 0, janela aberta, sem conflito e sem fila.
+
+**Regra da fila de espera:** turma com fila ativa permanece `lotada` mesmo após cancelamentos.
+Somente turmas **sem fila** liberam vagas normalmente quando alguém cancela.
 
 ### Regra de conflito (`sobrepoeHorario`)
 Usa interseção estrita de intervalos. **Turmas adjacentes NÃO conflitam.**

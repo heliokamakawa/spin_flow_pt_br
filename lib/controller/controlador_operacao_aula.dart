@@ -81,4 +81,7 @@ class ControladorOperacaoAula {
 
   Future<double?> calcularIdadeMediaTurma(int turmaId, DateTime data) =>
       _repositorio.calcularIdadeMediaTurma(turmaId, data);
+
+  Future<List<String>> buscarNomesNaFila(int turmaId) =>
+      _repositorio.buscarNomesNaFila(turmaId);
 }

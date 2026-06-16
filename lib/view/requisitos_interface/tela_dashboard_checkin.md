@@ -36,7 +36,7 @@ Ambas as abas são carregadas na inicialização (`Future.wait`).
 - **Ocupação** no formato `X/Y` — X = bikes ocupadas, Y = total de bikes da sala
 - **Fila** — quantidade de pessoas na fila de espera, exibida apenas quando `totalNaFila > 0`
 
-### Botão (largura total)
+### Botão principal (largura total)
 
 | Status           | Texto do botão      | Ativo? | Cor        |
 |------------------|---------------------|--------|------------|
@@ -47,6 +47,16 @@ Ambas as abas são carregadas na inicialização (`Future.wait`).
 | `emFila`         | Na Fila · #N        | não    | cinza      |
 | `conflito`       | Conflito de Horário | não    | cinza      |
 
+### Botão secundário — apenas para `emFila`
+
+Exibido abaixo do botão principal quando `status == emFila`:
+
+| Texto       | Ativo? | Estilo                        |
+|-------------|--------|-------------------------------|
+| Sair da Fila | sim   | OutlinedButton, cor alerta    |
+
+- Ao tocar: diálogo de confirmação → chama `sairDaFila(filaId)` → permanece na lista e recarrega.
+
 ### Estados da aba
 
 | Estado       | Exibição                                     |
@@ -55,6 +65,15 @@ Ambas as abas são carregadas na inicialização (`Future.wait`).
 | Erro         | Mensagem + botão "Tentar novamente"          |
 | Lista vazia  | Ícone `event_busy` + "Nenhuma aula hoje."   |
 | Lista normal | `ListView` com `RefreshIndicator`            |
+
+### Botão fila de espera (bottom do card)
+
+Exibido somente quando `totalNaFila > 0`, separado por `Divider`:
+
+- Linha: ícone `people_outline` (alerta) + "Fila de espera · N pessoa(s)" + `chevron_right`
+- Ao tocar: abre `ModalBottomSheet` com título, nome da turma e lista de nomes numerados
+- Nomes carregados via `buscarNomesNaFila` com `FutureBuilder` (exibe indicador enquanto carrega)
+- Disponível para todos os status que tenham `totalNaFila > 0` (`lotada`, `emFila`)
 
 ### Ações do usuário (aba Check-in)
 
