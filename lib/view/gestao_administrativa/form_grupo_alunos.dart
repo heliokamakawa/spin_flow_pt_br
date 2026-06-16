@@ -2,7 +2,6 @@
 import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_grupo_alunos.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/domain/dominio/dominio_grupo_alunos.dart';
 import 'package:spin_flow/domain/modelo/grupo_alunos.dart';
 import 'package:spin_flow/domain/modelo/aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -87,7 +86,7 @@ class _FormGrupoAlunosState extends State<FormGrupoAlunos> {
       ativo: _ativo,
     );
 
-    final resultado = await _controlador.salvar(DominioGrupoAlunos(grupo));
+    final resultado = await _controlador.salvar(grupo);
     if (!mounted) return;
     setState(() => _salvando = false);
 

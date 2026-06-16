@@ -5,9 +5,7 @@ class DominioFabricante {
 
   const DominioFabricante(this.modelo);
 
-  String? validarConsistencia() => modelo.validar();
-
   String? validarRegras() => null;
 
-  String? validar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarRegras();
 }

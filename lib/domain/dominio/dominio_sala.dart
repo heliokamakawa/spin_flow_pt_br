@@ -6,11 +6,9 @@ class DominioSala {
 
   const DominioSala(this.modelo);
 
-  String? validarConsistencia() => modelo.validar();
-
   String? validarRegras() => null;
 
-  String? validar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarRegras();
 
   int bikesDisponiveis(
     List<PosicaoBike> posicoes,

@@ -8,10 +8,14 @@ class ControladorSala {
 
   Future<List<Sala>> listar() => _repositorio.listar();
 
-  Future<ResultadoOperacao> salvar(DominioSala dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    await _repositorio.salvar(dominio.modelo);
+  Future<ResultadoOperacao> salvar(Sala modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
+
+    final dominio = DominioSala(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+    await _repositorio.salvar(modelo);
     return const ResultadoOperacao.sucesso();
   }
 

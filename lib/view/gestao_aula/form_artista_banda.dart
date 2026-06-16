@@ -1,7 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_artista_banda.dart';
-import 'package:spin_flow/domain/dominio/dominio_artista_banda.dart';
 import 'package:spin_flow/domain/modelo/artista_banda.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
@@ -57,7 +56,7 @@ class _FormArtistaBandaState extends State<FormArtistaBanda> {
       foto: _fotoCtrl.text.trim(),
     );
 
-    final resultado = await _controlador.salvar(DominioArtistaBanda(artista));
+    final resultado = await _controlador.salvar(artista);
     if (!mounted) return;
     setState(() => _salvando = false);
 

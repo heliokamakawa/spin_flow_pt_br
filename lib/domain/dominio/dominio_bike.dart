@@ -5,8 +5,6 @@ class DominioBike {
 
   const DominioBike(this.modelo);
 
-  String? validarConsistencia() => modelo.validar();
-
   String? validarRegras() {
     final hoje = DateTime.now();
     final amanha = DateTime(hoje.year, hoje.month, hoje.day + 1);
@@ -16,5 +14,5 @@ class DominioBike {
     return null;
   }
 
-  String? validar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarRegras();
 }

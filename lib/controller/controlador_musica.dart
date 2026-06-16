@@ -17,20 +17,27 @@ class ControladorMusica {
   Future<List<CategoriaMusica>> listarCategorias() =>
       _repositorio.listarCategorias();
 
-  Future<ResultadoOperacao> salvar(DominioMusica dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    await _repositorio.salvar(dominio.modelo);
+  Future<ResultadoOperacao> salvar(Musica modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
+
+    final erroRegras = DominioMusica(modelo).validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+
+    await _repositorio.salvar(modelo);
     return ResultadoOperacao.sucesso();
   }
 
   Future<ResultadoOperacao> salvarComCategorias(
-    DominioMusica dominio,
+    Musica modelo,
     List<String> nomes,
   ) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    await _repositorio.salvarComCategorias(dominio.modelo, nomes);
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
+
+    final erroRegras = DominioMusica(modelo).validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+    await _repositorio.salvarComCategorias(modelo, nomes);
     return ResultadoOperacao.sucesso();
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:spin_flow/controller/controlador_bike.dart';
-import 'package:spin_flow/domain/dominio/dominio_bike.dart';
 import 'package:spin_flow/domain/modelo/bike.dart';
 import 'package:spin_flow/domain/modelo/fabricante.dart';
 import 'package:spin_flow/domain/modelo/posicao_bike.dart';
@@ -99,7 +98,7 @@ class _FormBikeState extends State<FormBike> {
     );
 
     final resultado = await _controlador.salvar(
-      DominioBike(bike),
+      bike,
       posicao: _posicaoSelecionada,
       gerenciarPosicao: true,
     );

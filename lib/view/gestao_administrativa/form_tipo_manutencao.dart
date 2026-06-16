@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:spin_flow/controller/controlador_tipo_manutencao.dart';
-import 'package:spin_flow/domain/dominio/dominio_tipo_manutencao.dart';
 import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -54,7 +53,7 @@ class _FormTipoManutencaoState extends State<FormTipoManutencao> {
       ativa: _ativa,
     );
 
-    final resultado = await _controlador.salvar(DominioTipoManutencao(tipo));
+    final resultado = await _controlador.salvar(tipo);
     if (!mounted) return;
     setState(() => _salvando = false);
 

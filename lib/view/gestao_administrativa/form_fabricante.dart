@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:spin_flow/controller/controlador_fabricante.dart';
-import 'package:spin_flow/domain/dominio/dominio_fabricante.dart';
 import 'package:spin_flow/domain/modelo/fabricante.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
@@ -66,7 +65,7 @@ class _FormFabricanteState extends State<FormFabricante> {
       ativo: _ativo,
     );
 
-    final resultado = await _controlador.salvar(DominioFabricante(fabricante));
+    final resultado = await _controlador.salvar(fabricante);
     if (!mounted) return;
     setState(() => _salvando = false);
 

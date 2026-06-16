@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_aluno.dart';
-import 'package:spin_flow/domain/dominio/dominio_aluno.dart';
 import 'package:spin_flow/domain/modelo/aluno.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
@@ -117,7 +116,7 @@ class _FormAlunoState extends State<FormAluno> {
       ativo: _ativo,
     );
 
-    final resultado = await _controlador.salvar(DominioAluno(aluno));
+    final resultado = await _controlador.salvar(aluno);
     if (!mounted) return;
     if (!resultado.sucesso) {
       ScaffoldMessenger.of(context).showSnackBar(

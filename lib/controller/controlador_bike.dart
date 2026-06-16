@@ -21,21 +21,25 @@ class ControladorBike {
       _repositorio.buscarPosicaoDaBike(bikeId);
 
   Future<ResultadoOperacao> salvar(
-    DominioBike dominio, {
+    Bike modelo, {
     PosicaoBike? posicao,
     bool gerenciarPosicao = false,
   }) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
 
-    final existente = await _repositorio.buscarPorNome(dominio.modelo.nome);
-    if (existente != null && existente.id != dominio.modelo.id) {
+    final dominio = DominioBike(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+
+    final existente = await _repositorio.buscarPorNome(modelo.nome);
+    if (existente != null && existente.id != modelo.id) {
       return const ResultadoOperacao.falha(
         mensagemErro: 'Já existe uma bike com este nome.',
       );
     }
 
-    final bikeId = await _repositorio.salvar(dominio.modelo);
+    final bikeId = await _repositorio.salvar(modelo);
 
     if (!gerenciarPosicao) return const ResultadoOperacao.sucesso();
 

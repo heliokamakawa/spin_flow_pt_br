@@ -13,15 +13,19 @@ class ControladorTurma {
   Future<Map<int, String>> listarProfessoras() => _repositorio.listarProfessoras();
   Future<List<Mix>> listarMixes() => _repositorio.listarMixes();
 
-  Future<ResultadoOperacao> salvar(DominioTurma dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    if (dominio.modelo.ativo) {
+  Future<ResultadoOperacao> salvar(Turma modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
+
+    final dominio = DominioTurma(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+    if (modelo.ativo) {
       final turmasExistentes = await _repositorio.listar();
       final conflito = dominio.validarConflito(turmasExistentes);
       if (conflito != null) return ResultadoOperacao.falha(mensagemErro: conflito);
     }
-    await _repositorio.salvar(dominio.modelo);
+    await _repositorio.salvar(modelo);
     return const ResultadoOperacao.sucesso();
   }
 

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:spin_flow/controller/controlador_sala.dart';
 import 'package:spin_flow/infra/config/erro.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
-import 'package:spin_flow/domain/dominio/dominio_sala.dart';
 import '../../domain/modelo/sala.dart';
 import 'package:spin_flow/view/componentes/acao_sair_app_bar.dart';
 import 'package:spin_flow/view/componentes/logo_spin_flow.dart';
@@ -105,7 +104,7 @@ class _FormSalaState extends State<FormSala> {
       ativa: _ativo,
     );
 
-    final resultado = await _controlador.salvar(DominioSala(sala));
+    final resultado = await _controlador.salvar(sala);
     if (!mounted) return;
     setState(() => _salvando = false);
 

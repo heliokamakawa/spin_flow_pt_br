@@ -15,9 +15,12 @@ class DAOMusicaSQLite implements IDAOMusica {
     final db = await ConexaoSQLite.database;
     final maps = await db.rawQuery('''
       SELECT m.id, m.nome, m.descricao, m.artista_id, m.ativo,
-             a.nome AS artista_nome
+             a.nome AS artista_nome,
+             AVG(am.nota) AS media_estrelas
       FROM musica m
       LEFT JOIN artista_banda a ON m.artista_id = a.id
+      LEFT JOIN avaliacao_musica am ON am.musica_id = m.id
+      GROUP BY m.id, m.nome, m.descricao, m.artista_id, m.ativo, artista_nome
       ORDER BY m.nome
     ''');
     return maps.map(_mapParaModelo).toList();
@@ -28,10 +31,13 @@ class DAOMusicaSQLite implements IDAOMusica {
     final db = await ConexaoSQLite.database;
     final maps = await db.rawQuery('''
       SELECT m.id, m.nome, m.descricao, m.artista_id, m.ativo,
-             a.nome AS artista_nome
+             a.nome AS artista_nome,
+             AVG(am.nota) AS media_estrelas
       FROM musica m
       LEFT JOIN artista_banda a ON m.artista_id = a.id
+      LEFT JOIN avaliacao_musica am ON am.musica_id = m.id
       WHERE m.ativo = 1
+      GROUP BY m.id, m.nome, m.descricao, m.artista_id, m.ativo, artista_nome
       ORDER BY m.nome
     ''');
     return maps.map(_mapParaModelo).toList();
@@ -43,10 +49,13 @@ class DAOMusicaSQLite implements IDAOMusica {
     final maps = await db.rawQuery(
       '''
       SELECT m.id, m.nome, m.descricao, m.artista_id, m.ativo,
-             a.nome AS artista_nome
+             a.nome AS artista_nome,
+             AVG(am.nota) AS media_estrelas
       FROM musica m
       LEFT JOIN artista_banda a ON m.artista_id = a.id
+      LEFT JOIN avaliacao_musica am ON am.musica_id = m.id
       WHERE m.id = ?
+      GROUP BY m.id, m.nome, m.descricao, m.artista_id, m.ativo, artista_nome
     ''',
       [id],
     );
@@ -173,6 +182,7 @@ class DAOMusicaSQLite implements IDAOMusica {
   }
 
   Musica _mapParaModelo(Map<String, dynamic> map) {
+    final media = map['media_estrelas'];
     return Musica(
       id: map['id'] as int?,
       nome: (map['nome'] as String?) ?? '',
@@ -180,6 +190,7 @@ class DAOMusicaSQLite implements IDAOMusica {
       artistaId: map['artista_id'] as int?,
       nomeArtista: (map['artista_nome'] as String?) ?? '',
       ativo: ((map['ativo'] as int?) ?? 1) == 1,
+      mediaEstrelas: media != null ? (media as num).toDouble() : null,
     );
   }
 }

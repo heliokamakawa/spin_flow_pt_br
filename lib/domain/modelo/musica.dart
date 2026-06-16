@@ -5,6 +5,7 @@ class Musica {
   final int? artistaId;
   final String nomeArtista;
   final bool ativo;
+  final double? mediaEstrelas;
 
   Musica({
     this.id,
@@ -13,6 +14,7 @@ class Musica {
     this.artistaId,
     this.nomeArtista = '',
     this.ativo = true,
+    this.mediaEstrelas,
   });
 
   String get exibicao => nomeArtista.isEmpty ? nome : '$nome — $nomeArtista';

@@ -5,9 +5,7 @@ class DominioTipoManutencao {
 
   const DominioTipoManutencao(this.modelo);
 
-  String? validarConsistencia() => modelo.validar();
-
   String? validarRegras() => null;
 
-  String? validar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarRegras();
 }

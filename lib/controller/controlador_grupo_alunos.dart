@@ -10,10 +10,14 @@ class ControladorGrupoAlunos {
   Future<List<GrupoAlunos>> listar() => _repositorio.listar();
   Future<List<Aluno>> listarAlunos() => _repositorio.listarAlunos();
 
-  Future<ResultadoOperacao> salvar(DominioGrupoAlunos dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    await _repositorio.salvar(dominio.modelo);
+  Future<ResultadoOperacao> salvar(GrupoAlunos modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
+
+    final dominio = DominioGrupoAlunos(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+    await _repositorio.salvar(modelo);
     return const ResultadoOperacao.sucesso();
   }
 

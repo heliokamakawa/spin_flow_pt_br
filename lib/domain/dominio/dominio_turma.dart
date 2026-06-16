@@ -5,11 +5,9 @@ class DominioTurma {
 
   const DominioTurma(this.modelo);
 
-  String? validarConsistencia() => modelo.validar();
-
   String? validarRegras() => null;
 
-  String? validar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarRegras();
 
   String? validarConflito(List<Turma> turmasExistentes) {
     for (final outra in turmasExistentes) {

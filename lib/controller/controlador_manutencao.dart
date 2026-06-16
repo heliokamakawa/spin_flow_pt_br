@@ -12,10 +12,14 @@ class ControladorManutencao {
   Future<List<Bike>> listarBikes() => _repositorio.listarBikes();
   Future<List<TipoManutencao>> listarTipos() => _repositorio.listarTipos();
 
-  Future<ResultadoOperacao> salvar(DominioManutencao dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    await _repositorio.salvar(dominio.modelo);
+  Future<ResultadoOperacao> salvar(Manutencao modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
+
+    final dominio = DominioManutencao(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+    await _repositorio.salvar(modelo);
     return const ResultadoOperacao.sucesso();
   }
 

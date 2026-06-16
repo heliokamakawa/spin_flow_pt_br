@@ -1,7 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_musica.dart';
-import 'package:spin_flow/domain/dominio/dominio_musica.dart';
 import 'package:spin_flow/domain/modelo/artista_banda.dart';
 import 'package:spin_flow/domain/modelo/categoria_musica.dart';
 import 'package:spin_flow/domain/modelo/musica.dart';
@@ -85,10 +84,7 @@ class _FormMusicaState extends State<FormMusica> {
     );
 
     final nomes = _categoriasSelecionadas.map((c) => c.nome).toList();
-    final resultado = await _controlador.salvarComCategorias(
-      DominioMusica(musica),
-      nomes,
-    );
+    final resultado = await _controlador.salvarComCategorias(musica, nomes);
     if (!mounted) return;
     setState(() => _salvando = false);
 

@@ -8,10 +8,14 @@ class ControladorArtistaBanda {
 
   Future<List<ArtistaBanda>> listar() => _repositorio.listarAtivos();
 
-  Future<ResultadoOperacao> salvar(DominioArtistaBanda dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    await _repositorio.salvar(dominio.modelo);
+  Future<ResultadoOperacao> salvar(ArtistaBanda modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
+
+    final dominio = DominioArtistaBanda(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+    await _repositorio.salvar(modelo);
     return ResultadoOperacao.sucesso();
   }
 

@@ -2,7 +2,6 @@
 import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:spin_flow/controller/controlador_manutencao.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/domain/dominio/dominio_manutencao.dart';
 import 'package:spin_flow/domain/modelo/bike.dart';
 import 'package:spin_flow/domain/modelo/manutencao.dart';
 import 'package:spin_flow/domain/modelo/tipo_manutencao.dart';
@@ -80,9 +79,7 @@ class _FormManutencaoState extends State<FormManutencao> {
       estadoOperacional: _estado,
     );
 
-    final resultado = await _controlador.salvar(
-      DominioManutencao(manutencao),
-    );
+    final resultado = await _controlador.salvar(manutencao);
     if (!mounted) return;
     setState(() => _salvando = false);
 

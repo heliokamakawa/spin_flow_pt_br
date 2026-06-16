@@ -8,27 +8,30 @@ class ControladorAluno {
 
   Future<List<Aluno>> listar() => _repositorio.buscarTodos();
 
-  Future<ResultadoOperacao> salvar(DominioAluno dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+  Future<ResultadoOperacao> salvar(Aluno modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
 
-    final existenteCpf = await _repositorio.buscarPorCpf(dominio.modelo.cpf);
-    if (existenteCpf != null && existenteCpf.id != dominio.modelo.id) {
+    final dominio = DominioAluno(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+
+    final existenteCpf = await _repositorio.buscarPorCpf(modelo.cpf);
+    if (existenteCpf != null && existenteCpf.id != modelo.id) {
       return const ResultadoOperacao.falha(
         mensagemErro: 'CPF já cadastrado para outro aluno.',
       );
     }
 
-    final existenteEmail =
-        await _repositorio.buscarPorEmail(dominio.modelo.email);
-    if (existenteEmail != null && existenteEmail.id != dominio.modelo.id) {
+    final existenteEmail = await _repositorio.buscarPorEmail(modelo.email);
+    if (existenteEmail != null && existenteEmail.id != modelo.id) {
       return const ResultadoOperacao.falha(
         mensagemErro: 'E-mail já cadastrado para outro aluno.',
       );
     }
 
     try {
-      await _repositorio.salvar(dominio.modelo);
+      await _repositorio.salvar(modelo);
       return const ResultadoOperacao.sucesso();
     } catch (e) {
       final msg = e.toString();

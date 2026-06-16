@@ -8,8 +8,6 @@ class DominioCheckin {
 
   const DominioCheckin(this.modelo);
 
-  String? validarConsistencia() => modelo.validar();
-
   // Regra pura: data não pode ser passada (não precisa de dado externo)
   String? validarRegras() {
     final hoje = DateTime.now();
@@ -71,5 +69,5 @@ class DominioCheckin {
     return null;
   }
 
-  String? validar() => validarConsistencia() ?? validarRegras();
+  String? validar() => validarRegras();
 }

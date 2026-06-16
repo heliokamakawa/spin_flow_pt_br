@@ -320,7 +320,7 @@ class _TelaMapeamentoAulaState extends State<TelaMapeamentoAula> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '${_idadeMedia!.round()}',
+                    _idadeMedia!.toStringAsFixed(1),
                     style: TextStyle(
                       fontSize: 34,
                       fontWeight: FontWeight.w800,

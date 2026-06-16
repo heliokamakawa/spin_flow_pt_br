@@ -8,18 +8,22 @@ class ControladorFabricante {
 
   Future<List<Fabricante>> listar() => _repositorio.listar();
 
-  Future<ResultadoOperacao> salvar(DominioFabricante dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+  Future<ResultadoOperacao> salvar(Fabricante modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
 
-    final existente = await _repositorio.buscarPorNome(dominio.modelo.nome);
-    if (existente != null && existente.id != dominio.modelo.id) {
+    final dominio = DominioFabricante(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+
+    final existente = await _repositorio.buscarPorNome(modelo.nome);
+    if (existente != null && existente.id != modelo.id) {
       return const ResultadoOperacao.falha(
         mensagemErro: 'Já existe um fabricante com este nome.',
       );
     }
 
-    await _repositorio.salvar(dominio.modelo);
+    await _repositorio.salvar(modelo);
     return const ResultadoOperacao.sucesso();
   }
 

@@ -3,7 +3,6 @@ import 'package:spin_flow/view/componentes/cores_app.dart';
 import 'package:flutter/services.dart';
 import 'package:spin_flow/controller/controlador_turma.dart';
 import 'package:spin_flow/infra/config/erro.dart';
-import 'package:spin_flow/domain/dominio/dominio_turma.dart';
 import '../../domain/modelo/mix.dart';
 import '../../domain/modelo/sala.dart';
 import 'package:spin_flow/domain/modelo/turma.dart';
@@ -98,7 +97,7 @@ class _FormTurmaState extends State<FormTurma> {
       ativo: _ativo,
     );
 
-    final resultado = await _controlador.salvar(DominioTurma(turma));
+    final resultado = await _controlador.salvar(turma);
     if (!mounted) return;
     setState(() => _salvando = false);
 

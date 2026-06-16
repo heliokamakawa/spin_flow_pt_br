@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:spin_flow/controller/controlador_mix.dart';
-import 'package:spin_flow/domain/dominio/dominio_mix.dart';
 import 'package:spin_flow/domain/modelo/mix.dart';
 import 'package:spin_flow/domain/modelo/musica.dart';
 import 'package:spin_flow/view/componentes/cores_app.dart';
@@ -33,6 +32,7 @@ class _FormMixState extends State<FormMix> {
   bool _salvando = false;
   bool _mostraSugestoes = false;
   String? _erroMusicas;
+  int _filtroEstrelas = 0;
 
   @override
   void initState() {
@@ -73,17 +73,25 @@ class _FormMixState extends State<FormMix> {
       return;
     }
     final ocupados = _posicoes.whereType<int>().toSet();
-    final disponiveis = _musicasDisponiveis
+    var disponiveis = _musicasDisponiveis
         .where((m) => m.id != null && !ocupados.contains(m.id))
         .toList();
 
-    // Prioridade 1: nome ou artista começa com o termo
+    if (_filtroEstrelas > 0) {
+      disponiveis = disponiveis.where((m) {
+        if (m.mediaEstrelas == null) return false;
+        final arredondada = m.mediaEstrelas!.round();
+        return _filtroEstrelas == 5
+            ? arredondada == 5
+            : arredondada >= _filtroEstrelas;
+      }).toList();
+    }
+
     final inicio = disponiveis.where((m) =>
       m.nome.toLowerCase().startsWith(termo) ||
       m.nomeArtista.toLowerCase().startsWith(termo),
     ).toList();
 
-    // Prioridade 2: contém o termo mas não começa com ele
     final idsInicio = inicio.map((m) => m.id).toSet();
     final contem = disponiveis.where((m) =>
       !idsInicio.contains(m.id) &&
@@ -91,10 +99,60 @@ class _FormMixState extends State<FormMix> {
        m.nomeArtista.toLowerCase().contains(termo)),
     ).toList();
 
+    final resultados = [...inicio, ...contem];
+    if (_filtroEstrelas > 0) {
+      resultados.sort((a, b) =>
+          (a.mediaEstrelas ?? 0).compareTo(b.mediaEstrelas ?? 0));
+    }
+
     setState(() {
-      _sugestoes = [...inicio, ...contem];
-      _mostraSugestoes = _sugestoes.isNotEmpty;
+      _sugestoes = resultados;
+      _mostraSugestoes = resultados.isNotEmpty;
     });
+  }
+
+  void _selecionarEstrelas(int valor) {
+    setState(() => _filtroEstrelas = _filtroEstrelas == valor ? 0 : valor);
+    _filtrar(_buscaCtrl.text);
+  }
+
+  String _textoEstrelas(double media) {
+    final cheia = media.round();
+    return '${'★' * cheia}${'☆' * (5 - cheia)} ${media.toStringAsFixed(1)}';
+  }
+
+  Widget _buildFiltroEstrelas() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          const Text(
+            'Mín.:',
+            style: TextStyle(fontSize: 12, color: CoresApp.textoSuave),
+          ),
+          const SizedBox(width: 6),
+          for (int i = 1; i <= 5; i++)
+            GestureDetector(
+              onTap: () => _selecionarEstrelas(i),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Icon(
+                  i <= _filtroEstrelas ? Icons.star : Icons.star_border,
+                  size: 26,
+                  color: i <= _filtroEstrelas ? Colors.amber : CoresApp.textoFraco,
+                ),
+              ),
+            ),
+          if (_filtroEstrelas > 0) ...[
+            const SizedBox(width: 6),
+            GestureDetector(
+              onTap: () => _selecionarEstrelas(0),
+              child: const Icon(Icons.close, size: 16, color: CoresApp.textoSuave),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
   void _adicionarMusica(Musica musica) {
@@ -118,10 +176,9 @@ class _FormMixState extends State<FormMix> {
     });
   }
 
-  String _nomeDaMusica(int id) =>
+  Musica _musicaPorId(int id) =>
       _musicasDisponiveis
-          .firstWhere((m) => m.id == id, orElse: () => Musica(nome: '—'))
-          .exibicao;
+          .firstWhere((m) => m.id == id, orElse: () => Musica(nome: '—'));
 
   Future<void> _salvar() async {
     final musicasOk = _posicoes.whereType<int>().isNotEmpty;
@@ -141,7 +198,7 @@ class _FormMixState extends State<FormMix> {
       ativo: _ativo,
     );
 
-    final resultado = await _controlador.salvar(DominioMix(mix));
+    final resultado = await _controlador.salvar(mix);
     if (!mounted) return;
     setState(() => _salvando = false);
 
@@ -234,10 +291,11 @@ class _FormMixState extends State<FormMix> {
               else ...[
                 // Campo de busca
                 if (!cheio) ...[
+                  _buildFiltroEstrelas(),
                   TextField(
                     controller: _buscaCtrl,
                     decoration: InputDecoration(
-                      hintText: 'Buscar música para adicionar...',
+                      hintText: 'Buscar música por nome ou artista...',
                       prefixIcon: const Icon(Icons.search, size: 20),
                       isDense: true,
                       suffixIcon: _buscaCtrl.text.isNotEmpty
@@ -260,25 +318,27 @@ class _FormMixState extends State<FormMix> {
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 200),
                         child: ListView(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          children: _sugestoes.map((m) => ListTile(
-                            dense: true,
-                            leading: const Icon(
-                              Icons.music_note,
-                              size: 18,
-                              color: CoresApp.textoSuave,
-                            ),
-                            title: Text(m.nome),
-                            subtitle: m.nomeArtista.isNotEmpty
-                                ? Text(
-                                    m.nomeArtista,
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                children: _sugestoes.map((m) => ListTile(
+                                  dense: true,
+                                  leading: const Icon(
+                                    Icons.music_note,
+                                    size: 18,
+                                    color: CoresApp.textoSuave,
+                                  ),
+                                  title: Text(m.nome),
+                                  subtitle: Text(
+                                    [
+                                      if (m.nomeArtista.isNotEmpty) m.nomeArtista,
+                                      if (m.mediaEstrelas != null)
+                                        _textoEstrelas(m.mediaEstrelas!),
+                                    ].join('  '),
                                     style: const TextStyle(fontSize: 11),
-                                  )
-                                : null,
-                            onTap: () => _adicionarMusica(m),
-                          )).toList(),
-                        ),
+                                  ),
+                                  onTap: () => _adicionarMusica(m),
+                                )).toList(),
+                              ),
                       ),
                     ),
                   const SizedBox(height: 8),
@@ -315,6 +375,7 @@ class _FormMixState extends State<FormMix> {
                       final vazio = musicaId == null;
                       final ultimo = i == Mix.totalSlots - 1;
 
+                      final musica = vazio ? null : _musicaPorId(musicaId);
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -337,9 +398,7 @@ class _FormMixState extends State<FormMix> {
                               ),
                             ),
                             title: Text(
-                              vazio
-                                  ? 'Espaço disponível'
-                                  : _nomeDaMusica(musicaId),
+                              vazio ? 'Espaço disponível' : musica!.exibicao,
                               style: TextStyle(
                                 fontSize: 13,
                                 color: vazio ? CoresApp.textoFraco : null,
@@ -347,6 +406,12 @@ class _FormMixState extends State<FormMix> {
                                     vazio ? FontStyle.italic : null,
                               ),
                             ),
+                            subtitle: musica?.mediaEstrelas != null
+                                ? Text(
+                                    _textoEstrelas(musica!.mediaEstrelas!),
+                                    style: const TextStyle(fontSize: 11),
+                                  )
+                                : null,
                             trailing: vazio
                                 ? null
                                 : IconButton(

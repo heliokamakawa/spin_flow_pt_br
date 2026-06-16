@@ -12,10 +12,14 @@ class ControladorMix {
   Future<List<Musica>> listarMusicasDisponiveis() =>
       _repositorio.listarMusicasDisponiveis();
 
-  Future<ResultadoOperacao> salvar(DominioMix dominio) async {
-    final erro = dominio.validar();
-    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
-    await _repositorio.salvar(dominio.modelo);
+  Future<ResultadoOperacao> salvar(Mix modelo) async {
+    final erroDados = modelo.validar();
+    if (erroDados != null) return ResultadoOperacao.falha(mensagemErro: erroDados);
+
+    final dominio = DominioMix(modelo);
+    final erroRegras = dominio.validarRegras();
+    if (erroRegras != null) return ResultadoOperacao.falha(mensagemErro: erroRegras);
+    await _repositorio.salvar(modelo);
     return ResultadoOperacao.sucesso();
   }
 

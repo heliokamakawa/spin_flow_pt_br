@@ -37,7 +37,10 @@ class ControladorCheckinAluno {
     );
     final dominio = DominioCheckin(checkin);
 
-    var erro = dominio.validar();
+    var erro = checkin.validar();
+    if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
+
+    erro = dominio.validarRegras();
     if (erro != null) return ResultadoOperacao.falha(mensagemErro: erro);
 
     erro = dominio.validarJanela(turma);
